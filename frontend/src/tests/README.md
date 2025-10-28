@@ -8,8 +8,8 @@ Tato složka obsahuje data a soubory potřebné pro vývoj a testování aplikac
 
 Obsahuje soubory s daty používanými pro testování:
 
-- `emails.json` - Data emailových zpráv pro testování phishingových scénářů.
-- `phishingTypes.json` - Definice různých typů phishingových útoků.
+- TODO
+- TODO
 
 ## Použití
 
