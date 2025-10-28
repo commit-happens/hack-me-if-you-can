@@ -17,7 +17,7 @@
       "subject": "Děkujeme za objednávku č. 23567",
       "content": "Dobrý den,\n\nVaše objednávka byla přijata a bude odeslána do 2 pracovních dnů. V příloze naleznete potvrzení objednávky.\n\nS pozdravem,\nTým e-shopu",
       "explanation": "Tento e-mail je pravý: odesílatel i předmět vypadají standardně, žádný odkaz nevyžaduje akci, v textu není žádná žádost o citlivé údaje. (Přílohu doporučujeme otevírat pouze pokud očekáváte platbu/objednávku.)",
-      "penalty": 0,
+      "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
       "difficulty": 1
@@ -61,7 +61,7 @@
       "subject": "Týdenní přehled: Novinky v technologiích",
       "content": "Dobrý den,\n\nv tomto týdnu pro vás máme výběr nejzajímavějších článků a tipů. Přejeme příjemné čtení. (Žádné akce nejsou vyžadovány.)",
       "explanation": "Typický newsletter - neobsahuje naléhavé požadavky, odkazy vedou na články (pokud klikáte, ověřte cílové URL).",
-      "penalty": 0,
+      "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
       "difficulty": 1
@@ -83,7 +83,7 @@
       "subject": "Informace o plánovaném rodičovském setkání",
       "content": "Vážení rodiče,\n\nzveme Vás na rodičovské setkání ve čtvrtek v 17:00 ve školní jídelně. Prosíme o potvrzení účasti odpovědí na tento e-mail.",
       "explanation": "Legitimní komunikace školy - žádost o jednoduchou odpověď bez odkazů či příloh. Pokud by bylo v textu něco neočekávaného (např. žádost o platbu), ověřte telefonicky u školy.",
-      "penalty": 0,
+      "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
       "difficulty": 1
