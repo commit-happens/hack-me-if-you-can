@@ -1,0 +1,114 @@
+{
+  "emails": [
+    {
+      "id": 1,
+      "sender": "security@mybank-support.com",
+      "subject": "Okamžité ověření účtu vyžadováno",
+      "content": "Vážený zákazníku, zaznamenali jsme neobvyklou aktivitu na vašem účtu. Klikněte prosím na tento odkaz a ověřte své údaje: [odkaz: http://mybank-support.verify-login.example/confirm]. Pokud neověříte do 24 hodin, dojde k omezení přístupu.",
+      "explanation": "Adresa odesílatele a URL neodpovídají oficiální doméně banky (obsahují navíc '-support' a podivnou doménu). E-mail vyvolává umělý tlak časovým limitem (urgentní akce).",
+      "penalty": 10,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [1, 2, 4],
+      "difficulty": 1
+    },
+    {
+      "id": 2,
+      "sender": "info@eshop-novinky.cz",
+      "subject": "Děkujeme za objednávku č. 23567",
+      "content": "Dobrý den,\n\nVaše objednávka byla přijata a bude odeslána do 2 pracovních dnů. V příloze naleznete potvrzení objednávky.\n\nS pozdravem,\nTým e-shopu",
+      "explanation": "Tento e-mail je pravý: odesílatel i předmět vypadají standardně, žádný odkaz nevyžaduje akci, v textu není žádná žádost o citlivé údaje. (Přílohu doporučujeme otevírat pouze pokud očekáváte platbu/objednávku.)",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 3,
+      "sender": "uctar@dodavatel-faktury.eu",
+      "subject": "Faktura č. 78945 - SPLATNOST DNES!",
+      "content": "Dobrý den,\n\nv příloze zasíláme fakturu k okamžité úhradě. Platební údaje a odkaz pro platbu: [odkaz: http://pay-now.example/payment?id=78945]. Pokud nebyla faktura očekávána, kontaktujte nás na +420 123 456 789.",
+      "explanation": "E-mail žádá o okamžitou platbu a obsahuje odkaz s nejasnou doménou. Pokud nejste očekávaný příjemce této faktury, ověřte informace přímo u známého kontaktu dodavatele. (Příloha a odkaz mohou být škodlivé.)",
+      "penalty": 8,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [3, 2],
+      "difficulty": 1
+    },
+    {
+      "id": 4,
+      "sender": "notifications@sluzby.example.org",
+      "subject": "Aktualizace podmínek služby",
+      "content": "Vážený uživateli,\n\naktualizovali jsme podmínky používání služby. Přihlaste se a potvrďte změny: [odkaz: https://example.org/update].",
+      "explanation": "URL obsahuje správnou doménu, ale odesílatel 'notifications@sluzby.example.org' je obecný a v textu chybí personalizace. Před kliknutím ověřte, zda jste skutečně registrovaným uživatelem a zda adresa odpovídá oficiální adrese služby.",
+      "penalty": 3,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [1],
+      "difficulty": 1
+    },
+    {
+      "id": 5,
+      "sender": "it-helpdesk@firma-corp.com",
+      "subject": "Reset hesla - akce vyžadována",
+      "content": "Ahoj, administrátor požádal o reset vašeho hesla. Prosím ověřte svou identitu na: [odkaz: http://firma-corp.reset-password.example]. Pokud jste o požadavek nežádali, ignorujte tento e-mail.",
+      "explanation": "Adresa odkazu obsahuje 'reset-password' na podezřelé doméně, která není oficiální firemní doménou. Také chybí další informace pro ověření požadavku. To jsou typické znaky podvrženého požadavku na přihlášení.",
+      "penalty": 9,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [1, 4, 2],
+      "difficulty": 1
+    },
+    {
+      "id": 6,
+      "sender": "newsletter@technews.example",
+      "subject": "Týdenní přehled: Novinky v technologiích",
+      "content": "Dobrý den,\n\nv tomto týdnu pro vás máme výběr nejzajímavějších článků a tipů. Přejeme příjemné čtení. (Žádné akce nejsou vyžadovány.)",
+      "explanation": "Typický newsletter - neobsahuje naléhavé požadavky, odkazy vedou na články (pokud klikáte, ověřte cílové URL).",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 7,
+      "sender": "support@dodavatel-služeb.example",
+      "subject": "Potvrďte změnu platebních údajů",
+      "content": "Dobrý den,\n\nžádáme o potvrzení nových platebních údajů. Pro ověření klikněte na: [odkaz: https://billing.dodavatel.example/verify?token=XYZ]. Pokud si tuto změnu nepamatujete, ihned kontaktujte support.",
+      "explanation": "I když odkaz vypadá jako 'billing.dodavatel.example', parametr token v URL a žádost o potvrzení platebních údajů může znamenat pokus o získání přihlašovacích nebo platebních dat. Ověřte změnu přímo u známeho kontaktu dodavatele, ne přes vložený odkaz.",
+      "penalty": 7,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [1, 5],
+      "difficulty": 1
+    },
+    {
+      "id": 8,
+      "sender": "kontakt@skola-obec.cz",
+      "subject": "Informace o plánovaném rodičovském setkání",
+      "content": "Vážení rodiče,\n\nzveme Vás na rodičovské setkání ve čtvrtek v 17:00 ve školní jídelně. Prosíme o potvrzení účasti odpovědí na tento e-mail.",
+      "explanation": "Legitimní komunikace školy - žádost o jednoduchou odpověď bez odkazů či příloh. Pokud by bylo v textu něco neočekávaného (např. žádost o platbu), ověřte telefonicky u školy.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 9,
+      "sender": "promo@letenky-super.example",
+      "subject": "Speciální nabídka: letenky od 199 € - platí jen 2 hodiny!",
+      "content": "Skvělá nabídka! Klikněte na [odkaz: http://letenky-super.example/deal] a získejte letenku za bezkonkurenční akční cenu. Nabídka končí už za 2 hodiny.",
+      "explanation": "Tento typ zpráv používá naléhavost a podezřelé 'příliš dobré' tvrzení. Nabídka s extrémně nízkou cenou je častým trikem pro přilákání kliknutí. Před rezervací ověřte důvěryhodnost prodejce a platební formuláře.",
+      "penalty": 4,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [2, 1],
+      "difficulty": 1
+    },
+    {
+      "id": 10,
+      "sender": "alerts@paypal-security.example",
+      "subject": "Ověřte platbu - podezřelá aktivita na vašem účtu",
+      "content": "Vážený uživateli,\n\nzaznamenali jsme podezřelou platbu z vašeho účtu PayPal. Pro zablokování transakce a obnovení přístupu klikněte prosím na následující odkaz a ověřte svou identitu: [odkaz: http://paypal-secure.verify-example.com/login]. Pokud jste tuto transakci neprovedli, jedná se o podvod a musíte jednat okamžitě.\n\nDěkujeme,\nPayPal Security Team",
+      "explanation": "Odkaz a doména neodpovídají oficiální doméně PayPal (obsahují dodatečné části a podezřelou doménu). Žádost o okamžité přihlášení a ověření je typický trik pro získání přihlašovacích údajů (fake login).",
+      "penalty": 10,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [4, 1, 2],
+      "difficulty": 1
+    }
+  ]
+}

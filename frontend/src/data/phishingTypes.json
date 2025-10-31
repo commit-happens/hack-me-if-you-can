@@ -1,0 +1,49 @@
+{
+  "phishingTypes": [
+    {
+      "id": 1,
+      "name": "Falešné URL / neodpovídající doména",
+      "securityHints": [
+        "Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh).",
+        "Neklikej na odkazy, které obsahují náhradní znaky nebo poddomény napodobující oficiální stránky.",
+        "Najeď myší nad odkaz (neklikej!) pro kontrolu cílové adresy."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Urgentní žádost / sociální inženýrství",
+      "securityHints": [
+        "Buď podezřívavý k e-mailům vyžadujícím okamžitou akci.",
+        "Vyžádej si potvrzení přes oficiální kanály (telefon, oficiální web).",
+        "Neposkytuj citlivé údaje bez ověření identity žadatele."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Falešná faktura / falešný dokument",
+      "securityHints": [
+        "Kontroluj čísla faktur a dodavatele v účetním systému před úhradou.",
+        "Ověř si očekávané platby s kontaktem, kterého znáš.",
+        "Neotevírej podezřelé přílohy, zkontroluj typ souboru."
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Sběr přihlašovacích údajů (falešný login)",
+      "securityHints": [
+        "Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální.",
+        "Používej dvoufaktorové ověření (2FA) tam, kde je to možné.",
+        "Při nečekaném požadavku na přihlášení ověř kontakt druhou cestou."
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Personalizovaný útok (sociální inženýrství na míru)",
+      "securityHints": [
+        "Kontroluj, zda informace v e-mailu odpovídají tomu, co sdílíš veřejně.",
+        "Ověř identitu zasílatele telefonátem či jiným kanálem.",
+        "Buď ostražitý u nevyžádaných zpráv, i když obsahují osobní údaje."
+      ]
+    }
+  ]
+}
