@@ -1,0 +1,139 @@
+/* Základní nastavení stránky - vycentrované rozložení */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    /* Světle šedé pozadí */
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    /* Horizontální centrování */
+    align-items: flex-start;
+    /* Zarovnání k hornímu okraji */
+    min-height: 100vh;
+    /* Minimální výška celé obrazovky */
+}
+
+/* Hlavní kontejner s bílým pozadím a stínem */
+.container {
+    background-color: white;
+    padding: 60px 40px 80px;
+    /* Větší padding pro prostornější vzhled */
+    border-radius: 10px;
+    /* Zaoblené rohy */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    /* Jemný stín */
+    text-align: center;
+    max-width: 560px;
+    /* Maximální šířka kontejneru */
+    width: 100%;
+}
+
+/* Nadpis stránky s serif fontem */
+.title {
+    font-family: Georgia, 'Times New Roman', serif;
+    /* Elegantní serif font */
+    font-size: 28px;
+    font-weight: 700;
+    /* Tučné písmo */
+    margin-bottom: 26px;
+    color: #222;
+    /* Tmavě šedá barva */
+}
+
+/* Sekce s avatarem a bublinou - flexbox layout */
+.profile-section {
+    display: flex;
+    align-items: flex-start;
+    /* Zarovnání k hornímu okraji */
+    gap: 18px;
+    /* Mezera mezi avatarem a bublinou */
+    margin-bottom: 36px;
+    text-align: left;
+    /* Text zarovnaný vlevo */
+}
+
+/* Obrázek avatara - čtvercový s lehce zaoblenými rohy */
+.avatar-img {
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    /* Zachování poměru stran obrázku */
+    border-radius: 12px;
+    /* Lehce zaoblené rohy */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    /* Jemný stín */
+    background-color: #f6b85a;
+    /* Záložní barva při načítání */
+}
+
+/* Řečová bublina kolem textu zprávy */
+.speech {
+    position: relative;
+    /* Pro umístění šipky */
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    max-width: calc(100% - 120px);
+    /* Šířka minus prostor pro avatar */
+}
+
+/* Šipka řečové bubliny - trojúhelník vytvořený bordery */
+.speech:after {
+    content: "";
+    position: absolute;
+    left: -10px;
+    /* Umístění vlevo od bubliny */
+    top: 22px;
+    /* Vertikální pozice šipky */
+    width: 0;
+    height: 0;
+    /* Trojúhelník vytvořený pomocí průhledných borderů */
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 10px solid #fff;
+    /* Bílá barva šipky */
+}
+
+/* Text zprávy uvnitř řečové bubliny */
+.info {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.45;
+    /* Příjemný řádkový rozestup pro čitelnost */
+    color: #444;
+    /* Tmavě šedá barva textu */
+}
+
+/* Hlavní tlačítko Start - velké a výrazné */
+.start-button {
+    background-color: #fafafa;
+    /* Světlé pozadí */
+    border: 1px solid #e6e6e6;
+    /* Jemný okraj */
+    padding: 18px 64px;
+    /* Velký padding pro větší tlačítko */
+    border-radius: 18px;
+    /* Zaoblené rohy */
+    font-size: 20px;
+    cursor: pointer;
+    /* Ukazatel ruky při najetí */
+    color: #111;
+    /* Tmavý text */
+    display: inline-block;
+    margin: 20px auto 0;
+    /* Centrování a horní mezera */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    /* Jemný stín */
+    font-weight: 600;
+    /* Polotučné písmo */
+}
+
+/* Hover efekt pro tlačítko - animace při najetí myší */
+.start-button:hover {
+    transform: translateY(-1px);
+    /* Lehké nadzvednutí tlačítka */
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+    /* Silnější stín při hover */
+}
