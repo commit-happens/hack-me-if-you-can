@@ -1,0 +1,91 @@
+# Docker Compose file for running MySQL database locally
+# This creates a MySQL container with phpMyAdmin for easy management
+#
+# WHAT IS DOCKER COMPOSE?
+# - Tool for defining and running multi-container applications
+# - Uses YAML file to configure application services
+# - Single command to start/stop entire stack
+#
+# BENEFITS:
+# - No need to install MySQL locally
+# - Consistent database setup across team members  
+# - Easy to reset/recreate database
+# - Includes phpMyAdmin web interface
+# - Automatic database creation and user setup
+#
+# USAGE:
+# Start:   docker-compose up -d
+# Stop:    docker-compose down
+# Reset:   docker-compose down -v (removes data)
+
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  mysql:
+    image: mysql:8.0
+    container_name: hackme_mysql
+    restart: always
+    environment:
+      # Database configuration
+      MYSQL_ROOT_PASSWORD: rootpassword123
+      MYSQL_DATABASE: hackme_db
+      MYSQL_USER: hackme_user
+      MYSQL_PASSWORD: hackme_password123
+      
+      # Performance tuning
+      MYSQL_INNODB_BUFFER_POOL_SIZE: 128M
+      MYSQL_MAX_CONNECTIONS: 100
+    ports:
+      - "3306:3306"  # Map MySQL port to host
+    volumes:
+      # Persist database data
+      - mysql_data:/var/lib/mysql
+      # Load initial SQL scripts
+      - ./database/init:/docker-entrypoint-initdb.d
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  # phpMyAdmin Web Interface
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: hackme_phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: hackme_user
+      PMA_PASSWORD: hackme_password123
+      MYSQL_ROOT_PASSWORD: rootpassword123
+    ports:
+      - "8081:80"  # Access via http://localhost:8081
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # Adminer (Alternative to phpMyAdmin - lighter weight)
+  adminer:
+    image: adminer:latest
+    container_name: hackme_adminer
+    restart: always
+    ports:
+      - "8082:8080"  # Access via http://localhost:8082
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+# Persistent volume for MySQL data
+volumes:
+  mysql_data:
+    driver: local
+
+# Network configuration (optional - Docker creates default network)
+networks:
+  default:
+    name: hackme_network
