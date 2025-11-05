@@ -1,3 +1,5 @@
+# Konfigurace pro ESLint - nástroj pro formátování
+
 import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
