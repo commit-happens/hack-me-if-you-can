@@ -55,3 +55,16 @@ src/
     └── resources/
         └── application-test.properties
 ```
+
+## FE Commands
+Run the backend
+```
+mvn spring-boot:run
+```
+or (without installed mvn)
+```
+/.mvnw spring-boot:run
+```
+You can then checkout:
+1. Swagger UI with APIs: http://localhost:8085/swagger-ui/index.html
+2. Check that BE is running: http://localhost:8085/players

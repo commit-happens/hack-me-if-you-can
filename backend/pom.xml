@@ -76,6 +76,14 @@
 			<scope>test</scope>
 		</dependency>
 		
+		<!-- SpringDoc OpenAPI: Automatically generates API documentation -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+
+
 		<!-- H2 Database: In-memory database for testing -->
 		<dependency>
 			<groupId>com.h2database</groupId>
