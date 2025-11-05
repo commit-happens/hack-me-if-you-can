@@ -1,0 +1,128 @@
+name: Auto Release with Major Version Bump
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allow manual triggering
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  auto-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history for tags
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get latest tag
+        id: get_tag
+        run: |
+          # Get the latest tag, if no tags exist, start with v0.0.0
+          LATEST_TAG=$(git tag -l "v*" --sort=-version:refname | head -n 1)
+          if [ -z "$LATEST_TAG" ]; then
+            LATEST_TAG="v0.0.0"
+            echo "No existing tags found, starting with v0.0.0"
+          fi
+          echo "latest_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "Latest tag found: $LATEST_TAG"
+
+      - name: Calculate new version
+        id: new_version
+        run: |
+          LATEST_TAG="${{ steps.get_tag.outputs.latest_tag }}"
+          echo "Processing tag: $LATEST_TAG"
+          
+          # Remove 'v' prefix and split version parts
+          VERSION=${LATEST_TAG#v}
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+          
+          # Bump major version and reset minor/patch to 0
+          NEW_MAJOR=$((MAJOR + 1))
+          NEW_VERSION="v${NEW_MAJOR}.0.0"
+          
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $LATEST_TAG"
+          echo "New version: $NEW_VERSION"
+
+      - name: Check if tag already exists
+        id: tag_exists
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.new_version }}"
+          if git rev-parse "$NEW_VERSION" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Tag $NEW_VERSION already exists"
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Tag $NEW_VERSION does not exist, proceeding with release"
+          fi
+
+      - name: Create and push new tag
+        if: steps.tag_exists.outputs.exists == 'false'
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.new_version }}"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          # Create annotated tag with commit message
+          git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION - Auto-generated major version bump"
+          git push origin "$NEW_VERSION"
+          echo "Created and pushed tag: $NEW_VERSION"
+
+      - name: Generate release notes
+        if: steps.tag_exists.outputs.exists == 'false'
+        id: release_notes
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.new_version }}"
+          LATEST_TAG="${{ steps.get_tag.outputs.latest_tag }}"
+          
+          # Generate release notes
+          echo "# Release $NEW_VERSION" > release_notes.md
+          echo "" >> release_notes.md
+          echo "This is an automated release with major version bump." >> release_notes.md
+          echo "" >> release_notes.md
+          
+          if [ "$LATEST_TAG" != "v0.0.0" ]; then
+            echo "## Changes since $LATEST_TAG" >> release_notes.md
+            echo "" >> release_notes.md
+            # Get commits since last tag
+            git log ${LATEST_TAG}..HEAD --oneline --pretty=format:"- %s (%h)" >> release_notes.md
+          else
+            echo "## Initial Release" >> release_notes.md
+            echo "" >> release_notes.md
+            echo "- Initial version of Hack Me If You Can project" >> release_notes.md
+          fi
+          
+          echo "" >> release_notes.md
+          echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/${LATEST_TAG}...${NEW_VERSION}" >> release_notes.md
+
+      - name: Create GitHub Release
+        if: steps.tag_exists.outputs.exists == 'false'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.new_version.outputs.new_version }}
+          release_name: Release ${{ steps.new_version.outputs.new_version }}
+          body_path: release_notes.md
+          draft: false
+          prerelease: false
+
+      - name: Release Summary
+        if: steps.tag_exists.outputs.exists == 'false'
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.new_version }}"
+          echo "🎉 Successfully created release $NEW_VERSION"
+          echo "📦 Release URL: https://github.com/${{ github.repository }}/releases/tag/$NEW_VERSION"
+          
+      - name: Skip Release (Tag Exists)
+        if: steps.tag_exists.outputs.exists == 'true'
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.new_version }}"
+          echo "ℹ️ Tag $NEW_VERSION already exists, skipping release creation"
