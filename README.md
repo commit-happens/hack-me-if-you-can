@@ -13,12 +13,12 @@ Jednoduchý monorepo základ pro frontend (React + Vite + TypeScript). Tento dok
 ```
 hack-me-if-you-can/
 ├─ Makefile               # pohodlné příkazy (fe-dev, fe-lint, fe-build, fe-preview)
-├─ fe.ps1                 # PowerShell alternativa k Makefile (Windows)
 ├─ frontend/              # React + Vite aplikace
+│  ├─ src/
 │  ├─ index.html
 │  ├─ package.json        # skripty: dev, build, preview, lint
 │  ├─ vite.config.ts
-│  ├─ src/
+│  ...
 │  └─ .env                # lokální proměnné (např. VITE_API_LOCALE)
 └─ ...
 ```
