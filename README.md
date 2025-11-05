@@ -68,3 +68,6 @@ or (without installed mvn)
 You can then checkout:
 1. Swagger UI with APIs: http://localhost:8085/swagger-ui/index.html
 2. Check that BE is running: http://localhost:8085/players
+3. Check the H2 databse: http://localhost:8085/h2-console/login.jsp?jsessionid=d3b980dcb88ace56edab19a9a482d980
+    1. Make sure correct JDBC URL is passed: jdbc:h2:mem:hack_me_if_you_can_db
+    2. Make sure that correct username and password is passed: dev and devpassword
