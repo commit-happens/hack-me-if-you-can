@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - "*"
   workflow_dispatch: # Allow manual triggering
 
 permissions:
@@ -69,10 +72,10 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           
-          # Create annotated tag with commit message
-          git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION - Auto-generated major version bump"
-          git push origin "$NEW_VERSION"
-          echo "Created and pushed tag: $NEW_VERSION"
+            # Create annotated tag with commit message
+            git tag -a "$NEW_VERSION" -m "Release $NEW_VERSION - Auto-generated major version bump"
+            git push origin "$NEW_VERSION"
+            echo "Created and pushed tag: $NEW_VERSION"
 
       - name: Generate release notes
         if: steps.tag_exists.outputs.exists == 'false'
