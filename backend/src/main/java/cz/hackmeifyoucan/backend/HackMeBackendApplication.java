@@ -1,4 +1,5 @@
-/*Main application entry point*/ 
+/* Main application entry point */ 
+
 package cz.hackmeifyoucan.backend;
 
 import org.springframework.boot.SpringApplication;
