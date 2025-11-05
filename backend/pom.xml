@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<!-- ===== PROJECT INFORMATION ===== -->
+	<modelVersion>4.0.0</modelVersion>
+	
+	<!-- Parent: Spring Boot Starter Parent for dependency management -->
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>3.5.7</version>
+		<relativePath/>
+	</parent>
+
+	<!-- Project coordinates -->
+	<groupId>cz.hackmeifyoucan</groupId>
+	<artifactId>backend</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>backend</name>
+	<description>Rocnikovy projekt: Hack Me If You Can - Backend</description>
+	<url>https://hackmeifyoucan.cz</url>
+
+	<!-- ===== PROJECT METADATA ===== -->
+	<!-- License information -->
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<!-- Development team -->
+	<developers>
+		<developer>
+			<id>medojedik</id>
+			<name>Eliška Kremeňová</name>
+			<email>eliskafm@seznam.cz</email>
+		</developer>
+	</developers>
+
+	<!-- Source control management -->
+	<scm>
+		<connection>scm:git:git@github.com:commit-happens/hack-me-if-you-can.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/commit-happens/hack-me-if-you-can.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/commit-happens/hack-me-if-you-can</url>
+	</scm>
+
+	<!-- ===== PROJECT PROPERTIES ===== -->
+	<properties>
+		<java.version>25</java.version>
+	</properties>
+
+	<!-- ===== DEPENDENCIES ===== -->
+	<dependencies>
+		<!-- Spring Web: Provides web MVC framework and REST capabilities -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- Spring Boot Test: Testing framework with JUnit, Mockito, AssertJ -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<!-- ===== BUILD CONFIGURATION ===== -->
+	<build>
+		<plugins>
+			<!-- Spring Boot Maven Plugin: Enables packaging as executable jar -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
