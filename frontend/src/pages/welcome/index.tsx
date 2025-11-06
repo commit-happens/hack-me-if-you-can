@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../../components/header";
 import useTranslation from "../../hooks/useTranslation";
-import type { BasePageProps } from "../../models/BasePageProps";
 import Page from "../../models/Page";
+import { getPagePath } from "../../utils/routing";
 
-function Welcome(props: BasePageProps) {
-  const { navigate, page } = props;
+function Welcome() {
+  const navigate = useNavigate();
   const [nickname, setNickname] = useState<string>("");
   const [error, setError] = useState(true);
 
@@ -18,8 +19,7 @@ function Welcome(props: BasePageProps) {
   };
 
   const handleStart = () => {
-    if (!navigate) return;
-    navigate(Page.Game);
+    navigate(getPagePath(Page.Game));
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -29,7 +29,7 @@ function Welcome(props: BasePageProps) {
   };
   return (
     <>
-      <Header navigate={navigate} page={page} />
+      <Header />
 
       <h1>{appTexts.title}</h1>
       <div>
