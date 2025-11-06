@@ -1,24 +1,25 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import useNavigate from './hooks/useNavigate';
-import Game from './pages/game';
-import Welcome from './pages/welcome';
+import { useEffect, useState } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.css";
+import { routes } from "./routing/routes";
 
 function App() {
-  const { page, navigate } = useNavigate();
-  const [locale] = useState('cs');
-
-  const pages = {
-    welcome: <Welcome navigate={navigate} />,
-    game: <Game navigate={navigate} page={page} />,
-  };
+  const [locale] = useState("cs");
 
   useEffect(() => {
     // Nastaví správný kód jazyka do <html lang="...">
     document.documentElement.lang = locale;
   }, [locale]);
 
-  return pages[page];
+  return (
+    <BrowserRouter>
+      <Routes>
+        {Object.values(routes).map(({ path, element }) => (
+          <Route key={path} path={path} element={element} />
+        ))}
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

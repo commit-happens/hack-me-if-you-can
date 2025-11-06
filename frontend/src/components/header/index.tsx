@@ -1,27 +1,16 @@
+import { Link, useLocation } from "react-router-dom";
 import useTranslation from "../../hooks/useTranslation";
-import type { BasePageProps } from "../../models/BasePageProps";
 import Page from "../../models/Page";
+import { getPagePath } from "../../utils/routing";
 
-function Header(props: BasePageProps) {
-  const { page, navigate } = props;
+function Header() {
+  const { pathname } = useLocation();
   const texts = useTranslation("app");
 
-  if (!page || page === Page.Welcome) {
+  if (pathname === getPagePath(Page.Welcome)) {
     return <>{texts.titleAbbr}</>;
   }
 
-  return (
-    <a
-      href=""
-      onClick={(e) => {
-        e.preventDefault();
-
-        if (!navigate) return;
-        navigate(Page.Welcome);
-      }}
-    >
-      {texts.titleAbbr}
-    </a>
-  );
+  return <Link to="/">{texts.titleAbbr}</Link>;
 }
 export default Header;
