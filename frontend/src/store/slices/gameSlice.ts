@@ -6,7 +6,7 @@ interface GameState {
   score: number;
   correctAnswers: number;
   wrongAnswers: number;
-  level: number;
+  order: number;
   isPlaying: boolean;
 }
 
@@ -14,7 +14,7 @@ const initialState: GameState = {
   score: 0,
   correctAnswers: 0,
   wrongAnswers: 0,
-  level: 1,
+  order: 1,
   isPlaying: false,
 };
 
@@ -25,7 +25,7 @@ const gameSlice = createSlice({
     startGame: (state) => {
       state.isPlaying = true;
       state.score = 100;
-      state.level = 1;
+      state.order = 1;
     },
     endGame: (state) => {
       state.isPlaying = false;
@@ -33,18 +33,21 @@ const gameSlice = createSlice({
     incrementScore: (state, action: PayloadAction<number>) => {
       state.score += action.payload;
     },
-    setLevel: (state, action: PayloadAction<number>) => {
-      state.level = action.payload;
+    increaseCorrectAnswers: (state) => {
+      state.correctAnswers += 1;
+    },
+    setOrder: (state, action: PayloadAction<number>) => {
+      state.order = action.payload;
     },
   },
 });
 
-export const { startGame, endGame, incrementScore, setLevel } =
+export const { startGame, endGame, incrementScore, setOrder, increaseCorrectAnswers } =
   gameSlice.actions;
 
 // Selektory
 export const selectScore = (state: RootState) => state.game.score;
-export const selectLevel = (state: RootState) => state.game.level;
+export const selectOrder = (state: RootState) => state.game.order;
 export const selectIsPlaying = (state: RootState) => state.game.isPlaying;
 export const selectGameState = (state: RootState) => state.game;
 
