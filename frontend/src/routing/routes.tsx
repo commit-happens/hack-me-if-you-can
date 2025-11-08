@@ -2,6 +2,7 @@ import type { JSX } from "react";
 import Page from "../models/Page";
 import Game from "../pages/game";
 import Welcome from "../pages/welcome";
+import Results from "../pages/results";
 
 type Route = {
   path: string;
@@ -19,7 +20,7 @@ export const routes: Record<Page, Route> = {
   },
   [Page.Results]: {
     path: "/results",
-    element: null,
+    element: <Results />,
   },
   [Page.Leaderboard]: {
     path: "/leaderboard",

@@ -4,12 +4,16 @@ import type { RootState } from "../../store";
 
 interface GameState {
   score: number;
+  correctAnswers: number;
+  wrongAnswers: number;
   level: number;
   isPlaying: boolean;
 }
 
 const initialState: GameState = {
   score: 0,
+  correctAnswers: 0,
+  wrongAnswers: 0,
   level: 1,
   isPlaying: false,
 };
@@ -20,7 +24,7 @@ const gameSlice = createSlice({
   reducers: {
     startGame: (state) => {
       state.isPlaying = true;
-      state.score = 0;
+      state.score = 100;
       state.level = 1;
     },
     endGame: (state) => {
