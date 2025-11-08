@@ -1,4 +1,4 @@
-import type { JSX } from "react/jsx-dev-runtime";
+import type { JSX } from "react";
 import Page from "../models/Page";
 import Game from "../pages/game";
 import Welcome from "../pages/welcome";
