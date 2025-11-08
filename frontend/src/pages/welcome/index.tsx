@@ -4,9 +4,18 @@ import Header from "../../components/header";
 import useTranslation from "../../hooks/useTranslation";
 import Page from "../../models/Page";
 import { getPagePath } from "../../utils/routing";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import { useAppDispatch } from "../../store/hooks";
+import { startGame } from "../../store/slices/gameSlice";
+import Col from "react-bootstrap/Col";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
 
 function Welcome() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const [nickname, setNickname] = useState<string>("");
   const [error, setError] = useState(true);
 
@@ -19,6 +28,7 @@ function Welcome() {
   };
 
   const handleStart = () => {
+    dispatch(startGame());
     navigate(getPagePath(Page.Game));
   };
 
@@ -28,37 +38,46 @@ function Welcome() {
     }
   };
   return (
-    <>
+    <Container fluid="md">
       <Header />
-
-      <h1>{appTexts.title}</h1>
-      <div>
-        <p>{welcomeTexts.welcomeMessage}</p>
-        <p>{welcomeTexts.instruction1}</p>
-        <p>{welcomeTexts.instruction2}</p>
-        <div>
+      <Row>
+        <Col className="d-flex flex-column gap-4">
+          <h1 className="display-3 text-center">{appTexts.title}</h1>
           <div>
-            <h2>{welcomeTexts.nicknameLabel}</h2>
+            <p>
+              {welcomeTexts.welcomeMessage} {welcomeTexts.instruction1}
+            </p>
+            <p>{welcomeTexts.instruction2}</p>
+            <div className="text-center">
+              <div className="mt-5 mb-3">
+                <h2 className="display-6">{welcomeTexts.nicknameLabel}</h2>
+              </div>
+              <p>
+                <Form.Control
+                  placeholder={welcomeTexts.nicknamePlaceholder}
+                  autoFocus
+                  type="text"
+                  id="nickname"
+                  name="nickname"
+                  value={nickname}
+                  required
+                  className="d-inline-block w-50 text-center"
+                  onChange={handleChange}
+                  onKeyDown={handleKeyDown}
+                />
+              </p>
+              <Button
+                variant="primary"
+                disabled={error}
+                onClick={() => handleStart()}
+              >
+                {welcomeTexts.startButton}
+              </Button>
+            </div>
           </div>
-          <p>
-            <input
-              type="text"
-              id="nickname"
-              name="nickname"
-              placeholder={welcomeTexts.nicknamePlaceholder}
-              autoFocus
-              value={nickname}
-              required
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-            />
-          </p>
-        </div>
-        <button disabled={error} onClick={() => handleStart()}>
-          {welcomeTexts.startButton}
-        </button>
-      </div>
-    </>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
