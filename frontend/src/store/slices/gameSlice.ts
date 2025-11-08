@@ -1,5 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import type { RootState } from "../../store";
 
 interface GameState {
   score: number;
@@ -14,7 +15,7 @@ const initialState: GameState = {
 };
 
 const gameSlice = createSlice({
-  name: 'game',
+  name: "game",
   initialState,
   reducers: {
     startGame: (state) => {
@@ -38,10 +39,9 @@ export const { startGame, endGame, incrementScore, setLevel } =
   gameSlice.actions;
 
 // Selektory
-export const selectScore = (state: { game: GameState }) => state.game.score;
-export const selectLevel = (state: { game: GameState }) => state.game.level;
-export const selectIsPlaying = (state: { game: GameState }) =>
-  state.game.isPlaying;
-export const selectGameState = (state: { game: GameState }) => state.game;
+export const selectScore = (state: RootState) => state.game.score;
+export const selectLevel = (state: RootState) => state.game.level;
+export const selectIsPlaying = (state: RootState) => state.game.isPlaying;
+export const selectGameState = (state: RootState) => state.game;
 
 export default gameSlice.reducer;
