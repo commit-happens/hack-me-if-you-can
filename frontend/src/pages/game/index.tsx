@@ -1,11 +1,9 @@
-import Header from "../../components/header";
-import type { BasePageProps } from "../../models/BasePageProps";
+import Header from '../../components/header';
 
-function Game(props: BasePageProps) {
-  const { page, navigate } = props;
+function Game() {
   return (
     <>
-      <Header navigate={navigate} page={page} />
+      <Header />
       <h1>Game Page</h1>
       <p>TODO: Implement the game page.</p>
     </>
