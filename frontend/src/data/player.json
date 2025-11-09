@@ -1,0 +1,14 @@
+{
+  "players": [
+    { "id": 1, "nickname": "NeoHacker", "score": 120 },
+    { "id": 2, "nickname": "CyberEli", "score": 95 },
+    { "id": 3, "nickname": "NikByte", "score": 143 },
+    { "id": 4, "nickname": "ReneRoot", "score": 77 },
+    { "id": 5, "nickname": "PhishGuard", "score": 89 },
+    { "id": 6, "nickname": "SafeClick", "score": 156 },
+    { "id": 7, "nickname": "ZeroTrust", "score": 131 },
+    { "id": 8, "nickname": "PacketFox", "score": 118 },
+    { "id": 9, "nickname": "CloudBuster", "score": 102 },
+    { "id": 10, "nickname": "JanitorAI", "score": 110 }
+  ]
+}
