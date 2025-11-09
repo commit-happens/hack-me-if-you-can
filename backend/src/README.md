@@ -15,7 +15,7 @@ Tento modul obsahuje backendovou část projektu **Hack Me If You Can**, postave
 - Java 21 (LTS)
 - Maven 3.9+
 - Doporučené IDE: IntelliJ IDEA (doporučeno) nebo VS Code
-- Doporučený Lombok plugin v IDE (pokud používáte Lombok)
+- Doporučený Lombok plugin v IDE
 
 ---
 
@@ -45,3 +45,26 @@ java -jar target/*.jar
 ```bash
 mvn test
 ```
+
+
+5) H2 konzole
+
+## H2 konzole (in-memory databáze)
+
+Projekt používá H2 databázi v paměťovém režimu (in-memory), ideální pro lokální vývoj a testování.
+
+Otevřeš ji v prohlížeči na následující adrese:
+
+🔗 URL: http://localhost:8080/h2-console
+
+Přihlašovací údaje (výchozí):
+
+- JDBC URL: `jdbc:h2:mem:hmiyc_db`
+- User Name: `sa`
+- Password: (ponech prázdné)
+
+Tipy po přihlášení:
+
+- Prohlížet a upravovat tabulky
+- Spouštět vlastní SQL dotazy
+- Zkontrolovat uložená data přímo během běhu aplikace
