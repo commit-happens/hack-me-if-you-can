@@ -1,10 +1,10 @@
-package cz.hmiyc.backend;
+package cz.hackmeifyoucan.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class HmiycApplicationTests {
+class HackMeIfYouCanApplicationTests {
 
     @Test
     void contextLoads() {

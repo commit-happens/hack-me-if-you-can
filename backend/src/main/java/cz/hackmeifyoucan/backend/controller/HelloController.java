@@ -1,4 +1,4 @@
-package cz.hmiyc.backend.controller;
+package cz.hackmeifyoucan.backend.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
