@@ -59,7 +59,7 @@ Otevřeš ji v prohlížeči na následující adrese:
 
 Přihlašovací údaje (výchozí):
 
-- JDBC URL: `jdbc:h2:mem:hmiyc_db`
+- JDBC URL: `jdbc:h2:file:./data/hack_db`
 - User Name: `sa`
 - Password: (ponech prázdné)
 
