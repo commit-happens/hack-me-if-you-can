@@ -17,7 +17,7 @@
     </parent>
 
     <!-- Identifikace projektu -->
-    <groupId>cz.hmiyc</groupId>
+    <groupId>cz.hackmeifyoucan</groupId>
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Hack Me If You Can</name>
