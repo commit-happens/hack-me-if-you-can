@@ -1,4 +1,3 @@
-// src/pages/game/useGame.ts
 import { useCallback, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import { increaseCorrectAnswers, incrementScore, setOrder } from "../../store/slices/gameSlice";
@@ -104,11 +103,6 @@ export function useGame(props: UseGameProps) {
     dispatch(setOrder(order < emailsOfDifficulty.length ? order + 1 : order));
   }, [emailsOfDifficulty.length, isLastEmail, onFinish]);
 
-  const reset = useCallback(() => {
-    setAnswer(undefined);
-    dispatch(setOrder(1));
-  }, []);
-
   return {
     currentEmail,
     order,
@@ -120,7 +114,6 @@ export function useGame(props: UseGameProps) {
     isCorrectAnswer,
     handleAnswer,
     handleContinue,
-    reset,
     emailsOfDifficulty,
   };
 }
