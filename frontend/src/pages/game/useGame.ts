@@ -47,9 +47,6 @@ export function useGame(props: UseGameProps) {
     [allEmails, difficulty, platformId]
   );
 
-  //   const [order, setEmailIndex] = useState<number>(() =>
-  //     Math.min(startIndex, Math.max(0, emailsOfDifficulty.length - 1))
-  //   );
   const [answer, setAnswer] = useState<Answer | undefined>(undefined);
 
   const currentEmail = emailsOfDifficulty[order];
