@@ -38,9 +38,9 @@ jobs:
           VERSION=${LATEST_TAG#v}
           IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
           
-          # Bump major version and reset minor/patch to 0
-          NEW_MAJOR=$((MAJOR + 1))
-          NEW_VERSION="v${NEW_MAJOR}.0.0"
+          # Bump MINOR only, keep MAJOR and PATCH unchanged
+          NEW_MINOR=$((MINOR + 1))
+          NEW_VERSION="v${MAJOR}.${NEW_MINOR}.${PATCH}"
           
           echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
           echo "Current version: $LATEST_TAG"
