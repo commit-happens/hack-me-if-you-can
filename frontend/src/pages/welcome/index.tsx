@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Header from "../../components/header";
 import useTranslation from "../../hooks/useTranslation";
 import Page from "../../models/Page";

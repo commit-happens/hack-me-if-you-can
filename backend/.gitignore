@@ -1,0 +1,41 @@
+###############################################
+# 🧠 HMIYC – Backend (.gitignore)
+# Popis: Tento soubor určuje, které soubory a složky
+# se NEMAJÍ ukládat do Git repozitáře.
+# Cílem je udržet repozitář čistý a přenosný pro všechny členy týmu.
+###############################################
+
+
+# ================================
+# 🧱 Maven build výstupy
+# -------------------------------
+# Tyto složky a soubory vznikají při buildu projektu (mvn package / mvn install)
+# a není nutné je verzovat, protože se generují automaticky.
+# ================================
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+
+# ================================
+# 💡 IntelliJ IDEA
+# -------------------------------
+# IDE (např. IntelliJ) vytváří lokální konfigurační soubory,
+# které si každý vývojář drží u sebe – není třeba je sdílet v repu.
+# ================================
+.idea/
+*.iml
+*.ipr
+*.iws
+
+
+# ================================
+# 💻 VS Code
+# -------------------------------
+# Stejné jako u IntelliJ – lokální nastavení editoru,
+# které se může lišit podle uživatele.
+# ================================
+.vscode/
+
+
