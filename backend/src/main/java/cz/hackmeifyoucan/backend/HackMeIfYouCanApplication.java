@@ -1,3 +1,5 @@
+/* Hlavní vstupní bod aplikace */
+
 package cz.hackmeifyoucan.backend;
 
 import org.springframework.boot.SpringApplication;
