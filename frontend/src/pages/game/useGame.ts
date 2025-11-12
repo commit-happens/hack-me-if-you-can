@@ -1,6 +1,10 @@
 import { useCallback, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { increaseCorrectAnswers, incrementScore, setOrder } from "../../store/slices/gameSlice";
+import {
+  increaseCorrectAnswers,
+  incrementScore,
+  setOrder,
+} from "../../store/slices/gameSlice";
 import type { Translation } from "../../languages/csCZ";
 
 export enum Answer {
@@ -36,19 +40,21 @@ export function useGame(props: UseGameProps) {
   const dispatch = useAppDispatch();
   const { difficulty = 1, platformId = 1, allEmails, texts, onFinish } = props;
 
-  const order = useAppSelector((state) => state.game.order);
+  const currentIndex = useAppSelector((state) => state.game.currentIndex);
 
   const emailsOfDifficulty = useMemo(
     () =>
       allEmails.filter(
-        (item) => item.difficulty === difficulty && item.phishingPlatformID === platformId
+        (item) =>
+          item.difficulty === difficulty &&
+          item.phishingPlatformID === platformId,
       ),
-    [allEmails, difficulty, platformId]
+    [allEmails, difficulty, platformId],
   );
 
   const [answer, setAnswer] = useState<Answer | undefined>(undefined);
 
-  const currentEmail = emailsOfDifficulty[order];
+  const currentEmail = emailsOfDifficulty[currentIndex];
 
   /**
    * Kontrola správnosti odpovědi.
@@ -63,13 +69,15 @@ export function useGame(props: UseGameProps) {
         return (currentEmail.phishingTypeIDs || []).length === 0;
       }
     },
-    [answer, currentEmail]
+    [answer, currentEmail],
   );
 
   const totalEmails = emailsOfDifficulty.length;
-  const isLastEmail = order === totalEmails - 1;
+  const isLastEmail = currentIndex === totalEmails - 1;
 
-  const continueButtonLabel = isLastEmail ? texts?.buttons.showResults : texts?.buttons.continue; // tady můžeš použít i lokalizaci
+  const continueButtonLabel = isLastEmail
+    ? texts?.buttons.showResults
+    : texts?.buttons.continue; // tady můžeš použít i lokalizaci
 
   /**
    * Zpracování odpovědi uživatele.
@@ -86,7 +94,7 @@ export function useGame(props: UseGameProps) {
       if (correct) dispatch(increaseCorrectAnswers());
       setAnswer(selected);
     },
-    [currentEmail, dispatch, isCorrectAnswer]
+    [currentEmail, dispatch, isCorrectAnswer],
   );
 
   /**
@@ -100,12 +108,18 @@ export function useGame(props: UseGameProps) {
       return;
     }
 
-    dispatch(setOrder(order < emailsOfDifficulty.length ? order + 1 : order));
+    dispatch(
+      setOrder(
+        currentIndex < emailsOfDifficulty.length
+          ? currentIndex + 1
+          : currentIndex,
+      ),
+    );
   }, [emailsOfDifficulty.length, isLastEmail, onFinish]);
 
   return {
     currentEmail,
-    order,
+    currentIndex,
     totalEmails,
     answer,
     difficulty,
