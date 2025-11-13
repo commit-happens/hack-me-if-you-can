@@ -9,8 +9,10 @@ interface GameState {
 }
 
 const initialState: GameState = {
-  score: 0,
-  level: 1,
+  score: 100,
+  correctAnswers: 0,
+  wrongAnswers: 0,
+  currentIndex: 0,
   isPlaying: false,
 };
 
@@ -35,7 +37,7 @@ const gameSlice = createSlice({
   },
 });
 
-export const { startGame, endGame, incrementScore, setLevel } =
+export const { startGame, endGame, incrementScore, setOrder, increaseCorrectAnswers } =
   gameSlice.actions;
 
 // Selektory
