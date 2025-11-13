@@ -11,12 +11,13 @@ import { startGame } from "../../store/slices/gameSlice";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
+import { setNickname } from "../../store/slices/userSlice";
 
 function Welcome() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const [nickname, setNickname] = useState<string>("");
+  const [nickname, setNicknameState] = useState<string>("");
   const [error, setError] = useState(true);
 
   const appTexts = useTranslation("app");
@@ -24,11 +25,12 @@ function Welcome() {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setError(event.target.value === "");
-    setNickname(event.target.value);
+    setNicknameState(event.target.value);
   };
 
   const handleStart = () => {
     dispatch(startGame());
+    dispatch(setNickname(nickname));
     navigate(getPagePath(Page.Game));
   };
 
@@ -66,11 +68,7 @@ function Welcome() {
                   onKeyDown={handleKeyDown}
                 />
               </p>
-              <Button
-                variant="primary"
-                disabled={error}
-                onClick={() => handleStart()}
-              >
+              <Button variant="primary" disabled={error} onClick={() => handleStart()}>
                 {welcomeTexts.startButton}
               </Button>
             </div>

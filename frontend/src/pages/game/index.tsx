@@ -1,4 +1,15 @@
+import { Alert, Button, Container } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import Header from "../../components/header";
+import emailsData from "../../data/emails.json";
+import useTranslation, { getText } from "../../hooks/useTranslation";
+import Page from "../../models/Page";
+import { useAppSelector } from "../../store/hooks";
+import { getPagePath } from "../../utils/routing";
+import EmailTemplate from "./templates/EmailTemplate";
+import { Answer as GameAnswer, useGame } from "./useGame";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowRight, faCheck, faWarning } from "@fortawesome/free-solid-svg-icons";
 
 function Game() {
   const navigate = useNavigate();
@@ -10,7 +21,7 @@ function Game() {
 
   const {
     currentEmail,
-    currentIndex,
+    order,
     answer,
     isLastEmail,
     isCorrectAnswer,
@@ -96,8 +107,7 @@ function Game() {
     <Container fluid="md" className="w-50">
       <Header />
       <h1 className="text-center">
-        {getText(texts.title, [currentIndex, emailsOfDifficulty.length])}, hráč: {nickname} score:{" "}
-        {score}
+        {getText(texts.title, [order, emailsOfDifficulty.length])}, hráč: {nickname} score: {score}
       </h1>
       <div className="mx-auto mb-4" style={{ maxWidth: "50vw" }}>
         <EmailTemplate key={id} sender={sender} subject={subject} content={content} />
