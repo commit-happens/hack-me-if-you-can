@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- =============================
+         📘 ZÁKLADNÍ INFORMACE O PROJEKTU
+         ============================= -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Používáme Spring Boot jako rodičovský projekt -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.7</version>
+        <relativePath/>
+    </parent>
+
+    <!-- Identifikace projektu -->
+    <groupId>cz.hackmeifyoucan</groupId>
+    <artifactId>backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>Hack Me If You Can</name>
+    <description>Backendová část projektu Hack Me If You Can (Spring Boot)</description>
+
+    <properties>
+        <!-- Verze Javy používaná v projektu -->
+        <java.version>21</java.version>
+    </properties>
+
+
+    <!-- =============================
+         ⚙️ ZÁVISLOSTI (DEPENDENCIES)
+         ============================= -->
+    <dependencies>
+
+        <!-- 🔍 Spring Boot Actuator
+             Umožňuje sledovat stav aplikace (např. /actuator/health, /actuator/info)
+             Vhodné pro monitoring a ladění -->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-actuator</artifactId>-->
+<!--        </dependency>-->
+
+        <!-- 📘 OpenAPI / Swagger UI
+             Automaticky generuje interaktivní API dokumentaci na adrese /swagger-ui.html
+             Ideální pro testování endpointů a pro frontend vývojáře -->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+
+        <!-- ✅ Spring Boot Validation
+             Umožňuje používat anotace pro validaci vstupních dat (např. @NotNull, @Email)
+             Používá se např. v DTO třídách nebo requestech -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- 🌐 Spring Boot Web Starter
+             Základní závislost pro REST API – obsahuje:
+             - Spring MVC (kontrolery, request mapping)
+             - Embedded Tomcat server
+             - JSON serializaci pomocí Jackson -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- 🧰 Spring Boot DevTools
+             Automaticky restartuje aplikaci při změnách kódu během vývoje
+             (neměl by být zapnutý v produkci) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 🧩 Lombok
+             Umožňuje používat anotace jako @Getter, @Setter, @Builder, @Data
+             Snižuje množství boilerplate kódu (gettery/settery, konstruktory apod.) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- 🧪 Spring Boot Test
+             Framework pro psaní testů (JUnit + MockMvc)
+             Používá se pro jednotkové a integrační testy -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+
+    <!-- =============================
+         🧱 BUILD – NASTAVENÍ KOMPILACE
+         ============================= -->
+    <build>
+        <plugins>
+
+            <!-- ⚙️ Maven Compiler Plugin
+                 Řídí kompilaci kódu – zde zajišťuje, že Lombok bude správně zpracován -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <!-- 🚀 Spring Boot Maven Plugin
+                 Umožňuje spouštět aplikaci pomocí příkazu:
+                 mvn spring-boot:run
+                 nebo vytvářet spustitelné JARy -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
