@@ -1,20 +1,42 @@
-import { useAppSelector } from "../../store/hooks";
 import type { EmailModel } from "../game/useGame";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { getPagePath } from "../../utils/routing";
+import Page from "../../models/Page";
+import { startGame } from "../../store/slices/gameSlice";
 
 type UseResultsProps = {
   allEmails: EmailModel[];
 };
 
+/** Funkcionalita pro stránku Results. */
 const useResults = (props: UseResultsProps) => {
-  const { correctAnswers, score } = useAppSelector((state) => state.game);
   const { allEmails } = props;
+
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { correctAnswers, score } = useAppSelector((state) => state.game);
 
   const total = allEmails.length;
   const wrongAnswers = total - correctAnswers;
 
-  const percentage = total > 0 ? Math.round((correctAnswers / total) * 100) : 0;
+  const successRate =
+    total > 0 ? Math.round((correctAnswers / total) * 100) : 0;
 
-  return { correctAnswers, wrongAnswers, total, percentage, score };
+  const playAgain = () => {
+    navigate(getPagePath(Page.Game));
+    dispatch(startGame());
+  };
+
+  return {
+    correctAnswers,
+    wrongAnswers,
+    total,
+    successRate,
+    score,
+    playAgain,
+  };
 };
 
 export default useResults;

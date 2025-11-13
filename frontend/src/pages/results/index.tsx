@@ -1,26 +1,22 @@
 import React from "react";
-import { Button, Card, Container, Row, Col, ProgressBar } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  ProgressBar,
+  Row,
+} from "react-bootstrap";
 import emailsData from "../../data/emails.json";
-import Page from "../../models/Page";
-import { getPagePath } from "../../utils/routing";
-import useResults from "./useResults";
 import useTranslation from "../../hooks/useTranslation";
-import { useAppDispatch } from "../../store/hooks";
-import { startGame } from "../../store/slices/gameSlice";
+import useResults from "./useResults";
 
 const ResultsPage: React.FC = () => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const { correctAnswers, wrongAnswers, total, percentage, score } = useResults({
-    allEmails: emailsData.emails,
-  });
+  const { correctAnswers, wrongAnswers, total, successRate, score, playAgain } =
+    useResults({
+      allEmails: emailsData.emails,
+    });
   const texts = useTranslation("results");
-
-  const handlePlayAgain = () => {
-    navigate(getPagePath(Page.Game));
-    dispatch(startGame());
-  };
 
   return (
     <Container className="mx-auto my-4 p-3 text-dark" as="main">
@@ -31,7 +27,9 @@ const ResultsPage: React.FC = () => {
         <Col xs={12} md={6}>
           <Card className="h-100 text-center">
             <Card.Body>
-              <Card.Subtitle className="mb-2 text-muted">{texts.correctAnswers}</Card.Subtitle>
+              <Card.Subtitle className="mb-2 text-muted">
+                {texts.correctAnswers}
+              </Card.Subtitle>
               <Card.Text className="fs-5 fw-semibold">
                 ✅ {correctAnswers} / {total}
               </Card.Text>
@@ -42,7 +40,9 @@ const ResultsPage: React.FC = () => {
         <Col xs={12} md={6}>
           <Card className="h-100 text-center">
             <Card.Body>
-              <Card.Subtitle className="mb-2 text-muted">{texts.wrongAnswers}</Card.Subtitle>
+              <Card.Subtitle className="mb-2 text-muted">
+                {texts.wrongAnswers}
+              </Card.Subtitle>
               <Card.Text className="fs-5 fw-semibold">
                 ❌ {wrongAnswers} / {total}
               </Card.Text>
@@ -53,13 +53,15 @@ const ResultsPage: React.FC = () => {
         <Col xs={12}>
           <Card>
             <Card.Body>
-              <Card.Subtitle className="mb-2 text-muted">{texts.success}</Card.Subtitle>
+              <Card.Subtitle className="mb-2 text-muted">
+                {texts.success}
+              </Card.Subtitle>
               <div className="d-flex align-items-center">
                 <div className="flex-grow-1 me-3">
-                  <ProgressBar now={percentage} label={`${percentage} %`} />
+                  <ProgressBar now={successRate} label={`${successRate} %`} />
                 </div>
                 <div className="text-end fw-semibold" style={{ minWidth: 64 }}>
-                  {percentage} %
+                  {successRate} %
                 </div>
               </div>
             </Card.Body>
@@ -68,7 +70,7 @@ const ResultsPage: React.FC = () => {
       </Row>
 
       <div className="text-center">
-        <Button type="button" onClick={handlePlayAgain}>
+        <Button type="button" onClick={playAgain}>
           {texts.playAgain}
         </Button>
       </div>

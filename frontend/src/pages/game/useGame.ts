@@ -36,6 +36,7 @@ type UseGameProps = UseGameOptions & {
   onFinish?: () => void;
 };
 
+/** Funkcionalita pro stránku Game. */
 export function useGame(props: UseGameProps) {
   const dispatch = useAppDispatch();
   const { difficulty = 1, platformId = 1, allEmails, texts, onFinish } = props;
@@ -45,9 +46,11 @@ export function useGame(props: UseGameProps) {
   const emailsOfDifficulty = useMemo(
     () =>
       allEmails.filter(
-        (item) => item.difficulty === difficulty && item.phishingPlatformID === platformId
+        (item) =>
+          item.difficulty === difficulty &&
+          item.phishingPlatformID === platformId,
       ),
-    [allEmails, difficulty, platformId]
+    [allEmails, difficulty, platformId],
   );
 
   const [answer, setAnswer] = useState<Answer | undefined>(undefined);
@@ -67,13 +70,15 @@ export function useGame(props: UseGameProps) {
         return (currentEmail.phishingTypeIDs || []).length === 0;
       }
     },
-    [answer, currentEmail]
+    [answer, currentEmail],
   );
 
   const totalEmails = emailsOfDifficulty.length;
   const isLastEmail = currentIndex === totalEmails - 1;
 
-  const continueButtonLabel = isLastEmail ? texts?.buttons.showResults : texts?.buttons.continue; // tady můžeš použít i lokalizaci
+  const continueButtonLabel = isLastEmail
+    ? texts?.buttons.showResults
+    : texts?.buttons.continue;
 
   /**
    * Zpracování odpovědi uživatele.
@@ -90,11 +95,11 @@ export function useGame(props: UseGameProps) {
       if (correct) dispatch(increaseCorrectAnswers());
       setAnswer(selected);
     },
-    [currentEmail, dispatch, isCorrectAnswer]
+    [currentEmail, dispatch, isCorrectAnswer],
   );
 
   /**
-   * Pokračování na další e-mail nebo dokončení hry.
+   * Pokračování na další e-mail nebo dokončení hry (přeskok na stránku Results).
    */
   const handleContinue = useCallback(() => {
     setAnswer(undefined);
@@ -105,7 +110,11 @@ export function useGame(props: UseGameProps) {
     }
 
     dispatch(
-      setCurrentIndex(currentIndex < emailsOfDifficulty.length ? currentIndex + 1 : currentIndex)
+      setCurrentIndex(
+        currentIndex < emailsOfDifficulty.length
+          ? currentIndex + 1
+          : currentIndex,
+      ),
     );
   }, [emailsOfDifficulty.length, isLastEmail, onFinish]);
 
