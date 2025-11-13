@@ -39,5 +39,12 @@ const csCZ = {
     subject: "Předmět",
     content: "Obsah",
   },
+  results: {
+    yourScore: "Tvoje skóre",
+    correctAnswers: "Dobré odpovědi",
+    wrongAnswers: "Špatné odpovědi",
+    success: "Úspěšnost",
+    playAgain: "Hrát znovu",
+  },
 };
 export default csCZ;

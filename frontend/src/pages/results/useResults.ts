@@ -14,8 +14,6 @@ const useResults = (props: UseResultsProps) => {
 
   const percentage = total > 0 ? Math.round((correctAnswers / total) * 100) : 0;
 
-  console.log(total, correctAnswers, percentage, score);
-
   return { correctAnswers, wrongAnswers, total, percentage, score };
 };
 

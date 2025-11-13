@@ -21,7 +21,7 @@ function Game() {
 
   const {
     currentEmail,
-    order,
+    currentIndex,
     answer,
     isLastEmail,
     isCorrectAnswer,
@@ -107,7 +107,8 @@ function Game() {
     <Container fluid="md" className="w-50">
       <Header />
       <h1 className="text-center">
-        {getText(texts.title, [order, emailsOfDifficulty.length])}, hráč: {nickname} score: {score}
+        {getText(texts.title, [currentIndex + 1, emailsOfDifficulty.length])}, hráč: {nickname}{" "}
+        score: {score}
       </h1>
       <div className="mx-auto mb-4" style={{ maxWidth: "50vw" }}>
         <EmailTemplate key={id} sender={sender} subject={subject} content={content} />
