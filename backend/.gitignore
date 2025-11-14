@@ -39,3 +39,7 @@ target/
 .vscode/
 
 
+
+# Ignoruje H2 databazove soubory ve slozce backend/data/
+backend/data/*.mv.db
+backend/data/*.trace.db
