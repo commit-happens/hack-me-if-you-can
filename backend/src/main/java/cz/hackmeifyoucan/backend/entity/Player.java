@@ -28,14 +28,14 @@ public class Player {
 	// ID je generované databází; označíme ho jako read-only pro Swagger a JSON deserializaci
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Auto-generated player id")
+	@Schema(accessMode = Schema.AccessMode.READ_ONLY, description = "Automaticky vygenerované ID hráče")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private Long playerId;
     
     @Column(nullable = false, unique = true)
 	private String nickname;
 
-	@Schema(defaultValue = "100", example = "100", description = "Player score")
+	@Schema(defaultValue = "100", example = "100", description = "Skóre hráče")
 	@JsonProperty(defaultValue = "100")
 	@Builder.Default
 	private Integer score = 100;

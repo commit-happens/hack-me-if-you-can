@@ -1,44 +1,44 @@
 ## Frontend pomocné příkazy
 fe-dev:
-	echo "Running frontend development server..."
+	@echo "Spuštění vývojářského serveru frontendu..."
 	cd frontend && npm run dev
 
 fe-lint:
-	echo "Running frontend linting..."
+	@echo "Spuštění lintingu frontendu..."
 	cd frontend && npm run lint
 
 fe-build:
-	echo "Building frontend..."
+	@echo "Buildování frontendu..."
 	cd frontend && npm run build
 
 fe-preview:
-	echo "Running frontend preview server..."
+	@echo "Spuštění preview serveru frontendu..."
 	cd frontend && npm run preview
 
 fe-sync-deps:
-	echo "Running frontend preview server..."
+	@echo "Synchronizace závislostí frontendu..."
 	cd frontend && npm ci
 
 
 ## Backend pomocné příkazy
 be-clean:
-	echo "Running backend cleaning of /target and helping files..."
+	@echo "Mazání /target a pomocných souborů backendu..."
 	cd backend && mvn clean
 
 be-compile:
-	echo "Running compiling of main data into /target..."
+	@echo "Kompilace hlavních dat do /target..."
 	cd backend && mvn compile
 
 be-package:
-	echo "Running buildling .jar package of main data into /target..."
+	@echo "Vytváření .jar balíčku do /target..."
 	cd backend && mvn package -DskipTests
 
 be-test:
-	echo "Running tests for backend..."
+	@echo "Spuštění testů backendu..."
 	cd backend && mvn test
 
 be-run:
-	echo "Running compiling of main data into /target..."
+	@echo "Spuštění backendu..."
 	cd backend && mvn spring-boot:run
 
 be-hosts:

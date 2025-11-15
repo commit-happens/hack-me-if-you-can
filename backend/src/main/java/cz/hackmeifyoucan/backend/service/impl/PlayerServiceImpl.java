@@ -28,7 +28,7 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public Player getPlayerById(Long playerId) {
         return playerRepository.findById(playerId)
-                .orElseThrow(() -> new IllegalArgumentException("Uživatel nenalazen pro ID: " + playerId));
+                .orElseThrow(() -> new IllegalArgumentException("Hráč nenalezen pro ID: " + playerId + ". Načtení selhalo."));
     }
 
     @Override
@@ -39,16 +39,11 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public Player updatePlayer(Long playerId, Player player) {
         Player existingPlayer = getPlayerById(playerId);
-        
         if (player.getNickname() != null) {
             existingPlayer.setNickname(player.getNickname());
         }
         if (player.getScore() != null) {
             existingPlayer.setScore(player.getScore());
-        }
-        
-        if (existingPlayer == null) {
-            throw new IllegalStateException("Player should not be null at this point");
         }
         return playerRepository.save(existingPlayer);
     }

@@ -1,19 +1,10 @@
-# ================================
 # macOS
-# ================================
 .DS_Store
 
-# ================================
-# VSCODE
-# ================================
+# VS Code (lokální nastavení editoru)
 .vscode
 
-# ================================
-# IntelliJ IDEA
-# -------------------------------
-# IDE (např. IntelliJ) vytváří lokální konfigurační soubory,
-# které si každý vývojář drží u sebe – není třeba je sdílet v repu.
-# ================================
+# IntelliJ IDEA (lokální konfigurační soubory IDE)
 .idea/
 *.iml
 *.ipr
