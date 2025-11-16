@@ -1,8 +1,12 @@
 import type Locale from "../models/Locale";
 // Import jazyků
 import csCZ, { type Translation } from "../languages/csCZ";
+import { getEnvConfigValue } from "../utils/envConfig";
 
-const defaultLocale: Locale = import.meta.env.VITE_API_LOCALE || "csCZ";
+const defaultLocale: Locale = getEnvConfigValue(
+  "VITE_API_LOCALE",
+  "csCZ",
+) as Locale;
 
 const translations: Partial<Record<Locale, Translation>> = {
   csCZ,

@@ -1,4 +1,17 @@
-import { Alert, Button, Container } from "react-bootstrap";
+import {
+  faArrowRight,
+  faCheck,
+  faWarning,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  Alert,
+  Button,
+  Col,
+  Container,
+  ProgressBar,
+  Row,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header";
 import emailsData from "../../data/emails.json";
@@ -8,12 +21,6 @@ import { useAppSelector } from "../../store/hooks";
 import { getPagePath } from "../../utils/routing";
 import EmailTemplate from "./templates/EmailTemplate";
 import { Answer as GameAnswer, useGame } from "./useGame";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRight,
-  faCheck,
-  faWarning,
-} from "@fortawesome/free-solid-svg-icons";
 
 function Game() {
   const navigate = useNavigate();
@@ -33,6 +40,10 @@ function Game() {
     emailsOfDifficulty,
     handleAnswer,
     handleContinue,
+    remainingTime,
+    timeOutTextColor,
+    timePerQuestion,
+    timeOutProgressBarVariant,
   } = useGame({
     allEmails: emails,
     texts,
@@ -42,34 +53,55 @@ function Game() {
   const { id, sender, subject, content, explanation } = currentEmail || {};
 
   /**
-   * Zobrazení tlačítek pro odpověď.
+   * Zobrazení řádk s tlačítky pro odpověď a odpočítávadlem času.
    */
-  const renderActions = () => {
+  const renderActionsRow = () => {
     return (
-      <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-        <Button
-          variant="outline-secondary"
-          onClick={() => handleAnswer(GameAnswer.Phishing)}
-        >
-          <FontAwesomeIcon
-            icon={faWarning}
-            aria-hidden="true"
-            className="text-danger"
+      <>
+        <Row justify="center" align="center" className="g-0 ">
+          <Col className="text-end">
+            <Button
+              variant="outline-secondary"
+              onClick={() => handleAnswer(GameAnswer.Phishing)}
+            >
+              <FontAwesomeIcon
+                icon={faWarning}
+                aria-hidden="true"
+                className="text-danger"
+              />
+              {getText(texts.answers.phishing)}
+            </Button>
+          </Col>
+          <Col
+            xs={2}
+            className="d-flex align-items-center justify-content-center"
+          >
+            <div className={`text-center px-3 ${timeOutTextColor} `}>
+              {remainingTime} s
+            </div>
+          </Col>
+          <Col className="text-start">
+            <Button
+              variant="outline-secondary"
+              onClick={() => handleAnswer(GameAnswer.Safe)}
+            >
+              <FontAwesomeIcon
+                icon={faCheck}
+                className="text-success"
+                aria-hidden="true"
+              />
+              {getText(texts.answers.safe)}
+            </Button>
+          </Col>
+        </Row>
+        <Container className="mt-4 g-0">
+          <ProgressBar
+            now={remainingTime}
+            variant={timeOutProgressBarVariant}
+            max={timePerQuestion}
           />
-          {getText(texts.answers.phishing)}
-        </Button>
-        <Button
-          variant="outline-secondary"
-          onClick={() => handleAnswer(GameAnswer.Safe)}
-        >
-          <FontAwesomeIcon
-            icon={faCheck}
-            className="text-success"
-            aria-hidden="true"
-          />
-          {getText(texts.answers.safe)}
-        </Button>
-      </div>
+        </Container>
+      </>
     );
   };
 
@@ -91,9 +123,7 @@ function Game() {
 
       return (
         <div className="w-100">
-          <Alert variant={feedbackData.variant}>
-            <h2>{feedbackData.title}</h2>
-          </Alert>
+          <Alert variant={feedbackData.variant}>{feedbackData.title}</Alert>
           {explanation}
           <div style={{ textAlign: "center" }} className="mt-4">
             <Button onClick={() => handleContinue()}>
@@ -107,7 +137,7 @@ function Game() {
       );
     }
 
-    return <div>{renderActions()}</div>;
+    return <>{renderActionsRow()}</>;
   };
 
   if (emailsOfDifficulty.length === 0) {
@@ -125,10 +155,10 @@ function Game() {
   return (
     <Container fluid="md" className="w-50">
       <Header />
-      <h1 className="text-center">
+      <h5 className="text-center text-uppercase my-5 ">
         {getText(texts.title, [currentIndex, emailsOfDifficulty.length])}, hráč:{" "}
         {nickname} score: {score}
-      </h1>
+      </h5>
       <div className="mx-auto mb-4" style={{ maxWidth: "50vw" }}>
         <EmailTemplate
           key={id}

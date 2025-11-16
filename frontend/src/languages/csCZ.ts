@@ -10,7 +10,8 @@ const csCZ = {
       "Ahoj, kyberdetektive! 🕵️‍♂️ Tvým úkolem je odhalit, které e-maily jsou falešné (phishing) a které jsou bezpečné.",
     instruction1:
       "Čti pozorně odesílatele, předmět i text zprávy. Někdy totiž rozhodují drobnosti.",
-    instruction2: "Klikni na „Start“ a ukaž, jestli tě hackeři dokážou napálit… nebo ne! 💪",
+    instruction2:
+      "Klikni na „Start“ a ukaž, jestli tě hackeři dokážou napálit… nebo ne! 💪",
     nicknameLabel: "Jak ti mám říkat?",
     nicknamePlaceholder: "Zadej svou přezdívku",
     startButton: "Start!",
@@ -22,12 +23,12 @@ const csCZ = {
       difficulty: "Obtížnost",
     },
     answers: {
-      phishing: "To je Phishing!",
+      phishing: "Phishing!",
       safe: "Je to OK",
     },
     feedback: {
-      correct: "Výborně!",
-      incorrect: "Bohužel :(",
+      correct: "Výborně, odpověděl(a) jsi správně! 🎉",
+      incorrect: "Bohužel, odpověděl(a) jsi špatně. ",
     },
     buttons: {
       continue: "Pokračovat",

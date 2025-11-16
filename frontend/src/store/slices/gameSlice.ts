@@ -29,7 +29,7 @@ const gameSlice = createSlice({
       state.isPlaying = false;
       state.correctAnswers = 0;
     },
-    incrementScore: (state, action: PayloadAction<number>) => {
+    updateScore: (state, action: PayloadAction<number>) => {
       state.score += action.payload;
     },
     increaseCorrectAnswers: (state) => {
@@ -44,7 +44,7 @@ const gameSlice = createSlice({
 export const {
   startGame,
   endGame,
-  incrementScore,
+  updateScore,
   setOrder,
   increaseCorrectAnswers,
 } = gameSlice.actions;
