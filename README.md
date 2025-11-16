@@ -4,7 +4,7 @@ Jednoduchý monorepo základ pro frontend (React + Vite + TypeScript). Tento dok
 
 ## Tech stack
 - Frontend: React 19 + TypeScript, ESLint, Vite 7 (dev server, build, preview)
-- Backend: Java 21, Spring Boot, H2, Maven, (Lombok)
+- Backend: Java 21, Spring Boot, H2, Maven
 
 
 ## Struktura repozitáře
@@ -39,7 +39,6 @@ hack-me-if-you-can/
   - Java 21 (LTS)
   - Maven 3.9+
   - Doporučené IDE: IntelliJ IDEA (doporučeno) nebo VS Code
-  - Doporučený Lombok plugin v IDE
 
 ## Rychlý start: frontend
 
@@ -108,7 +107,7 @@ make fe-lint
 ---
 
 ## Rychlý start: backend
-- Technologie: Java 21, Spring Boot, Maven, (Lombok)
+- Technologie: Java 21, Spring Boot, Maven
 - Hlavní třída: `cz.hackmeifyoucan.backend.HackMeIfYouCanApplication`
 - Výchozí port: 8080 (konfigurovatelné v `application.properties`)
 

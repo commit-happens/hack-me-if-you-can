@@ -4,18 +4,19 @@ package cz.hackmeifyoucan.backend.service;
 
 import java.util.List;
 
-import cz.hackmeifyoucan.backend.entity.Player;
+import cz.hackmeifyoucan.backend.dto.PlayerRequest;
+import cz.hackmeifyoucan.backend.dto.PlayerResponse;
 
 public interface PlayerService {
 
-    List<Player> getPlayers();
+    List<PlayerResponse> getPlayers();
 
-    Player getPlayerById(Long playerId);
+    PlayerResponse getPlayerById(Long playerId);
     
-    Player addPlayer(Player player);
+    PlayerResponse addPlayer(PlayerRequest request);
     
-    Player updatePlayer(Long playerId, Player player);
+    PlayerResponse updatePlayer(Long playerId, PlayerRequest request);
     
-    Player deletePlayer(Long playerId);
+    PlayerResponse deletePlayer(Long playerId);
 
 }

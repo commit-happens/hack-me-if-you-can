@@ -1,4 +1,7 @@
-/* REST controller — část backendu, která zpracovává HTTP požadavky z frontendu (nebo jiného klienta). */
+/**
+ * PlayerController - HTTP rozhraní pro práci s hráči (přijímá HTTP požadavky z frontendu a vrátí HTTP odpovědi).
+ * Všechny endpointy začínají na /api/players
+ */
 
 package cz.hackmeifyoucan.backend.controller;
 
