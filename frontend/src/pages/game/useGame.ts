@@ -109,7 +109,7 @@ export function useGame(props: UseGameProps) {
       return;
     }
 
-    dispatch(setOrder(currentIndex + 1));
+    dispatch(setCurrentIndex(currentIndex + 1));
   }, [
     currentIndex,
     dispatch,

@@ -26,7 +26,6 @@ function Game() {
   const {
     currentEmail,
     currentIndex,
-    currentIndex,
     answer,
     isLastEmail,
     isCorrectAnswer,
