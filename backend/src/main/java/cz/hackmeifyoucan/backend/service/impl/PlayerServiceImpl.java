@@ -1,11 +1,19 @@
-/* Implementace rozhraní PlayerService — zde probíhá business logika */
+/**
+ * PlayerServiceImpl - hlavní logika pro práci s hráči. Prostředník mezi Controllerem a Repository. 
+ * - Controller (přijímá HTTP požadavky)
+ * - Repository (komunikuje s databází)
+ */
 
 package cz.hackmeifyoucan.backend.service.impl;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import cz.hackmeifyoucan.backend.dto.PlayerRequest;
+import cz.hackmeifyoucan.backend.dto.PlayerResponse;
 import cz.hackmeifyoucan.backend.entity.Player;
 import cz.hackmeifyoucan.backend.repository.PlayerRepository;
 import cz.hackmeifyoucan.backend.service.PlayerService;
@@ -13,46 +21,121 @@ import cz.hackmeifyoucan.backend.service.PlayerService;
 @Service
 public class PlayerServiceImpl implements PlayerService {
 
+    // Repository pro přístup k databázi
     private final PlayerRepository playerRepository;
 
-    // Konstruktor pro injekci závislosti (doporučeno místo field injection)
+    // Konstruktor - Spring automaticky předá PlayerRepository (dependency injection)
     public PlayerServiceImpl(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
 
     @Override
-    public List<Player> getPlayers() {
-        return (List<Player>) playerRepository.findAll();
-    }
-
-    @Override
-    public Player getPlayerById(Long playerId) {
-        return playerRepository.findById(playerId)
-                .orElseThrow(() -> new IllegalArgumentException("Hráč nenalezen pro ID: " + playerId + ". Načtení selhalo."));
-    }
-
-    @Override
-    public Player addPlayer(Player player) {
-        return playerRepository.save(player);
-    }
-
-    @Override
-    public Player updatePlayer(Long playerId, Player player) {
-        Player existingPlayer = getPlayerById(playerId);
-        if (player.getNickname() != null) {
-            existingPlayer.setNickname(player.getNickname());
+    public PlayerResponse addPlayer(PlayerRequest playerRequest) {
+        // Vytvoříme nový objekt Player
+        Player player = new Player();
+        player.setNickname(playerRequest.nickname());
+        
+        // Pokud frontend poslal skóre, použijeme ho, jinak nastavíme 100
+        if (playerRequest.score() != null) {
+            player.setScore(playerRequest.score());
+        } else {
+            player.setScore(100);  // Výchozí skóre
         }
-        if (player.getScore() != null) {
-            existingPlayer.setScore(player.getScore());
-        }
-        return playerRepository.save(existingPlayer);
+        
+        // Uložíme hráče do databáze (databáze automaticky vygeneruje ID)
+        Player savedPlayer = playerRepository.save(player);
+        
+        // Převedeme databázový objekt na odpověď pro frontend
+        return convertToResponse(savedPlayer);
     }
 
+    /* --------------------------------------------------------------------------------------------------- */
     @Override
-    public Player deletePlayer(Long playerId) {
-        Player player = getPlayerById(playerId);
+    public PlayerResponse getPlayerById(Long playerId) {
+        // vrací Optional<Player>
+        Optional<Player> optionalPlayer = playerRepository.findById(playerId);
+        
+        // Pokud hráč neexistuje, vyhodíme chybu
+        if (optionalPlayer.isEmpty()) {
+            throw new IllegalArgumentException("Hráč nenalezen pro ID: " + playerId);
+        }
+        
+        // Hráč existuje - vrátíme ho jako response
+        Player player = optionalPlayer.get();
+        return convertToResponse(player);
+    }
+
+
+    /* --------------------------------------------------------------------------------------------------- */
+    @Override
+    public List<PlayerResponse> getPlayers() {
+        // Vytvoříme prázdný seznam pro výsledky
+        List<PlayerResponse> responseList = new ArrayList<>();
+        
+        // Získáme všechny hráče z databáze
+        Iterable<Player> allPlayers = playerRepository.findAll();
+        
+        // Pro každého hráče vytvoříme response a přidáme do seznamu
+        for (Player player : allPlayers) {
+            PlayerResponse response = convertToResponse(player);
+            responseList.add(response);
+        }
+        
+        return responseList;
+    }
+
+    /* --------------------------------------------------------------------------------------------------- */
+    @Override
+    public PlayerResponse updatePlayer(Long playerId, PlayerRequest request) {
+        // Najdeme hráče v databázi
+        Optional<Player> optionalPlayer = playerRepository.findById(playerId);
+        
+        if (optionalPlayer.isEmpty()) {
+            throw new IllegalArgumentException("Hráč nenalezen pro ID: " + playerId);
+        }
+        
+        Player player = optionalPlayer.get();
+        
+        // Aktualizujeme pouze pole, která frontend poslal
+        if (request.nickname() != null) {
+            player.setNickname(request.nickname());
+        }
+        if (request.score() != null) {
+            player.setScore(request.score());
+        }
+        
+        // Uložíme změny do databáze
+        Player updatedPlayer = playerRepository.save(player);
+        
+        return convertToResponse(updatedPlayer);
+    }
+
+    /* --------------------------------------------------------------------------------------------------- */
+    @Override
+    public PlayerResponse deletePlayer(Long playerId) {
+        // Zkusíme najít hráče
+        Optional<Player> optionalPlayer = playerRepository.findById(playerId);
+        
+        if (optionalPlayer.isEmpty()) {
+            // Hráč neexistuje - vrátíme null (controller to převede na 204 No Content)
+            return null;
+        }
+        
+        // Hráč existuje - smažeme ho
+        Player player = optionalPlayer.get();
         playerRepository.deleteById(playerId);
-        return player;
+        
+        // Vrátíme data smazaného hráče
+        return convertToResponse(player);
+    }
+    
+    /* --------------------------------------------------------------------------------------------------- */
+    private PlayerResponse convertToResponse(Player player) {
+        return new PlayerResponse(
+            player.getPlayerId(),
+            player.getNickname(),
+            player.getScore()
+        );
     }
 
 }
