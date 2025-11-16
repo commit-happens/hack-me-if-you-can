@@ -12,14 +12,14 @@ Jednoduchý monorepo základ pro frontend (React + Vite + TypeScript). Tento dok
 ```
 hack-me-if-you-can/
 ├─ Makefile                           # pohodlné příkazy (fe-dev, fe-lint, fe-build, fe-preview)
-├─ backend/                           # Springboot + Maven aplikace
+├─ backend/                           # Spring Boot + Maven aplikace
 │  ├─ src/
 │  │  ├─ main
-│  │  │  ├─ java.cz.hackmeifyoucan     # vše napsané v java (controller, entity, repository, service, hlavní backend Applikace)
+│  │  │  ├─ java/cz/hackmeifyoucan     # vše napsané v java (controller, entity, repository, service, hlavní backend Applikace)
 │  │  │  └─ resources                  # vše ostatní (konfigurace portu, databáze)
 │  │  └─ test
 │  ...
-│  └─ .pom.xml                        # základní informace o projektu, závislosti (dependencies), pluginy
+│  └─ pom.xml                        # základní informace o projektu, závislosti (dependencies), pluginy
 ├─ frontend/                          # React + Vite aplikace
 │  ├─ src/
 │  ├─ index.html

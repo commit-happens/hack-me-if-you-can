@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import cz.hackmeifyoucan.backend.dto.PlayerRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerResponse;
 import cz.hackmeifyoucan.backend.entity.Player;
+import cz.hackmeifyoucan.backend.exception.PlayerNotFoundException;
 import cz.hackmeifyoucan.backend.repository.PlayerRepository;
 import cz.hackmeifyoucan.backend.service.PlayerService;
 
@@ -55,9 +56,9 @@ public class PlayerServiceImpl implements PlayerService {
         // vrací Optional<Player>
         Optional<Player> optionalPlayer = playerRepository.findById(playerId);
         
-        // Pokud hráč neexistuje, vyhodíme chybu
+        // Pokud hráč neexistuje, vyhodíme chybu (vrátí se HTTP 404)
         if (optionalPlayer.isEmpty()) {
-            throw new IllegalArgumentException("Hráč nenalezen pro ID: " + playerId);
+            throw new PlayerNotFoundException(playerId);
         }
         
         // Hráč existuje - vrátíme ho jako response
@@ -91,7 +92,7 @@ public class PlayerServiceImpl implements PlayerService {
         Optional<Player> optionalPlayer = playerRepository.findById(playerId);
         
         if (optionalPlayer.isEmpty()) {
-            throw new IllegalArgumentException("Hráč nenalezen pro ID: " + playerId);
+            throw new PlayerNotFoundException(playerId);
         }
         
         Player player = optionalPlayer.get();

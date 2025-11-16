@@ -48,7 +48,7 @@ public class Player {
     }
 
     // Settery - metody pro změnu hodnot proměnných
-    public void setPlayerId(Long playerId) {
+    protected void setPlayerId(Long playerId) {
         this.playerId = playerId;
     }
 

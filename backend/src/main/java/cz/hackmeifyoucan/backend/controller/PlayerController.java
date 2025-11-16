@@ -25,13 +25,18 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import cz.hackmeifyoucan.backend.dto.Error400Response;
+import cz.hackmeifyoucan.backend.dto.Error404Response;
+import cz.hackmeifyoucan.backend.dto.Error409Response;
 
 @RestController
 @RequestMapping("/api/players")
 @Tag(name = "player-controller", description = "Endpointy pro správu hráčů - vytváření, čtení, aktualizace a mazání")
 public class PlayerController {
 
-    // Service vrstva - obsahuje abstrakni definice method
+    // Service vrstva - obsahuje abstraktní definice metod
     private final PlayerService playerService;
 
     // Konstruktor - Spring automaticky předá PlayerService (dependency injection)
@@ -44,9 +49,12 @@ public class PlayerController {
         description = "Vytvoří nového hráče s přezdívkou a volitelným skóre. Pokud skóre není zadáno, nastaví se výchozí hodnota. Vrací pouze tělo odpovědi."
     )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Hráč úspěšně vytvořen"),
-        @ApiResponse(responseCode = "400", description = "Neplatná data (např. krátká přezdívka, záporné skóre)"),
-        @ApiResponse(responseCode = "409", description = "Přezdívka již existuje")
+        @ApiResponse(responseCode = "200", description = "Hráč úspěšně vytvořen",
+                     content = @Content(schema = @Schema(implementation = PlayerResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Validační chyba - neplatná data (např. krátká přezdívka, záporné skóre)",
+                     content = @Content(schema = @Schema(implementation = Error400Response.class))),
+        @ApiResponse(responseCode = "409", description = "Konflikt - přezdívka již existuje",
+                     content = @Content(schema = @Schema(implementation = Error409Response.class)))
     })
     @PostMapping
     public ResponseEntity<PlayerResponse> addPlayer(@RequestBody @Valid PlayerRequest playerRequest) {
@@ -57,8 +65,10 @@ public class PlayerController {
     /* --------------------------------------------------------------------------------------------------- */
     @Operation(summary = "Získat hráče podle ID", description = "Vrací údaje o jednom hráči na základě jeho unikátního ID.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Hráč nalezen"),
-        @ApiResponse(responseCode = "400", description = "Hráč s tímto ID neexistuje")
+        @ApiResponse(responseCode = "200", description = "Hráč nalezen",
+                     content = @Content(schema = @Schema(implementation = PlayerResponse.class))),
+        @ApiResponse(responseCode = "404", description = "Hráč s tímto ID neexistuje",
+                     content = @Content(schema = @Schema(implementation = Error404Response.class)))
     })
     @GetMapping("/{playerId}")
     public ResponseEntity<PlayerResponse> getPlayer(@PathVariable Long playerId) {
@@ -80,9 +90,14 @@ public class PlayerController {
     /* --------------------------------------------------------------------------------------------------- */
     @Operation(summary = "Aktualizovat hráče", description = "Částečně aktualizuje údaje hráče. Můžete poslat pouze pole, která chcete změnit (např. jen přezdívku nebo jen skóre).")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Hráč úspěšně aktualizován"),
-        @ApiResponse(responseCode = "400", description = "Neplatná data nebo hráč neexistuje"),
-        @ApiResponse(responseCode = "409", description = "Nová přezdívka již existuje")
+        @ApiResponse(responseCode = "200", description = "Hráč úspěšně aktualizován",
+                     content = @Content(schema = @Schema(implementation = PlayerResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Validační chyba - neplatná data",
+                     content = @Content(schema = @Schema(implementation = Error400Response.class))),
+        @ApiResponse(responseCode = "404", description = "Nenalezeno - hráč s tímto ID neexistuje",
+                     content = @Content(schema = @Schema(implementation = Error404Response.class))),
+        @ApiResponse(responseCode = "409", description = "Konflikt - nová přezdívka již existuje",
+                     content = @Content(schema = @Schema(implementation = Error409Response.class)))
     })
     @PatchMapping("/{playerId}")
     public ResponseEntity<PlayerResponse> updatePlayer(@PathVariable Long playerId, @RequestBody @Valid PlayerRequest request) {
@@ -93,8 +108,10 @@ public class PlayerController {
     /* --------------------------------------------------------------------------------------------------- */
     @Operation(summary = "Smazat hráče", description = "Odstraní hráče z databáze. Operace je idempotentí - opakované volání nevyvolá chybu.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Hráč úspěšně smazán, vrácena data smazaného hráče"),
-        @ApiResponse(responseCode = "204", description = "Hráč neexistuje (již smazán nebo nikdy nebyl vytvořen)")
+        @ApiResponse(responseCode = "200", description = "Hráč úspěšně smazán, vrácena data smazaného hráče",
+                     content = @Content(schema = @Schema(implementation = PlayerResponse.class))),
+        @ApiResponse(responseCode = "204", description = "Hráč neexistuje (již smazán nebo nikdy nebyl vytvořen)", 
+                     content = @Content())
     })
     @DeleteMapping("/{playerId}")
     public ResponseEntity<PlayerResponse> deletePlayer(@PathVariable Long playerId) {
