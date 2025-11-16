@@ -41,9 +41,9 @@ function Game() {
     handleAnswer,
     handleContinue,
     remainingTime,
-    timeOutTextColor,
+    timeoutTextColor,
     timePerQuestion,
-    timeOutProgressBarVariant,
+    timeoutProgressBarVariant,
   } = useGame({
     allEmails: emails,
     texts,
@@ -58,7 +58,7 @@ function Game() {
   const renderActionsRow = () => {
     return (
       <>
-        <Row justify="center" align="center" className="g-0 ">
+        <Row justify="center" align="center" className="g-0">
           <Col className="text-end">
             <Button
               variant="outline-secondary"
@@ -76,7 +76,7 @@ function Game() {
             xs={2}
             className="d-flex align-items-center justify-content-center"
           >
-            <div className={`text-center px-3 ${timeOutTextColor} `}>
+            <div className={`text-center px-3 ${timeoutTextColor}`}>
               {remainingTime} s
             </div>
           </Col>
@@ -97,7 +97,7 @@ function Game() {
         <Container className="mt-4 g-0">
           <ProgressBar
             now={remainingTime}
-            variant={timeOutProgressBarVariant}
+            variant={timeoutProgressBarVariant}
             max={timePerQuestion}
           />
         </Container>
@@ -155,7 +155,7 @@ function Game() {
   return (
     <Container fluid="md" className="w-50">
       <Header />
-      <h5 className="text-center text-uppercase my-5 ">
+      <h5 className="text-center text-uppercase my-5">
         {getText(texts.title, [currentIndex, emailsOfDifficulty.length])}, hráč:{" "}
         {nickname} score: {score}
       </h5>

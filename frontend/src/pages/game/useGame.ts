@@ -42,6 +42,10 @@ type TimeOutWarningThreshold = {
   secondsRemaining: number;
   colorVariant: ProgressBarProps["variant"];
 };
+
+const warningTimeThresholdDivisor = 3;
+const criticalTimeThresholdDivisor = 10;
+
 export function useGame(props: UseGameProps) {
   const dispatch = useAppDispatch();
   const { difficulty = 1, platformId = 1, allEmails, texts, onFinish } = props;
@@ -98,25 +102,30 @@ export function useGame(props: UseGameProps) {
     : texts.buttons.continue;
 
   /** Definice barev pro upozornění na zbývající čas pro zodpovězení otázky. */
-  const timeOutWarningThresholds: TimeOutWarningThreshold[] = [
+
+  const timeoutWarningThresholds: TimeOutWarningThreshold[] = [
     {
-      secondsRemaining: Math.round(timePerQuestion / 10),
+      secondsRemaining: Math.round(
+        timePerQuestion / criticalTimeThresholdDivisor,
+      ),
       colorVariant: "danger",
     },
     {
-      secondsRemaining: Math.round(timePerQuestion / 3),
+      secondsRemaining: Math.round(
+        timePerQuestion / warningTimeThresholdDivisor,
+      ),
       colorVariant: "warning",
     },
   ];
 
   /** Barva odpočítávadla času. */
   const { colorVariant } =
-    timeOutWarningThresholds.find(
+    timeoutWarningThresholds.find(
       (threshold) => threshold.secondsRemaining >= remainingTime,
     ) || {};
 
-  const timeOutTextColor = colorVariant ? `text-${colorVariant}` : undefined;
-  const timeOutProgressBarVariant = colorVariant;
+  const timeoutTextColor = colorVariant ? `text-${colorVariant}` : undefined;
+  const timeoutProgressBarVariant = colorVariant;
 
   /**
    * Zpracování odpovědi uživatele.
@@ -206,7 +215,7 @@ export function useGame(props: UseGameProps) {
     emailsOfDifficulty,
     remainingTime,
     timePerQuestion,
-    timeOutTextColor,
-    timeOutProgressBarVariant,
+    timeoutTextColor,
+    timeoutProgressBarVariant,
   };
 }

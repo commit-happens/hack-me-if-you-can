@@ -9,5 +9,19 @@ export function getEnvConfigValue<T extends string | number | boolean>(
   defaultValue: T,
 ): T {
   const value = import.meta.env[key];
-  return value !== undefined ? value : defaultValue;
+
+  if (value === undefined) {
+    return defaultValue;
+  }
+
+  if (typeof defaultValue === "number") {
+    const num = Number(value);
+    return (isNaN(num) ? defaultValue : num) as T;
+  }
+
+  if (typeof defaultValue === "boolean") {
+    return (value === "true") as T;
+  }
+
+  return value as T;
 }
