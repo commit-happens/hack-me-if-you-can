@@ -1,4 +1,8 @@
-import { faCircleXmark, faRepeat, faTrophy } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleXmark,
+  faRepeat,
+  faTrophy,
+} from "@fortawesome/free-solid-svg-icons";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,9 +13,10 @@ import useTranslation from "../../hooks/useTranslation";
 import useResults from "./useResults";
 
 const ResultsPage: React.FC = () => {
-  const { correctAnswers, wrongAnswers, total, successRate, score, playAgain } = useResults({
-    allEmails: emailsData.emails,
-  });
+  const { correctAnswers, wrongAnswers, total, successRate, score, playAgain } =
+    useResults({
+      allEmails: emailsData.emails,
+    });
   const texts = useTranslation("results");
 
   return (
@@ -51,7 +56,11 @@ const ResultsPage: React.FC = () => {
                     <hr />
                   </Col>
                   <Col xs={8}>
-                    <FontAwesomeIcon icon={faTrophy} aria-hidden="true" className="text-warning" />{" "}
+                    <FontAwesomeIcon
+                      icon={faTrophy}
+                      aria-hidden="true"
+                      className="text-warning"
+                    />{" "}
                     {texts.success}:
                   </Col>
                   <Col className="text-end">{successRate} %</Col>
@@ -64,7 +73,8 @@ const ResultsPage: React.FC = () => {
 
       <div className="text-center">
         <Button type="button" onClick={playAgain}>
-          <FontAwesomeIcon icon={faRepeat} aria-hidden="true" /> {texts.playAgain}
+          <FontAwesomeIcon icon={faRepeat} aria-hidden="true" />{" "}
+          {texts.playAgain}
         </Button>
       </div>
     </Container>

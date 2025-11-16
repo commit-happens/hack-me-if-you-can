@@ -23,6 +23,6 @@ const userSlice = createSlice({
 export const { setNickname } = userSlice.actions;
 
 // Selektory
-export const selectNickname = (state: RootState) => state.user;
+export const selectNickname = (state: RootState) => state.user.nickname;
 
 export default userSlice.reducer;

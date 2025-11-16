@@ -27,6 +27,7 @@ const gameSlice = createSlice({
     },
     endGame: (state) => {
       state.isPlaying = false;
+      state.correctAnswers = 0;
     },
     incrementScore: (state, action: PayloadAction<number>) => {
       state.score += action.payload;
@@ -40,8 +41,13 @@ const gameSlice = createSlice({
   },
 });
 
-export const { startGame, endGame, incrementScore, setCurrentIndex, increaseCorrectAnswers } =
-  gameSlice.actions;
+export const {
+  startGame,
+  endGame,
+  incrementScore,
+  setCurrentIndex,
+  increaseCorrectAnswers,
+} = gameSlice.actions;
 
 // Selektory
 export const selectScore = (state: RootState) => state.game.score;

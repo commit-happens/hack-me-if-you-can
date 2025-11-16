@@ -9,7 +9,11 @@ import { getPagePath } from "../../utils/routing";
 import EmailTemplate from "./templates/EmailTemplate";
 import { Answer as GameAnswer, useGame } from "./useGame";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowRight, faCheck, faWarning } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRight,
+  faCheck,
+  faWarning,
+} from "@fortawesome/free-solid-svg-icons";
 
 function Game() {
   const navigate = useNavigate();
@@ -22,6 +26,7 @@ function Game() {
   const {
     currentEmail,
     currentIndex,
+    currentIndex,
     answer,
     isLastEmail,
     isCorrectAnswer,
@@ -31,7 +36,6 @@ function Game() {
     handleContinue,
   } = useGame({
     allEmails: emails,
-    //  startIndex: 8,
     texts,
     onFinish: () => navigate(getPagePath(Page.Results)),
   });
@@ -44,12 +48,26 @@ function Game() {
   const renderActions = () => {
     return (
       <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-        <Button variant="outline-secondary" onClick={() => handleAnswer(GameAnswer.Phishing)}>
-          <FontAwesomeIcon icon={faWarning} aria-hidden="true" className="text-danger" />
+        <Button
+          variant="outline-secondary"
+          onClick={() => handleAnswer(GameAnswer.Phishing)}
+        >
+          <FontAwesomeIcon
+            icon={faWarning}
+            aria-hidden="true"
+            className="text-danger"
+          />
           {getText(texts.answers.phishing)}
         </Button>
-        <Button variant="outline-secondary" onClick={() => handleAnswer(GameAnswer.Safe)}>
-          <FontAwesomeIcon icon={faCheck} className="text-success" aria-hidden="true" />
+        <Button
+          variant="outline-secondary"
+          onClick={() => handleAnswer(GameAnswer.Safe)}
+        >
+          <FontAwesomeIcon
+            icon={faCheck}
+            className="text-success"
+            aria-hidden="true"
+          />
           {getText(texts.answers.safe)}
         </Button>
       </div>
@@ -80,7 +98,9 @@ function Game() {
           {explanation}
           <div style={{ textAlign: "center" }} className="mt-4">
             <Button onClick={() => handleContinue()}>
-              {isLastEmail ? getText(texts.buttons.showResults) : getText(texts.buttons.continue)}{" "}
+              {isLastEmail
+                ? getText(texts.buttons.showResults)
+                : getText(texts.buttons.continue)}{" "}
               <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" />
             </Button>
           </div>
@@ -107,11 +127,16 @@ function Game() {
     <Container fluid="md" className="w-50">
       <Header />
       <h1 className="text-center">
-        {getText(texts.title, [currentIndex + 1, emailsOfDifficulty.length])}, hráč: {nickname}{" "}
-        score: {score}
+        {getText(texts.title, [currentIndex + 1, emailsOfDifficulty.length])},
+        hráč: {nickname} score: {score}
       </h1>
       <div className="mx-auto mb-4" style={{ maxWidth: "50vw" }}>
-        <EmailTemplate key={id} sender={sender} subject={subject} content={content} />
+        <EmailTemplate
+          key={id}
+          sender={sender}
+          subject={subject}
+          content={content}
+        />
       </div>
       {renderContent()}
     </Container>
