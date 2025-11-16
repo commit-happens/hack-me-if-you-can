@@ -98,7 +98,7 @@ make fe-lint
         ```
     - Nebo zjisti PID procesu, který port používá, a ukonči ho:
         ```powershell
-        lsof -i :5174   # zjistí PID
+        lsof -i :5173   # zjistí PID
         kill <PID>      # např. kill 69588
         ```
 - Instalace závislostí selže: ověř, že používáš `npm ci` (existuje `package-lock.json`). Pokud je lock neaktuální, smaž `node_modules` a `package-lock.json` a spusť `npm install`.
