@@ -23,7 +23,8 @@ const ResultsPage: React.FC = () => {
 
       <section style={styles.stats}>
         <div style={styles.statCard}>
-          <div style={styles.statLabel}>Dobré odpovědi</div>
+          <div style={styles.statLabel}>Správné odpovědi</div>
+
           <div style={styles.statValue}>
             ✅ {correct} / {total}
           </div>
