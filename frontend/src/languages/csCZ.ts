@@ -15,5 +15,29 @@ const csCZ = {
     nicknamePlaceholder: "Zadej svou přezdívku",
     startButton: "Start!",
   },
+  game: {
+    title: "Hra {1}/{2}",
+    noEmails: "Nenašli jsme žádný e-mail.",
+    props: {
+      difficulty: "Obtížnost",
+    },
+    answers: {
+      phishing: "To je Phishing!",
+      safe: "Je to OK",
+    },
+    feedback: {
+      correct: "Výborně!",
+      incorrect: "Bohužel :(",
+    },
+    buttons: {
+      continue: "Pokračovat",
+      showResults: "Zobrazit výsledky",
+    },
+  },
+  template: {
+    sender: "Odesílatel",
+    subject: "Předmět",
+    content: "Obsah",
+  },
 };
 export default csCZ;
