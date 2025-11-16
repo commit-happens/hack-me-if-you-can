@@ -140,11 +140,11 @@ mvn test
 
 ### Dostupné odkazy po spuštění backendu
 #### REST api
-1. Testovací Hello api: http://localhost:8080/api/hello"
-2. Players api, vrátí json všech hráčů dostupných v databázi: http://localhost:8080/api/players"
+1. Testovací Hello api: http://localhost:8080/api/hello
+2. Players api, vrátí json všech hráčů dostupných v databázi: http://localhost:8080/api/players
 
 #### Swagger API documentation
-URL: http://localhost:8080/swagger-ui.html"
+URL: http://localhost:8080/swagger-ui.html
 
 #### H2 konzole (in-memory databáze)
 URL: http://localhost:8080/h2-console
