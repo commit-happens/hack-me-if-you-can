@@ -24,6 +24,7 @@ const gameSlice = createSlice({
       state.isPlaying = true;
       state.score = 100;
       state.currentIndex = 0;
+      state.correctAnswers = 0;
     },
     endGame: (state) => {
       state.isPlaying = false;

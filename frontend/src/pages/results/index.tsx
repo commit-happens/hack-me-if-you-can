@@ -4,7 +4,6 @@ import {
   faTrophy,
 } from "@fortawesome/free-solid-svg-icons";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
-import { faClose } from "@fortawesome/free-solid-svg-icons/faClose";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
@@ -26,7 +25,7 @@ const ResultsPage: React.FC = () => {
 
       <Row className="g-3 mb-5 justify-content-center">
         <Col xs={12} md={6}>
-          <Card className="">
+          <Card>
             <Card.Body>
               <Card.Text className="fs-5 fw-semibold">
                 <Row>
