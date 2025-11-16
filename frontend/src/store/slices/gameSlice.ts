@@ -5,7 +5,6 @@ import type { RootState } from "../../store";
 interface GameState {
   score: number;
   correctAnswers: number;
-  wrongAnswers: number;
   currentIndex: number;
   isPlaying: boolean;
 }
@@ -13,7 +12,6 @@ interface GameState {
 const initialState: GameState = {
   score: 100,
   correctAnswers: 0,
-  wrongAnswers: 0,
   currentIndex: 1,
   isPlaying: false,
 };
@@ -29,6 +27,7 @@ const gameSlice = createSlice({
     },
     endGame: (state) => {
       state.isPlaying = false;
+      state.correctAnswers = 0;
     },
     incrementScore: (state, action: PayloadAction<number>) => {
       state.score += action.payload;

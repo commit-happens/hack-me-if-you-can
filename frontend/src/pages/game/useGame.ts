@@ -76,8 +76,8 @@ export function useGame(props: UseGameProps) {
   const isLastEmail = currentIndex === totalEmails - 1;
 
   const continueButtonLabel = isLastEmail
-    ? texts?.buttons.showResults
-    : texts?.buttons.continue; // tady můžeš použít i lokalizaci
+    ? texts.buttons.showResults
+    : texts.buttons.continue;
 
   /**
    * Zpracování odpovědi uživatele.
@@ -108,14 +108,14 @@ export function useGame(props: UseGameProps) {
       return;
     }
 
-    dispatch(
-      setOrder(
-        currentIndex < emailsOfDifficulty.length
-          ? currentIndex + 1
-          : currentIndex,
-      ),
-    );
-  }, [emailsOfDifficulty.length, isLastEmail, onFinish]);
+    dispatch(setOrder(currentIndex + 1));
+  }, [
+    currentIndex,
+    dispatch,
+    emailsOfDifficulty.length,
+    isLastEmail,
+    onFinish,
+  ]);
 
   return {
     currentEmail,
