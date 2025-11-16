@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "purpose": "Tento soubor dokumentuje problematické a specialni nicknamy použité v player.json. Slouží pro testování Unicode, emoji, mezery, RTL znaků, neviditelných znaků, bezpečnostních hrozeb (XSS/HTML) a dalších edge-case scénářů, které mohou ovlivnit zobrazení UI, vstupní validaci nebo bezpečnost.",
+    "why": [
+      "Ověření, že UI správně zobrazuje všechny typy nicků",
+      "Testování extrémních Unicode znaků a kombinací",
+      "Simulace reálně problémových uživatelských přezdívek",
+      "Hledání vizuálních a bezpečnostních chyb",
+      "Pomoc testerům a vývojářům pochopit účel každého případu"
+    ],
+    "structure_description": "Každý záznam obsahuje id hráče, skutečný nickname z player.json a popis toho, co přesně daný nickname testuje. Pole 'tests' obsahuje seznam charakteristik nebo edge-case vlastností."
+  },
+
+  "structure": {
+    "id": "odpovídá ID hráče v player.json",
+    "nickname": "testovaný přezdívka",
+    "tests": ["vysvětlení toho, co daná přezdívka testuje"]
+  },
+
+  "tests": [
+    {
+      "id": 8,
+      "nickname": "   náhodný   mezery   ",
+      "tests": ["leading spaces", "trailing spaces", "multiple spaces in middle"]
+    },
+    {
+      "id": 12,
+      "nickname": "🧅🥲 cebulka_master",
+      "tests": ["emoji + text mixture", "unicode characters"]
+    },
+    {
+      "id": 18,
+      "nickname": "XDxdXDxdXd   ",
+      "tests": ["trailing spaces"]
+    },
+    {
+      "id": 71,
+      "nickname": "‏‏‎ ‎InvisibleBoy‎‏‏‎ ‎",
+      "tests": ["RTL marks", "hidden characters", "invisible padding"]
+    },
+    {
+      "id": 72,
+      "nickname": "zero width spaces",
+      "tests": ["zero-width spaces (U+200A/U+200B)", "invisible separators"]
+    },
+    {
+      "id": 78,
+      "nickname": "RTL_‏‏‎test‏‏‎_🔥",
+      "tests": ["right-to-left marks", "mixed text direction (BiDi)"]
+    },
+    {
+      "id": 80,
+      "nickname": "<script>alert('x')</script>",
+      "tests": ["HTML injection", "XSS payload simulation"]
+    },
+    {
+      "id": 83,
+      "nickname": "🐛bug🐛bug🐛bug🐛",
+      "tests": ["emoji repetition", "multi-codepoint characters"]
+    },
+    {
+      "id": 87,
+      "nickname": "„‚…†‡‰Š‹ŒžŸ",
+      "tests": ["extended Latin set", "rare unicode glyphs"]
+    },
+    {
+      "id": 90,
+      "nickname": "¯\\_(ツ)_/¯",
+      "tests": ["escape sequences", "ASCII art", "combining unicode"]
+    }
+  ]
+}
