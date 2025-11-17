@@ -1,45 +1,23 @@
-###############################################
-# 🧠 HMIYC – Backend (.gitignore)
-# Popis: Tento soubor určuje, které soubory a složky
-# se NEMAJÍ ukládat do Git repozitáře.
-# Cílem je udržet repozitář čistý a přenosný pro všechny členy týmu.
-###############################################
-
-
-# ================================
-# 🧱 Maven build výstupy
-# -------------------------------
-# Tyto složky a soubory vznikají při buildu projektu (mvn package / mvn install)
-# a není nutné je verzovat, protože se generují automaticky.
-# ================================
+# Maven build výstupy (generují se automaticky při buildu)
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+mvnw
+mvnw.cmd
 
-
-# ================================
-# 💡 IntelliJ IDEA
-# -------------------------------
-# IDE (např. IntelliJ) vytváří lokální konfigurační soubory,
-# které si každý vývojář drží u sebe – není třeba je sdílet v repu.
-# ================================
+# IntelliJ IDEA (lokální konfigurační soubory IDE)
 .idea/
 *.iml
 *.ipr
 *.iws
 
-
-# ================================
-# 💻 VS Code
-# -------------------------------
-# Stejné jako u IntelliJ – lokální nastavení editoru,
-# které se může lišit podle uživatele.
-# ================================
+# VS Code (lokální nastavení editoru)
 .vscode/
 
-
+# macOS
+.DS_Store
 
 # Ignoruje H2 databazove soubory ve slozce backend/data/
-backend/data/*.mv.db
-backend/data/*.trace.db
+data/*.mv.db
+data/*.trace.db

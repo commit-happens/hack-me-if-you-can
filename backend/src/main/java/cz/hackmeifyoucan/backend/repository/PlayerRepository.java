@@ -1,7 +1,13 @@
+/* Rozhraní repository — most mezi Java kódem a databází */
+
 package cz.hackmeifyoucan.backend.repository;
 
-import cz.hackmeifyoucan.backend.model.Player;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface PlayerRepository extends JpaRepository<Player, Long> {
+import cz.hackmeifyoucan.backend.entity.Player;
+
+@Repository
+public interface PlayerRepository extends CrudRepository<Player, Long> {
+
 }
