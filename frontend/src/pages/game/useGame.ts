@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   increaseCorrectAnswers,
   updateScore,
-  setOrder,
+  setCurrentIndex,
 } from "../../store/slices/gameSlice";
 import type { Translation } from "../../languages/csCZ";
 import { getEnvConfigValue } from "../../utils/envConfig";
@@ -156,7 +156,7 @@ export function useGame(props: UseGameProps) {
   }, [currentEmail, handleAnswer]);
 
   /**
-   * Pokračování na další e-mail nebo dokončení hry.
+   * Pokračování na další e-mail nebo dokončení hry (přeskok na stránku Results).
    */
   const handleContinue = useCallback(() => {
     setAnswer(undefined);
@@ -167,7 +167,7 @@ export function useGame(props: UseGameProps) {
       return;
     }
 
-    dispatch(setOrder(currentIndex + 1));
+    dispatch(setCurrentIndex(currentIndex + 1));
   }, [
     currentIndex,
     dispatch,

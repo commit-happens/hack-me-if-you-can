@@ -156,8 +156,8 @@ function Game() {
     <Container fluid="md" className="w-50">
       <Header />
       <h5 className="text-center text-uppercase my-5">
-        {getText(texts.title, [currentIndex, emailsOfDifficulty.length])}, hráč:{" "}
-        {nickname} score: {score}
+        {getText(texts.title, [currentIndex + 1, emailsOfDifficulty.length])},
+        hráč: {nickname}, score: {score}
       </h5>
       <div className="mx-auto mb-4" style={{ maxWidth: "50vw" }}>
         <EmailTemplate

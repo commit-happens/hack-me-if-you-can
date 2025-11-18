@@ -3,9 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <!-- =============================
-         📘 ZÁKLADNÍ INFORMACE O PROJEKTU
-         ============================= -->
+    <!-- ZÁKLADNÍ INFORMACE O PROJEKTU -->
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Používáme Spring Boot jako rodičovský projekt -->
@@ -29,49 +27,35 @@
     </properties>
 
 
-    <!-- =============================
-         ⚙️ ZÁVISLOSTI (DEPENDENCIES)
-         ============================= -->
+    <!-- ZÁVISLOSTI (DEPENDENCIES) -->
     <dependencies>
 
-        <!-- 🔍 Spring Boot Actuator
-             Umožňuje sledovat stav aplikace (např. /actuator/health, /actuator/info)
-             Vhodné pro monitoring a ladění -->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-actuator</artifactId>-->
-<!--        </dependency>-->
+        <!-- Spring Boot Actuator - monitoring (volitelně) -->
+        <!-- <dependency> -->
+            <!-- <groupId>org.springframework.boot</groupId> -->
+            <!-- <artifactId>spring-boot-starter-actuator</artifactId> -->
+        <!-- </dependency> -->
 
-        <!-- 📘 OpenAPI / Swagger UI
-             Automaticky generuje interaktivní API dokumentaci na adrese /swagger-ui.html
-             Ideální pro testování endpointů a pro frontend vývojáře -->
+        <!-- OpenAPI/Swagger UI - generuje interaktivní API dokumentaci -->
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.6.0</version>
+            <version>2.7.0</version>
         </dependency>
 
-        <!-- ✅ Spring Boot Validation
-             Umožňuje používat anotace pro validaci vstupních dat (např. @NotNull, @Email)
-             Používá se např. v DTO třídách nebo requestech -->
+        <!-- Spring Boot Validation - validace vstupních dat -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- 🌐 Spring Boot Web Starter
-             Základní závislost pro REST API – obsahuje:
-             - Spring MVC (kontrolery, request mapping)
-             - Embedded Tomcat server
-             - JSON serializaci pomocí Jackson -->
+        <!-- Spring Boot Web Starter - základ pro REST API -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- 🧰 Spring Boot DevTools
-             Automaticky restartuje aplikaci při změnách kódu během vývoje
-             (neměl by být zapnutý v produkci) -->
+        <!-- Spring Boot DevTools - automatický restart v dev prostředí -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -79,31 +63,20 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- 🧩 Lombok
-             Umožňuje používat anotace jako @Getter, @Setter, @Builder, @Data
-             Snižuje množství boilerplate kódu (gettery/settery, konstruktory apod.) -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
-        <!-- 🧪 Spring Boot Test
-             Framework pro psaní testů (JUnit + MockMvc)
-             Používá se pro jednotkové a integrační testy -->
+        <!-- Spring Boot Test - závislosti pro testování (JUnit/MockMvc) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
 
-        <!-- Spring Data JPA (pro práci s entitami a databází) -->
+         <!-- Spring Data JPA - práce s entitami a databází -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- H2 databáze (embedded, runtime only) -->
+        <!-- H2 databáze - embedded runtime databáze -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -113,42 +86,20 @@
     </dependencies>
 
 
-    <!-- =============================
-         🧱 BUILD – NASTAVENÍ KOMPILACE
-         ============================= -->
+    <!-- BUILD - NASTAVENÍ KOMPILACE -->
     <build>
         <plugins>
 
-            <!-- ⚙️ Maven Compiler Plugin
-                 Řídí kompilaci kódu – zde zajišťuje, že Lombok bude správně zpracován -->
+          <!-- Maven Compiler Plugin - zajišťuje kompilaci kódu -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </path>
-                    </annotationProcessorPaths>
-                </configuration>
             </plugin>
 
-            <!-- 🚀 Spring Boot Maven Plugin
-                 Umožňuje spouštět aplikaci pomocí příkazu:
-                 mvn spring-boot:run
-                 nebo vytvářet spustitelné JARy -->
+          <!-- Spring Boot Maven Plugin - spouštění aplikace a tvorba JAR -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
             </plugin>
 
         </plugins>
