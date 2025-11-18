@@ -8,6 +8,7 @@ import {
 import type { Translation } from "../../languages/csCZ";
 import { getEnvConfigValue } from "../../utils/envConfig";
 import type { ProgressBarProps } from "react-bootstrap";
+import useCountdown from "../../hooks/useCountdown";
 
 export enum Answer {
   Phishing = "phishing",
@@ -57,6 +58,13 @@ export function useGame(props: UseGameProps) {
     getEnvConfigValue("VITE_TIME_PER_QUESTION", 60) / difficulty,
   );
 
+  const { remainingTime, reset } = useCountdown({
+    start: timePerQuestion,
+    onCountdownOver: () => {
+      handleTimeout();
+    },
+  });
+
   const emailsOfDifficulty = useMemo(
     () =>
       allEmails.filter(
@@ -68,7 +76,6 @@ export function useGame(props: UseGameProps) {
   );
 
   const [answer, setAnswer] = useState<Answer | undefined>(undefined);
-  const [remainingTime, setRemainingTime] = useState<number>(timePerQuestion);
 
   // Aktuální e-mail k zodpovězení.
   const currentEmail = emailsOfDifficulty[currentIndex];
@@ -160,7 +167,7 @@ export function useGame(props: UseGameProps) {
    */
   const handleContinue = useCallback(() => {
     setAnswer(undefined);
-    setRemainingTime(timePerQuestion);
+    reset();
 
     if (isLastEmail) {
       if (onFinish) onFinish();
@@ -175,31 +182,6 @@ export function useGame(props: UseGameProps) {
     isLastEmail,
     onFinish,
   ]);
-
-  // Odpočítávadlo času pro zodpovězení otázky.
-  useEffect(() => {
-    setRemainingTime(timePerQuestion);
-    if (!currentEmail || answer) return;
-
-    let mounted = true;
-    const tick = () => {
-      setRemainingTime((prev) => {
-        if (prev <= 1) {
-          if (mounted) {
-            handleTimeout();
-          }
-          return 0;
-        }
-        return prev - 1;
-      });
-    };
-
-    const interval = setInterval(tick, 1000);
-    return () => {
-      mounted = false;
-      clearInterval(interval);
-    };
-  }, [currentIndex, currentEmail, answer, handleTimeout]);
 
   return {
     currentEmail,
