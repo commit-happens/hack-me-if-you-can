@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState, useEffect, use } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   increaseCorrectAnswers,
@@ -51,6 +51,14 @@ export function useGame(props: UseGameProps) {
   const dispatch = useAppDispatch();
   const { difficulty = 1, platformId = 1, allEmails, texts, onFinish } = props;
 
+  /**
+   * Náhodné promíchání e-mailů pro zajištění různorodosti kvízu.
+   */
+  const randomizedEmails = useMemo(
+    () => allEmails.sort(() => Math.random() - 0.5),
+    [allEmails],
+  );
+
   const currentIndex = useAppSelector((state) => state.game.currentIndex);
 
   /** Z konfigurace si načteme čas na zodpovězení jedné otázky. */
@@ -67,12 +75,12 @@ export function useGame(props: UseGameProps) {
 
   const emailsOfDifficulty = useMemo(
     () =>
-      allEmails.filter(
+      randomizedEmails.filter(
         (item) =>
           item.difficulty === difficulty &&
           item.phishingPlatformID === platformId,
       ),
-    [allEmails, difficulty, platformId],
+    [randomizedEmails, difficulty, platformId],
   );
 
   const [answer, setAnswer] = useState<Answer | undefined>(undefined);
