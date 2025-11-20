@@ -27,8 +27,9 @@ const csCZ = {
       safe: "Je to OK",
     },
     feedback: {
-      correct: "Výborně, odpověděl(a) jsi správně! 🎉",
+      correct: "Výborně, odpověděl(a) jsi správně!",
       incorrect: "Bohužel, odpověděl(a) jsi špatně. ",
+      timeIsUp: "Čas vypršel! Bohužel ti musíme odečíst body.",
     },
     buttons: {
       continue: "Pokračovat",

@@ -1,17 +1,6 @@
-import {
-  faArrowRight,
-  faCheck,
-  faWarning,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Alert,
-  Button,
-  Col,
-  Container,
-  ProgressBar,
-  Row,
-} from "react-bootstrap";
+import { Alert, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header";
 import emailsData from "../../data/emails.json";
@@ -19,8 +8,9 @@ import useTranslation, { getText } from "../../hooks/useTranslation";
 import Page from "../../models/Page";
 import { useAppSelector } from "../../store/hooks";
 import { getPagePath } from "../../utils/routing";
+import ActionsRow from "./components/actionRow";
 import EmailTemplate from "./templates/EmailTemplate";
-import { Answer as GameAnswer, useGame } from "./useGame";
+import { useGame } from "./useGame";
 
 function Game() {
   const navigate = useNavigate();
@@ -35,7 +25,6 @@ function Game() {
     currentIndex,
     answer,
     isLastEmail,
-    isCorrectAnswer,
     difficulty,
     emailsOfDifficulty,
     handleAnswer,
@@ -44,6 +33,7 @@ function Game() {
     timeoutTextColor,
     timePerQuestion,
     timeoutProgressBarVariant,
+    feedbackData,
   } = useGame({
     allEmails: emails,
     texts,
@@ -52,56 +42,17 @@ function Game() {
 
   const { id, sender, subject, content, explanation } = currentEmail || {};
 
-  /**
-   * Zobrazení řádk s tlačítky pro odpověď a odpočítávadlem času.
-   */
-  const renderActionsRow = () => {
+  /** Zobrazí zpětnou vazbu na odpověď uživatele. */
+  const renderFeedback = () => {
     return (
-      <>
-        <Row justify="center" align="center" className="g-0">
-          <Col className="text-end">
-            <Button
-              variant="outline-secondary"
-              onClick={() => handleAnswer(GameAnswer.Phishing)}
-            >
-              <FontAwesomeIcon
-                icon={faWarning}
-                aria-hidden="true"
-                className="text-danger"
-              />
-              {getText(texts.answers.phishing)}
-            </Button>
-          </Col>
-          <Col
-            xs={2}
-            className="d-flex align-items-center justify-content-center"
-          >
-            <div className={`text-center px-3 ${timeoutTextColor}`}>
-              {remainingTime} s
-            </div>
-          </Col>
-          <Col className="text-start">
-            <Button
-              variant="outline-secondary"
-              onClick={() => handleAnswer(GameAnswer.Safe)}
-            >
-              <FontAwesomeIcon
-                icon={faCheck}
-                className="text-success"
-                aria-hidden="true"
-              />
-              {getText(texts.answers.safe)}
-            </Button>
-          </Col>
-        </Row>
-        <Container className="mt-4 g-0">
-          <ProgressBar
-            now={remainingTime}
-            variant={timeoutProgressBarVariant}
-            max={timePerQuestion}
-          />
-        </Container>
-      </>
+      <Alert variant={feedbackData.variant} className="text-center">
+        <FontAwesomeIcon
+          icon={feedbackData.icon}
+          aria-hidden="true"
+          fontSize={20}
+        />{" "}
+        {feedbackData.title}
+      </Alert>
     );
   };
 
@@ -109,27 +60,14 @@ function Game() {
    * Zobrazení obsahu podle toho, zda uživatel odpověděl.
    */
   const renderContent = () => {
-    let feedbackData = {
-      title: getText(texts.feedback.correct),
-      variant: "success",
-    };
-
     if (answer) {
-      if (!isCorrectAnswer())
-        feedbackData = {
-          title: getText(texts.feedback.incorrect),
-          variant: "danger",
-        };
-
       return (
         <div className="w-100">
-          <Alert variant={feedbackData.variant}>{feedbackData.title}</Alert>
+          {renderFeedback()}
           {explanation}
           <div style={{ textAlign: "center" }} className="mt-4">
             <Button onClick={() => handleContinue()}>
-              {isLastEmail
-                ? getText(texts.buttons.showResults)
-                : getText(texts.buttons.continue)}{" "}
+              {isLastEmail ? texts.buttons.showResults : texts.buttons.continue}{" "}
               <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" />
             </Button>
           </div>
@@ -137,7 +75,16 @@ function Game() {
       );
     }
 
-    return <>{renderActionsRow()}</>;
+    return (
+      <ActionsRow
+        handleAnswer={handleAnswer}
+        remainingTime={remainingTime}
+        timeoutTextColor={timeoutTextColor}
+        timeoutProgressBarVariant={timeoutProgressBarVariant}
+        timePerQuestion={timePerQuestion}
+        texts={texts}
+      />
+    );
   };
 
   if (emailsOfDifficulty.length === 0) {

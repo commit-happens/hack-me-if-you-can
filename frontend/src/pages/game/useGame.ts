@@ -1,14 +1,17 @@
-import { useCallback, useMemo, useState, useEffect, use } from "react";
+import { faSkullCrossbones } from "@fortawesome/free-solid-svg-icons/faSkullCrossbones";
+import { faThumbsUp } from "@fortawesome/free-solid-svg-icons/faThumbsUp";
+import { useCallback, useMemo, useState } from "react";
+import type { ProgressBarProps } from "react-bootstrap";
+import useCountdown from "../../hooks/useCountdown";
+import type { Translation } from "../../languages/csCZ";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   increaseCorrectAnswers,
-  updateScore,
   setCurrentIndex,
+  updateScore,
 } from "../../store/slices/gameSlice";
-import type { Translation } from "../../languages/csCZ";
 import { getEnvConfigValue } from "../../utils/envConfig";
-import type { ProgressBarProps } from "react-bootstrap";
-import useCountdown from "../../hooks/useCountdown";
+import { faAlarmClock } from "@fortawesome/free-solid-svg-icons";
 
 export enum Answer {
   Phishing = "phishing",
@@ -47,9 +50,39 @@ type TimeOutWarningThreshold = {
 const warningTimeThresholdDivisor = 3;
 const criticalTimeThresholdDivisor = 10;
 
+enum FeedbackType {
+  Correct = "correct",
+  Incorrect = "incorrect",
+  TimeIsUp = "timeIsUp",
+}
+
+type FeedbackData = {
+  title: string;
+  variant: ProgressBarProps["variant"];
+  icon: any;
+};
+
 export function useGame(props: UseGameProps) {
   const dispatch = useAppDispatch();
   const { difficulty = 1, platformId = 1, allEmails, texts, onFinish } = props;
+
+  const feedbackDataByType: Record<FeedbackType, FeedbackData> = {
+    [FeedbackType.Correct]: {
+      title: texts.feedback.correct,
+      variant: "success",
+      icon: faThumbsUp,
+    },
+    [FeedbackType.Incorrect]: {
+      title: texts.feedback.incorrect,
+      variant: "danger",
+      icon: faSkullCrossbones,
+    },
+    [FeedbackType.TimeIsUp]: {
+      title: texts.feedback.timeIsUp,
+      variant: "danger",
+      icon: faAlarmClock,
+    },
+  };
 
   /**
    * Náhodné promíchání e-mailů pro zajištění různorodosti kvízu.
@@ -94,7 +127,9 @@ export function useGame(props: UseGameProps) {
   const isCorrectAnswer = useCallback(
     (chosen?: Answer) => {
       const currentAnswer = chosen ?? answer;
+
       if (!currentAnswer || !currentEmail) return false;
+
       if (currentAnswer === Answer.Phishing) {
         return (currentEmail.phishingTypeIDs || []).length > 0;
       } else {
@@ -141,6 +176,20 @@ export function useGame(props: UseGameProps) {
 
   const timeoutTextColor = colorVariant ? `text-${colorVariant}` : undefined;
   const timeoutProgressBarVariant = colorVariant;
+
+  /** Vrátí typ FeedbackType pro zobrazení reakce na odpověď. */
+  const getFeedbackType = () => {
+    let feedbackType = FeedbackType.Correct;
+
+    if (answer) {
+      if (!isCorrectAnswer()) feedbackType = FeedbackType.Incorrect;
+      if (remainingTime === 0) feedbackType = FeedbackType.TimeIsUp;
+    }
+
+    return feedbackType;
+  };
+
+  const feedbackData = feedbackDataByType[getFeedbackType()];
 
   /**
    * Zpracování odpovědi uživatele.
@@ -207,5 +256,6 @@ export function useGame(props: UseGameProps) {
     timePerQuestion,
     timeoutTextColor,
     timeoutProgressBarVariant,
+    feedbackData,
   };
 }
