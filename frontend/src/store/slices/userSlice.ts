@@ -4,25 +4,29 @@ import type { RootState } from "../../store";
 
 interface UserState {
   nickname: string;
+  playerId: number | null;
 }
 
 const initialState: UserState = {
   nickname: "",
+  playerId: null,
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setNickname: (state, action: PayloadAction<string>) => {
-      state.nickname = action.payload;
+    setPlayer: (state, action: PayloadAction<{ nickname: string; playerId: number }>) => {
+      state.nickname = action.payload.nickname;
+      state.playerId = action.payload.playerId;
     },
   },
 });
 
-export const { setNickname } = userSlice.actions;
+export const { setPlayer } = userSlice.actions;
 
 // Selektory
 export const selectNickname = (state: RootState) => state.user.nickname;
+export const selectPlayerId = (state: RootState) => state.user.playerId;
 
 export default userSlice.reducer;
