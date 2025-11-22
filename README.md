@@ -4,7 +4,7 @@ Jednoduchý monorepo základ pro frontend (React + Vite + TypeScript). Tento dok
 
 ## Tech stack
 - Frontend: React 19 + TypeScript, ESLint, Vite 7 (dev server, build, preview)
-- Backend: Java 21, Spring Boot, H2, Maven, (Lombok)
+- Backend: Java 21, Spring Boot, H2, Maven
 
 
 ## Struktura repozitáře
@@ -12,14 +12,14 @@ Jednoduchý monorepo základ pro frontend (React + Vite + TypeScript). Tento dok
 ```
 hack-me-if-you-can/
 ├─ Makefile                           # pohodlné příkazy (fe-dev, fe-lint, fe-build, fe-preview)
-├─ backend/                           # Springboot + Maven aplikace
+├─ backend/                           # Spring Boot + Maven aplikace
 │  ├─ src/
 │  │  ├─ main
-│  │  │  ├─ java.cz.hackmeifyoucan     # vše napsané v java (controller, entity, repository, service, hlavní backend Applikace)
+│  │  │  ├─ java/cz/hackmeifyoucan     # vše napsané v java (controller, entity, repository, service, hlavní backend Applikace)
 │  │  │  └─ resources                  # vše ostatní (konfigurace portu, databáze)
 │  │  └─ test
 │  ...
-│  └─ .pom.xml                        # základní informace o projektu, závislosti (dependencies), pluginy
+│  └─ pom.xml                        # základní informace o projektu, závislosti (dependencies), pluginy
 ├─ frontend/                          # React + Vite aplikace
 │  ├─ src/
 │  ├─ index.html
@@ -39,7 +39,6 @@ hack-me-if-you-can/
   - Java 21 (LTS)
   - Maven 3.9+
   - Doporučené IDE: IntelliJ IDEA (doporučeno) nebo VS Code
-  - Doporučený Lombok plugin v IDE
 
 ## Rychlý start: frontend
 
@@ -99,7 +98,7 @@ make fe-lint
         ```
     - Nebo zjisti PID procesu, který port používá, a ukonči ho:
         ```powershell
-        lsof -i :5174   # zjistí PID
+        lsof -i :5173   # zjistí PID
         kill <PID>      # např. kill 69588
         ```
 - Instalace závislostí selže: ověř, že používáš `npm ci` (existuje `package-lock.json`). Pokud je lock neaktuální, smaž `node_modules` a `package-lock.json` a spusť `npm install`.
@@ -108,7 +107,7 @@ make fe-lint
 ---
 
 ## Rychlý start: backend
-- Technologie: Java 21, Spring Boot, Maven, (Lombok)
+- Technologie: Java 21, Spring Boot, Maven
 - Hlavní třída: `cz.hackmeifyoucan.backend.HackMeIfYouCanApplication`
 - Výchozí port: 8080 (konfigurovatelné v `application.properties`)
 
@@ -141,11 +140,11 @@ mvn test
 
 ### Dostupné odkazy po spuštění backendu
 #### REST api
-1. Testovací Hello api: http://localhost:8080/api/hello"
-2. Players api, vrátí json všech hráčů dostupných v databázi: http://localhost:8080/api/players"
+1. Testovací Hello api: http://localhost:8080/api/hello
+2. Players api, vrátí json všech hráčů dostupných v databázi: http://localhost:8080/api/players
 
 #### Swagger API documentation
-URL: http://localhost:8080/swagger-ui.html"
+URL: http://localhost:8080/swagger-ui.html
 
 #### H2 konzole (in-memory databáze)
 URL: http://localhost:8080/h2-console

@@ -3,6 +3,8 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+mvnw
+mvnw.cmd
 
 # IntelliJ IDEA (lokální konfigurační soubory IDE)
 .idea/
@@ -17,5 +19,5 @@ target/
 .DS_Store
 
 # Ignoruje H2 databazove soubory ve slozce backend/data/
-backend/data/*.mv.db
-backend/data/*.trace.db
+data/*.mv.db
+data/*.trace.db
