@@ -15,4 +15,14 @@ const useTranslation = <K extends keyof Translation>(viewKey: K) => {
   return translationTexts;
 };
 
+// Funkce nahradí placeholdery ve formátu {1}, {2}, ... odpovídajícími hodnotami
+export function getText(text: string, values?: (string | number)[]) {
+  if (!values) return text;
+
+  return values.reduce((acc: string, value, index) => {
+    const placeholder = `{${index + 1}}`;
+    return acc.replaceAll(placeholder, String(value));
+  }, text);
+}
+
 export default useTranslation;
