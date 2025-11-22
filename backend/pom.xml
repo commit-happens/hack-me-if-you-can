@@ -32,8 +32,8 @@
 
         <!-- Spring Boot Actuator - monitoring (volitelně) -->
         <!-- <dependency> -->
-            <!-- <groupId>org.springframework.boot</groupId> -->
-            <!-- <artifactId>spring-boot-starter-actuator</artifactId> -->
+        <!-- <groupId>org.springframework.boot</groupId> -->
+        <!-- <artifactId>spring-boot-starter-actuator</artifactId> -->
         <!-- </dependency> -->
 
         <!-- OpenAPI/Swagger UI - generuje interaktivní API dokumentaci -->
@@ -70,7 +70,7 @@
             <scope>test</scope>
         </dependency>
 
-         <!-- Spring Data JPA - práce s entitami a databází -->
+        <!-- Spring Data JPA - práce s entitami a databází -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -83,6 +83,15 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- PostgreSQL databáze - produkční databáze -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.6.0</version>
+            <scope>runtime</scope>
+        </dependency>
+
+
     </dependencies>
 
 
@@ -90,13 +99,13 @@
     <build>
         <plugins>
 
-          <!-- Maven Compiler Plugin - zajišťuje kompilaci kódu -->
+            <!-- Maven Compiler Plugin - zajišťuje kompilaci kódu -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
 
-          <!-- Spring Boot Maven Plugin - spouštění aplikace a tvorba JAR -->
+            <!-- Spring Boot Maven Plugin - spouštění aplikace a tvorba JAR -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

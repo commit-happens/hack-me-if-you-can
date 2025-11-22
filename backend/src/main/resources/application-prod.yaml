@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hmiyc_db
+    username: hmiyc_user
+    password: hmiyc_pass
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update # nebo validate / none v produkci
+    show-sql: false # true jen při ladění
+    properties:
+      hibernate:
+        format_sql: true
+
+spring.h2.console.enabled: false
