@@ -18,8 +18,8 @@ docker-compose up --build
 
 Tento příkaz:
 - Stáhne potřebné Docker image (Maven, JDK, Node.js, Nginx)
-- Nabuiluje backend (Java 21 + Spring Boot)
-- Nabuiluje frontend (React + Vite)
+- Vytvoří backend pomocí build (Java 21 + Spring Boot)
+- Vytvoří frontend pomocí build (React + Vite)
 - Spustí obě služby
 
 ### 2. Přístup k aplikaci
