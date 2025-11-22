@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # Backend služba (Spring Boot)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hmiyc-backend
+    ports:
+      - "8080:8080"
+    environment:
+      # Spring Boot konfigurace
+      - SPRING_PROFILES_ACTIVE=prod
+      # H2 databáze - file-based pro perzistenci dat
+      - SPRING_DATASOURCE_URL=jdbc:h2:file:./data/hack_db
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_H2_CONSOLE_ENABLED=true
+    networks:
+      - hmiyc-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/api/hello"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Frontend služba (React + Vite + Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hmiyc-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - hmiyc-network
+
+networks:
+  hmiyc-network:
+    driver: bridge
