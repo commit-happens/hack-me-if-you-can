@@ -60,13 +60,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    // 409 Conflict pro porušení databázových omezení (např. unikátní přezdívka)
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<Map<String, Object>> handleDatabaseConstraintError(
-            DataIntegrityViolationException ex) {
+    // 409 Conflict pro již existující přezdívku (aplikační logika)
+    @ExceptionHandler(DuplicateNicknameException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicateNickname(DuplicateNicknameException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put(STATUS, 409);
-        errorResponse.put(ERROR, "Porušení databázového omezení (např. unikátní přezdívka)");
+        errorResponse.put(ERROR, ex.getMessage());
+        Map<String, String> fieldErrors = new HashMap<>();
+        fieldErrors.put("nickname", "Přezdívka už je obsazená");
+        errorResponse.put(FIELDS, fieldErrors);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    // 409 Conflict pro porušení databázových omezení (fallback)
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDatabaseConstraintError(DataIntegrityViolationException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put(STATUS, 409);
+        errorResponse.put(ERROR, "Porušení databázového omezení");
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 

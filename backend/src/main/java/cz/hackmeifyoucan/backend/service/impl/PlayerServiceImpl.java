@@ -16,6 +16,7 @@ import cz.hackmeifyoucan.backend.dto.PlayerRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerResponse;
 import cz.hackmeifyoucan.backend.entity.Player;
 import cz.hackmeifyoucan.backend.exception.PlayerNotFoundException;
+import cz.hackmeifyoucan.backend.exception.DuplicateNicknameException;
 import cz.hackmeifyoucan.backend.repository.PlayerRepository;
 import cz.hackmeifyoucan.backend.service.PlayerService;
 
@@ -32,7 +33,11 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public PlayerResponse addPlayer(PlayerRequest playerRequest) {
-        // Vytvoříme nový objekt Player
+        // Unikátnost přezdívky
+        if (playerRepository.existsByNickname(playerRequest.nickname())) {
+            throw new DuplicateNicknameException(playerRequest.nickname());
+        }
+
         Player player = new Player();
         player.setNickname(playerRequest.nickname());
         
