@@ -19,8 +19,8 @@ RUN ./mvnw dependency:go-offline
 # Kopírování zdrojového kódu
 COPY src ./src
 
-# Build aplikace (přeskočení testů pro rychlejší build)
-RUN ./mvnw clean package -DskipTests
+# Build aplikace (spouští testy pro zajištění kvality kódu)
+RUN ./mvnw clean package
 
 # ==================================
 # 🚀 STAGE 2: Runtime Stage
