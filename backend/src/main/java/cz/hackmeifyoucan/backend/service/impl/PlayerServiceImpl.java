@@ -13,6 +13,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import cz.hackmeifyoucan.backend.dto.PlayerRequest;
+import cz.hackmeifyoucan.backend.dto.PlayerUpdateRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerResponse;
 import cz.hackmeifyoucan.backend.entity.Player;
 import cz.hackmeifyoucan.backend.exception.PlayerNotFoundException;
@@ -92,7 +93,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     /* --------------------------------------------------------------------------------------------------- */
     @Override
-    public PlayerResponse updatePlayer(Long playerId, PlayerRequest request) {
+    public PlayerResponse updatePlayer(Long playerId, PlayerUpdateRequest request) {
         // Najdeme hráče v databázi
         Optional<Player> optionalPlayer = playerRepository.findById(playerId);
         
@@ -103,7 +104,11 @@ public class PlayerServiceImpl implements PlayerService {
         Player player = optionalPlayer.get();
         
         // Aktualizujeme pouze pole, která frontend poslal
-        if (request.nickname() != null) {
+        if (request.nickname() != null && !request.nickname().isBlank()) {
+            // Pokud se mění přezdívka, ověřit unikátnost (neporovnávat sám se sebou)
+            if (!request.nickname().equals(player.getNickname()) && playerRepository.existsByNickname(request.nickname())) {
+                throw new DuplicateNicknameException(request.nickname());
+            }
             player.setNickname(request.nickname());
         }
         if (request.score() != null) {
