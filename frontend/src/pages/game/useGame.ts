@@ -2,9 +2,10 @@ import { useCallback, useMemo, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   increaseCorrectAnswers,
-  incrementScore,
   setCurrentIndex,
+  updateScore,
 } from "../../store/slices/gameSlice";
+import { selectPlayerId } from "../../store/slices/userSlice";
 import type { Translation } from "../../languages/csCZ";
 
 export enum Answer {
@@ -42,6 +43,7 @@ export function useGame(props: UseGameProps) {
   const { difficulty = 1, platformId = 1, allEmails, texts, onFinish } = props;
 
   const currentIndex = useAppSelector((state) => state.game.currentIndex);
+  const playerId = useAppSelector(selectPlayerId);
 
   const emailsOfDifficulty = useMemo(
     () =>
@@ -90,12 +92,16 @@ export function useGame(props: UseGameProps) {
       const correct = isCorrectAnswer(selected);
       const scoreChange = correct ? 0 : -currentEmail.penalty;
 
-      if (scoreChange) dispatch(incrementScore(scoreChange));
+      // Pokud je skóre sníženo a máme playerId, aktualizujeme backend
+      if (scoreChange && playerId) {
+        console.log(`Špatná odpověď, aktualizuji skóre: ${scoreChange}`);
+        dispatch(updateScore({ playerId, scoreChange }));
+      }
 
       if (correct) dispatch(increaseCorrectAnswers());
       setAnswer(selected);
     },
-    [currentEmail, dispatch, isCorrectAnswer],
+    [currentEmail, dispatch, isCorrectAnswer, playerId],
   );
 
   /**

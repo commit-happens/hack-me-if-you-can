@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import cz.hackmeifyoucan.backend.dto.PlayerRequest;
+import cz.hackmeifyoucan.backend.dto.PlayerUpdateRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerResponse;
 import cz.hackmeifyoucan.backend.service.PlayerService;
 import jakarta.validation.Valid;
@@ -100,7 +101,7 @@ public class PlayerController {
                      content = @Content(schema = @Schema(implementation = Error409Response.class)))
     })
     @PatchMapping("/{playerId}")
-    public ResponseEntity<PlayerResponse> updatePlayer(@PathVariable Long playerId, @RequestBody @Valid PlayerRequest request) {
+    public ResponseEntity<PlayerResponse> updatePlayer(@PathVariable Long playerId, @RequestBody @Valid PlayerUpdateRequest request) {
         PlayerResponse response = playerService.updatePlayer(playerId, request);
         return ResponseEntity.ok(response);
     }
