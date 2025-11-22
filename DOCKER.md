@@ -161,7 +161,7 @@ docker-compose up -d --build frontend
 
 ## Produkční poznámky
 
-Pro produkční nasazení doporuču:
+Pro produkční nasazení doporučuji:
 - Použít externí databázi (PostgreSQL, MySQL) místo H2 in-memory
 - Přidat volume pro perzistenci dat
 - Nastavit environment variables přes `.env` soubor
