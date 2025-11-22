@@ -35,3 +35,21 @@ export const createPlayer = async (nickname: string): Promise<PlayerResponse> =>
   return response.json();
 };
 
+export const updatePlayerScore = async (playerId: number, score: number): Promise<PlayerResponse> => {
+  const response = await fetch(`${API_BASE_URL}/players/${playerId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      "score": score,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || error.message || `Failed to update player score: ${response.statusText}`);
+  }
+
+  return response.json();
+};
