@@ -4,22 +4,19 @@ import type { RootState } from "..";
 
 interface PlayerState {
   nickname: string;
-  playerId: number | null;
+  playerId: number;
 }
 
 const initialState: PlayerState = {
   nickname: "",
-  playerId: null,
+  playerId: 0,
 };
 
 const playerSlice = createSlice({
   name: "player",
   initialState,
   reducers: {
-    setPlayer: (
-      state,
-      action: PayloadAction<{ nickname: string; playerId: number }>,
-    ) => {
+    setPlayer: (state, action: PayloadAction<{ nickname: string; playerId: number }>) => {
       state.nickname = action.payload.nickname;
       state.playerId = action.payload.playerId;
     },

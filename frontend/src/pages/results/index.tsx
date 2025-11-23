@@ -1,8 +1,4 @@
-import {
-  faCircleXmark,
-  faRepeat,
-  faTrophy,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCircleXmark, faRepeat, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
@@ -10,12 +6,12 @@ import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import emailsData from "../../data/emails.json";
 import useTranslation from "../../hooks/useTranslation";
 import useResults from "./useResults";
+import LeaderBoard from "../leaderboard";
 
 const ResultsPage: React.FC = () => {
-  const { correctAnswers, wrongAnswers, total, successRate, score, playAgain } =
-    useResults({
-      allEmails: emailsData.emails,
-    });
+  const { correctAnswers, wrongAnswers, total, successRate, score, playAgain } = useResults({
+    allEmails: emailsData.emails,
+  });
   const texts = useTranslation("results");
 
   return (
@@ -55,11 +51,7 @@ const ResultsPage: React.FC = () => {
                     <hr />
                   </Col>
                   <Col xs={8}>
-                    <FontAwesomeIcon
-                      icon={faTrophy}
-                      aria-hidden="true"
-                      className="text-warning"
-                    />{" "}
+                    <FontAwesomeIcon icon={faTrophy} aria-hidden="true" className="text-warning" />{" "}
                     {texts.success}:
                   </Col>
                   <Col className="text-end">{successRate} %</Col>
@@ -70,10 +62,13 @@ const ResultsPage: React.FC = () => {
         </Col>
       </Row>
 
+      <div className="mb-4">
+        <LeaderBoard />
+      </div>
+
       <div className="text-center">
         <Button type="button" onClick={playAgain}>
-          <FontAwesomeIcon icon={faRepeat} aria-hidden="true" />{" "}
-          {texts.playAgain}
+          <FontAwesomeIcon icon={faRepeat} aria-hidden="true" /> {texts.playAgain}
         </Button>
       </div>
     </Container>
