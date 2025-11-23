@@ -47,7 +47,7 @@ function replaceMarkdownLinksWithPseudoLinks(text: string) {
     const text1 = parts[index];
     const text2 = parts[index + 1];
 
-    if (text2 && text2.startsWith("(") && text2.endsWith(")")) {
+    if (text2 && text2.includes("http") && text2.startsWith("(") && text2.endsWith(")")) {
       index += 1; // Už víme, že se jedná o markdown odkaz složený ze dvou částí [](), proto posuneme index o jedničku dopředu.
       const urlOnly = text2.length > 1 ? text2.slice(1, -1) : text2;
       result.push(

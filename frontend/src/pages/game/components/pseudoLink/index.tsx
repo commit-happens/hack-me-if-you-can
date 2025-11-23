@@ -10,10 +10,9 @@ type PseudoLinkProps = {
 const PseudoLink: React.FC<PseudoLinkProps> = ({ children, title, tabIndex = 0 }) => {
   return (
     <span
-      role="link"
       tabIndex={tabIndex}
       title={title}
-      className={`text-primary text-decoration-underline`}
+      className="text-primary text-decoration-underline"
       style={{ cursor: "pointer" }}
     >
       {children}
