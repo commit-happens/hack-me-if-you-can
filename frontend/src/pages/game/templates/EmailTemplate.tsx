@@ -16,37 +16,6 @@ export interface EmailTemplateProps {
 const EmailTemplate: React.FC<EmailTemplateProps> = ({ sender, subject, content }) => {
   const texts = useTranslation("template");
 
-  /** Nahrazuje Markdown odkazy komponentou PseudoLink. */
-  const replaceMarkdownLinksWithPseudoLinks = (text: string) => {
-    const markdownLinkRegex = /\[([^\[]+)\](\(.*\))/g;
-    const parts = text.split(markdownLinkRegex);
-
-    let index = 0;
-    const result = [];
-
-    if (parts.length < 2) return text;
-
-    while (index < parts.length) {
-      const text1 = parts[index];
-      const text2 = parts[index + 1];
-
-      if (text2?.includes("(http")) {
-        index += 1;
-        const urlOnly = text2.length > 1 ? text2.slice(1, -1) : text2;
-        result.push(
-          <PseudoLink key={index} title={urlOnly}>
-            {text1}
-          </PseudoLink>
-        );
-      } else {
-        result.push(text1);
-      }
-      index += 1;
-    }
-
-    return result;
-  };
-
   return (
     <Card className="mb-2">
       <Card.Header>
@@ -63,5 +32,36 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({ sender, subject, content 
     </Card>
   );
 };
+
+/** Nahrazuje Markdown odkazy komponentou PseudoLink. */
+function replaceMarkdownLinksWithPseudoLinks(text: string) {
+  const markdownLinkRegex = /\[([^\[]+)\](\(.*\))/g;
+  const parts = text.split(markdownLinkRegex);
+
+  let index = 0;
+  const result = [];
+
+  if (parts.length < 2) return text;
+
+  while (index < parts.length) {
+    const text1 = parts[index];
+    const text2 = parts[index + 1];
+
+    if (text2 && text2.startsWith("(") && text2.endsWith(")")) {
+      index += 1; // Už víme, že se jedná o markdown odkaz složený ze dvou částí [](), proto posuneme index o jedničku dopředu.
+      const urlOnly = text2.length > 1 ? text2.slice(1, -1) : text2;
+      result.push(
+        <PseudoLink key={`link-${index}`} title={urlOnly}>
+          {text1}
+        </PseudoLink>
+      );
+    } else {
+      result.push(<React.Fragment key={`text-${index}`}>{text1}</React.Fragment>);
+    }
+    index += 1;
+  }
+
+  return result;
+}
 
 export default EmailTemplate;
