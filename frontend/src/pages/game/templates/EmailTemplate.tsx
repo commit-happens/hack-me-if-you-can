@@ -19,7 +19,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
 }) => {
   const texts = useTranslation("template");
   return (
-    <Card style={{ width: "50vw" }} className="mb-2">
+    <Card className="mb-2">
       <Card.Header>
         <strong>{texts.sender}</strong>: {sender}
       </Card.Header>
@@ -27,7 +27,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
         <strong>{texts.subject}</strong>: {subject}
       </Card.Header>
       <Card.Body>
-        <Card.Text>{content}</Card.Text>
+        <Card.Text className="p-sm-0 p-md-3 p-lg-4 p-xl-5">{content}</Card.Text>
       </Card.Body>
     </Card>
   );

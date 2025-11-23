@@ -11,7 +11,7 @@ import { startGame } from "../../store/slices/gameSlice";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
-import { setPlayer } from "../../store/slices/userSlice";
+import { setPlayer } from "../../store/slices/playerSlice";
 import { createPlayer } from "../../services/playerService";
 
 function Welcome() {
@@ -36,16 +36,21 @@ function Welcome() {
     try {
       // Odeslání na backend a získání playerId
       const player = await createPlayer(nickname);
-      console.log('Uživatel vytvořen:', player);
-      
+      console.log("Uživatel vytvořen:", player);
+
       // Uložení nickname + playerId do Redux store
       dispatch(startGame());
-      dispatch(setPlayer({ nickname: player.nickname, playerId: player.playerId }));
+      dispatch(
+        setPlayer({ nickname: player.nickname, playerId: player.playerId }),
+      );
       navigate(getPagePath(Page.Game));
     } catch (error) {
-      console.error('Nastala chyba při vytváření uživatele:', error);
+      console.error("Nastala chyba při vytváření uživatele:", error);
       // Přesnější chybová hláška z BE error objektu (např. uživatelské jméno již existuje nebo je neplatné kvůli délce)
-      const message = error instanceof Error ? error.message : 'Nepodařilo se uložit hráče. Zkuste to prosím znovu.';
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Nepodařilo se uložit hráče. Zkuste to prosím znovu.";
       alert(message);
     } finally {
       setIsLoading(false);
@@ -86,8 +91,12 @@ function Welcome() {
                   onKeyDown={handleKeyDown}
                 />
               </p>
-              <Button variant="primary" disabled={error || isLoading} onClick={() => handleStart()}>
-                {isLoading ? 'Ukládání...' : welcomeTexts.startButton}
+              <Button
+                variant="primary"
+                disabled={error || isLoading}
+                onClick={() => handleStart()}
+              >
+                {isLoading ? "Ukládání..." : welcomeTexts.startButton}
               </Button>
             </div>
           </div>
