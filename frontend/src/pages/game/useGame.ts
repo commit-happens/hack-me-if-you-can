@@ -10,6 +10,7 @@ import {
   setCurrentIndex,
   updateScore,
 } from "../../store/slices/gameSlice";
+import { selectPlayerId } from "../../store/slices/userSlice";
 import { getEnvConfigValue } from "../../utils/envConfig";
 import { faAlarmClock } from "@fortawesome/free-solid-svg-icons";
 
@@ -105,6 +106,7 @@ export function useGame(props: UseGameProps) {
       handleTimeout();
     },
   });
+  const playerId = useAppSelector(selectPlayerId);
 
   const emailsOfDifficulty = useMemo(
     () =>
@@ -201,12 +203,16 @@ export function useGame(props: UseGameProps) {
       const correct = isCorrectAnswer(selected);
       const scoreChange = correct ? 0 : -currentEmail.penalty;
 
-      if (scoreChange) dispatch(updateScore(scoreChange));
+      // Pokud je skóre sníženo a máme playerId, aktualizujeme backend
+      if (scoreChange && playerId) {
+        console.log(`Špatná odpověď, aktualizuji skóre: ${scoreChange}`);
+        dispatch(updateScore({ playerId, scoreChange }));
+      }
 
       if (correct) dispatch(increaseCorrectAnswers());
       setAnswer(selected);
     },
-    [currentEmail, dispatch, isCorrectAnswer],
+    [currentEmail, dispatch, isCorrectAnswer, playerId],
   );
 
   // Když vyprší čas na odpověď, považujeme to za špatnou odpověď.
