@@ -1,13 +1,13 @@
 import React from "react";
 
-type Props = {
+type PseudoLinkProps = {
   children: React.ReactNode;
   title?: string; // tooltip
-  onClick?: (e?: React.MouseEvent<HTMLSpanElement>) => void;
   tabIndex?: number;
 };
 
-const PseudoLink: React.FC<Props> = ({ children, title, tabIndex = 0 }) => {
+/** Komponenta, která vypadá jako odkaz, ale ve skutečnosti jím není. */
+const PseudoLink: React.FC<PseudoLinkProps> = ({ children, title, tabIndex = 0 }) => {
   return (
     <span
       role="link"

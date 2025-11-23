@@ -4,7 +4,7 @@
       "id": 1,
       "sender": "security@mybank-support.com",
       "subject": "Okamžité ověření účtu vyžadováno",
-      "content": "Vážený zákazníku, zaznamenali jsme neobvyklou aktivitu na vašem účtu. Klikněte prosím na tento odkaz a ověřte své údaje: [Odkaz pro ověření údajů](http://mybank-support.verify-login.example/confirm). Pokud neověříte do 24 hodin, dojde k omezení přístupu.",
+      "content": "Vážený zákazníku, zaznamenali jsme neobvyklou aktivitu na vašem účtu. Klikněte prosím na tento odkaz a ověřte své údaje: [http://mybank-support.verify-login.example/confirm](http://mybank-support.verify-login.example/confirm). Pokud neověříte do 24 hodin, dojde k omezení přístupu.",
       "explanation": "Adresa odesílatele a URL neodpovídají oficiální doméně banky (obsahují navíc '-support' a podivnou doménu). E-mail vyvolává umělý tlak časovým limitem (urgentní akce).",
       "penalty": 10,
       "phishingPlatformID": 1,

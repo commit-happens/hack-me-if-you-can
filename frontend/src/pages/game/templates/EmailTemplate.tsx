@@ -13,13 +13,10 @@ export interface EmailTemplateProps {
  * Jednoduchá šablona e-mailu.
  * Zobrazuje pole: Odesílatel, Předmět a Obsah.
  */
-const EmailTemplate: React.FC<EmailTemplateProps> = ({
-  sender,
-  subject,
-  content,
-}) => {
+const EmailTemplate: React.FC<EmailTemplateProps> = ({ sender, subject, content }) => {
   const texts = useTranslation("template");
 
+  /** Nahrazuje Markdown odkazy komponentou PseudoLink. */
   const replaceMarkdownLinksWithPseudoLinks = (text: string) => {
     const markdownLinkRegex = /\[([^\[]+)\](\(.*\))/g;
     const parts = text.split(markdownLinkRegex);
@@ -29,19 +26,21 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
 
     if (parts.length < 2) return text;
 
-    while (index < parts.length - 1) {
+    while (index < parts.length) {
       const text1 = parts[index];
       const text2 = parts[index + 1];
 
-      if (text2.includes("(http")) {
+      if (text2?.includes("(http")) {
         index += 1;
         const urlOnly = text2.length > 1 ? text2.slice(1, -1) : text2;
         result.push(
           <PseudoLink key={index} title={urlOnly}>
             {text1}
-          </PseudoLink>,
+          </PseudoLink>
         );
-      } else result.push(text1);
+      } else {
+        result.push(text1);
+      }
       index += 1;
     }
 
