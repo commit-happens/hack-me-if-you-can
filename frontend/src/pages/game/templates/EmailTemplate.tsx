@@ -1,11 +1,12 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import useTranslation from "../../../hooks/useTranslation";
+import PseudoLink from "../components/pseudoLink";
 
 export interface EmailTemplateProps {
   sender: string;
   subject: string;
-  content: string | React.ReactNode;
+  content: string;
 }
 
 /**
@@ -18,6 +19,35 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
   content,
 }) => {
   const texts = useTranslation("template");
+
+  const replaceMarkdownLinksWithPseudoLinks = (text: string) => {
+    const markdownLinkRegex = /\[([^\[]+)\](\(.*\))/g;
+    const parts = text.split(markdownLinkRegex);
+
+    let index = 0;
+    const result = [];
+
+    if (parts.length < 2) return text;
+
+    while (index < parts.length - 1) {
+      const text1 = parts[index];
+      const text2 = parts[index + 1];
+
+      if (text2.includes("(http")) {
+        index += 1;
+        const urlOnly = text2.length > 1 ? text2.slice(1, -1) : text2;
+        result.push(
+          <PseudoLink key={index} title={urlOnly}>
+            {text1}
+          </PseudoLink>,
+        );
+      } else result.push(text1);
+      index += 1;
+    }
+
+    return result;
+  };
+
   return (
     <Card className="mb-2">
       <Card.Header>
@@ -27,7 +57,9 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
         <strong>{texts.subject}</strong>: {subject}
       </Card.Header>
       <Card.Body>
-        <Card.Text className="p-sm-0 p-md-3 p-lg-4 p-xl-5">{content}</Card.Text>
+        <Card.Text className="p-sm-0 p-md-3 p-lg-4 p-xl-5">
+          {replaceMarkdownLinksWithPseudoLinks(content)}
+        </Card.Text>
       </Card.Body>
     </Card>
   );
