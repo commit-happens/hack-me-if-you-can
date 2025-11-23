@@ -10,7 +10,7 @@ import {
   setCurrentIndex,
   updateScore,
 } from "../../store/slices/gameSlice";
-import { selectPlayerId } from "../../store/slices/userSlice";
+import { selectPlayerId } from "../../store/slices/playerSlice";
 import { getEnvConfigValue } from "../../utils/envConfig";
 import { faAlarmClock } from "@fortawesome/free-solid-svg-icons";
 
@@ -100,7 +100,7 @@ export function useGame(props: UseGameProps) {
     getEnvConfigValue("VITE_TIME_PER_QUESTION", 60) / difficulty,
   );
 
-  const { remainingTime, reset } = useCountdown({
+  const { remainingTime, reset, stop } = useCountdown({
     start: timePerQuestion,
     onCountdownOver: () => {
       handleTimeout();
@@ -200,6 +200,9 @@ export function useGame(props: UseGameProps) {
     (selected: Answer) => {
       if (!currentEmail) return;
 
+      // Okamžitě zastavit odpočítávání
+      stop();
+
       const correct = isCorrectAnswer(selected);
       const scoreChange = correct ? 0 : -currentEmail.penalty;
 
@@ -212,7 +215,7 @@ export function useGame(props: UseGameProps) {
       if (correct) dispatch(increaseCorrectAnswers());
       setAnswer(selected);
     },
-    [currentEmail, dispatch, isCorrectAnswer, playerId],
+    [currentEmail, dispatch, isCorrectAnswer, playerId, stop],
   );
 
   // Když vyprší čas na odpověď, považujeme to za špatnou odpověď.

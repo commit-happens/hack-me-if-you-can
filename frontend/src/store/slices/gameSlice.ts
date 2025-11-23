@@ -20,15 +20,20 @@ const initialState: GameState = {
 // Async thunk pro update skóre na backendu
 // Server-authoritativní update skóre: nejprve PATCH na backend, pak teprve upravíme lokální stav.
 export const updateScore = createAsyncThunk(
-  'game/updateScore',
-  async ({ playerId, scoreChange }: { playerId: number; scoreChange: number }, { getState }) => {
+  "game/updateScore",
+  async (
+    { playerId, scoreChange }: { playerId: number; scoreChange: number },
+    { getState },
+  ) => {
     const state = getState() as RootState;
     const currentScore = state.game.score;
     const targetScore = currentScore + scoreChange;
-    console.log(`Posílám na backend nové skóre hráče ${playerId}: ${currentScore} + (${scoreChange}) => ${targetScore}`);
+    console.log(
+      `Posílám na backend nové skóre hráče ${playerId}: ${currentScore} + (${scoreChange}) => ${targetScore}`,
+    );
     const updated = await updatePlayerScore(playerId, targetScore);
     return updated.score; // Vracíme absolutní skóre ze serveru
-  }
+  },
 );
 
 const gameSlice = createSlice({
@@ -45,9 +50,6 @@ const gameSlice = createSlice({
       state.isPlaying = false;
       state.correctAnswers = 0;
     },
-    updateScore: (state, action: PayloadAction<number>) => {
-      state.score += action.payload;
-    },
     increaseCorrectAnswers: (state) => {
       state.correctAnswers += 1;
     },
@@ -60,18 +62,16 @@ const gameSlice = createSlice({
       state.score = action.payload;
     });
     builder.addCase(updateScore.rejected, (_state, action) => {
-      console.error('Nepodařilo se aktualizovat skóre na backendu:', action.error);
+      console.error(
+        "Nepodařilo se aktualizovat skóre na backendu:",
+        action.error,
+      );
     });
   },
 });
 
-export const {
-  startGame,
-  endGame,
-  updateScore,
-  setCurrentIndex,
-  increaseCorrectAnswers,
-} = gameSlice.actions;
+export const { startGame, endGame, setCurrentIndex, increaseCorrectAnswers } =
+  gameSlice.actions;
 
 // Selektory
 export const selectScore = (state: RootState) => state.game.score;

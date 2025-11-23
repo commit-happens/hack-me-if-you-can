@@ -13,12 +13,20 @@ const useCountdown = (props: UseCountdownProps) => {
   const { start = 10, onCountdownOver } = props;
 
   const [progress, setProgress] = useState(0);
+  const [isStopped, setIsStopped] = useState(false);
 
   const reset = () => {
     setProgress(0);
+    setIsStopped(false);
+  };
+
+  const stop = () => {
+    setIsStopped(true);
   };
 
   useEffect(() => {
+    if (isStopped) return;
+
     const timer = setTimeout(() => {
       if (progress === start) {
         if (onCountdownOver) {
@@ -35,8 +43,8 @@ const useCountdown = (props: UseCountdownProps) => {
     }, 1000);
 
     return () => clearTimeout(timer);
-  }, [progress]);
-  return { remainingTime: start - progress, reset };
+  }, [progress, isStopped]);
+  return { remainingTime: start - progress, reset, stop };
 };
 
 export default useCountdown;

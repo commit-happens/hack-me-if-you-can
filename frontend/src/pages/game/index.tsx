@@ -15,7 +15,7 @@ import { useGame } from "./useGame";
 function Game() {
   const navigate = useNavigate();
   const score = useAppSelector((state) => state.game.score);
-  const nickname = useAppSelector((state) => state.user.nickname);
+  const nickname = useAppSelector((state) => state.player.nickname);
   const texts = useTranslation("game");
 
   const { emails } = emailsData;
