@@ -90,7 +90,7 @@ function Game() {
   if (emailsOfDifficulty.length === 0) {
     return (
       <>
-        <Header />
+        <Header nickname={nickname} score={score} />
         <h1>{texts.noEmails}</h1>
         <p>
           {texts.props.difficulty}: {difficulty}
@@ -101,11 +101,12 @@ function Game() {
 
   return (
     <Container fluid="md" className="w-50">
-      <Header />
-      <h5 className="text-center text-uppercase my-5">
-        {getText(texts.title, [currentIndex + 1, emailsOfDifficulty.length])},
-        hráč: {nickname}, score: {score}
-      </h5>
+      <Header 
+        nickname={nickname}
+        score={score}
+        currentQuestion={currentIndex + 1}
+        totalQuestions={emailsOfDifficulty.length}
+      />
       <div className="mx-auto mb-4" style={{ maxWidth: "50vw" }}>
         <EmailTemplate
           key={id}
