@@ -1,14 +1,66 @@
 services:
+  # Backend služba (Spring Boot)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hmiyc-backend
+    ports:
+      - "8080:8080"
+    environment:
+      # Spring Boot profil
+      - SPRING_PROFILES_ACTIVE=prod
+      # Postgres připojení (viz služba postgres)
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hmiyc
+      - SPRING_DATASOURCE_USERNAME=hmiyc
+      - SPRING_DATASOURCE_PASSWORD=hmiyc
+    networks:
+      - hmiyc-network
+    healthcheck:
+      # Pozn.: eclipse-temurin:21-jre-alpine typicky nemá wget/curl, healthcheck může zůstat "unhealthy"
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/api/hello"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL databáze
   postgres:
     image: postgres:16-alpine
+    container_name: hmiyc-postgres
     environment:
-      POSTGRES_DB: hack_me_if_you_can
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: your_password
+      - POSTGRES_DB=hmiyc
+      - POSTGRES_USER=hmiyc
+      - POSTGRES_PASSWORD=hmiyc
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - hmiyc-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Frontend (pokud budete chtít později)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: hmiyc-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - hmiyc-network
+
+networks:
+  hmiyc-network:
+    driver: bridge
 
 volumes:
-  postgres_data:
+  pgdata:
