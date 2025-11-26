@@ -9,5 +9,6 @@ import cz.hackmeifyoucan.backend.entity.Player;
 
 @Repository
 public interface PlayerRepository extends CrudRepository<Player, Long> {
-
+	// Metoda pro kontrolu existence hráče s danou přezdívkou
+    boolean existsByNickname(String nickname);
 }

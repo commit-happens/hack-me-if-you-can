@@ -1,3 +1,5 @@
+import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Alert, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header";
@@ -6,19 +8,14 @@ import useTranslation, { getText } from "../../hooks/useTranslation";
 import Page from "../../models/Page";
 import { useAppSelector } from "../../store/hooks";
 import { getPagePath } from "../../utils/routing";
+import ActionsRow from "./components/actionRow";
 import EmailTemplate from "./templates/EmailTemplate";
-import { Answer as GameAnswer, useGame } from "./useGame";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowRight,
-  faCheck,
-  faWarning,
-} from "@fortawesome/free-solid-svg-icons";
+import { useGame } from "./useGame";
 
 function Game() {
   const navigate = useNavigate();
   const score = useAppSelector((state) => state.game.score);
-  const nickname = useAppSelector((state) => state.user.nickname);
+  const nickname = useAppSelector((state) => state.player.nickname);
   const texts = useTranslation("game");
 
   const { emails } = emailsData;
@@ -28,11 +25,15 @@ function Game() {
     currentIndex,
     answer,
     isLastEmail,
-    isCorrectAnswer,
     difficulty,
     emailsOfDifficulty,
     handleAnswer,
     handleContinue,
+    remainingTime,
+    timeoutTextColor,
+    timePerQuestion,
+    timeoutProgressBarVariant,
+    feedbackData,
   } = useGame({
     allEmails: emails,
     texts,
@@ -41,35 +42,17 @@ function Game() {
 
   const { id, sender, subject, content, explanation } = currentEmail || {};
 
-  /**
-   * Zobrazení tlačítek pro odpověď.
-   */
-  const renderActions = () => {
+  /** Zobrazí zpětnou vazbu na odpověď uživatele. */
+  const renderFeedback = () => {
     return (
-      <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-        <Button
-          variant="outline-secondary"
-          onClick={() => handleAnswer(GameAnswer.Phishing)}
-        >
-          <FontAwesomeIcon
-            icon={faWarning}
-            aria-hidden="true"
-            className="text-danger"
-          />
-          {getText(texts.answers.phishing)}
-        </Button>
-        <Button
-          variant="outline-secondary"
-          onClick={() => handleAnswer(GameAnswer.Safe)}
-        >
-          <FontAwesomeIcon
-            icon={faCheck}
-            className="text-success"
-            aria-hidden="true"
-          />
-          {getText(texts.answers.safe)}
-        </Button>
-      </div>
+      <Alert variant={feedbackData.variant} className="text-center">
+        <FontAwesomeIcon
+          icon={feedbackData.icon}
+          aria-hidden="true"
+          fontSize={20}
+        />{" "}
+        {feedbackData.title}
+      </Alert>
     );
   };
 
@@ -77,29 +60,14 @@ function Game() {
    * Zobrazení obsahu podle toho, zda uživatel odpověděl.
    */
   const renderContent = () => {
-    let feedbackData = {
-      title: getText(texts.feedback.correct),
-      variant: "success",
-    };
-
     if (answer) {
-      if (!isCorrectAnswer())
-        feedbackData = {
-          title: getText(texts.feedback.incorrect),
-          variant: "danger",
-        };
-
       return (
         <div className="w-100">
-          <Alert variant={feedbackData.variant}>
-            <h2>{feedbackData.title}</h2>
-          </Alert>
+          {renderFeedback()}
           {explanation}
           <div style={{ textAlign: "center" }} className="mt-4">
             <Button onClick={() => handleContinue()}>
-              {isLastEmail
-                ? getText(texts.buttons.showResults)
-                : getText(texts.buttons.continue)}{" "}
+              {isLastEmail ? texts.buttons.showResults : texts.buttons.continue}{" "}
               <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" />
             </Button>
           </div>
@@ -107,7 +75,16 @@ function Game() {
       );
     }
 
-    return <div>{renderActions()}</div>;
+    return (
+      <ActionsRow
+        handleAnswer={handleAnswer}
+        remainingTime={remainingTime}
+        timeoutTextColor={timeoutTextColor}
+        timeoutProgressBarVariant={timeoutProgressBarVariant}
+        timePerQuestion={timePerQuestion}
+        texts={texts}
+      />
+    );
   };
 
   if (emailsOfDifficulty.length === 0) {
@@ -125,10 +102,10 @@ function Game() {
   return (
     <Container fluid="md" className="w-50">
       <Header />
-      <h1 className="text-center">
+      <h5 className="text-center text-uppercase my-5">
         {getText(texts.title, [currentIndex + 1, emailsOfDifficulty.length])},
-        hráč: {nickname} score: {score}
-      </h1>
+        hráč: {nickname}, score: {score}
+      </h5>
       <div className="mx-auto mb-4" style={{ maxWidth: "50vw" }}>
         <EmailTemplate
           key={id}

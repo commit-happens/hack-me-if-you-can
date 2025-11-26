@@ -1,6 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
+import { updatePlayerScore } from "../../services/playerService";
 
 interface GameState {
   score: number;
@@ -16,6 +17,25 @@ const initialState: GameState = {
   isPlaying: false,
 };
 
+// Async thunk pro update skóre na backendu
+// Server-authoritativní update skóre: nejprve PATCH na backend, pak teprve upravíme lokální stav.
+export const updateScore = createAsyncThunk(
+  "game/updateScore",
+  async (
+    { playerId, scoreChange }: { playerId: number; scoreChange: number },
+    { getState },
+  ) => {
+    const state = getState() as RootState;
+    const currentScore = state.game.score;
+    const targetScore = currentScore + scoreChange;
+    console.log(
+      `Posílám na backend nové skóre hráče ${playerId}: ${currentScore} + (${scoreChange}) => ${targetScore}`,
+    );
+    const updated = await updatePlayerScore(playerId, targetScore);
+    return updated.score; // Vracíme absolutní skóre ze serveru
+  },
+);
+
 const gameSlice = createSlice({
   name: "game",
   initialState,
@@ -30,9 +50,6 @@ const gameSlice = createSlice({
       state.isPlaying = false;
       state.correctAnswers = 0;
     },
-    incrementScore: (state, action: PayloadAction<number>) => {
-      state.score += action.payload;
-    },
     increaseCorrectAnswers: (state) => {
       state.correctAnswers += 1;
     },
@@ -40,15 +57,21 @@ const gameSlice = createSlice({
       state.currentIndex = action.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(updateScore.fulfilled, (state, action) => {
+      state.score = action.payload;
+    });
+    builder.addCase(updateScore.rejected, (_state, action) => {
+      console.error(
+        "Nepodařilo se aktualizovat skóre na backendu:",
+        action.error,
+      );
+    });
+  },
 });
 
-export const {
-  startGame,
-  endGame,
-  incrementScore,
-  setCurrentIndex,
-  increaseCorrectAnswers,
-} = gameSlice.actions;
+export const { startGame, endGame, setCurrentIndex, increaseCorrectAnswers } =
+  gameSlice.actions;
 
 // Selektory
 export const selectScore = (state: RootState) => state.game.score;
