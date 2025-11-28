@@ -9,3 +9,13 @@
 *.iml
 *.ipr
 *.iws
+
+# Docker/ENV
+.env
+
+# Lokální data (např. H2 soubory)
+data/
+
+# Explicitní ignorování H2 databázových artefaktů (pro případ, že složka data/ není zachycena)
+data/*.mv.db
+data/*.trace.db
