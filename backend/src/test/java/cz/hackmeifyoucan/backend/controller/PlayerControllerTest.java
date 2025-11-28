@@ -3,12 +3,16 @@
 package cz.hackmeifyoucan.backend.controller;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -19,273 +23,373 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
-import java.util.List;
-
-import cz.hackmeifyoucan.backend.dto.PlayerResponse;
 import cz.hackmeifyoucan.backend.dto.PlayerRequest;
+import cz.hackmeifyoucan.backend.dto.PlayerResponse;
+import cz.hackmeifyoucan.backend.dto.PlayerUpdateRequest;
+import cz.hackmeifyoucan.backend.exception.DuplicateNicknameException;
 import cz.hackmeifyoucan.backend.exception.PlayerNotFoundException;
 import cz.hackmeifyoucan.backend.service.PlayerService;
 
-
-// 1. Tato anotace říká Springu: "Otestuj jen PlayerController"
 @WebMvcTest(PlayerController.class)
 class PlayerControllerTest {
 
-    // Nástroj pro simulaci HTTP requestů (jako Postman v kódu)
+    private static final String PLAYERS_API = "/api/players";
+    private static final String APPLICATION_JSON = "application/json";
+
     @Autowired
     private MockMvc mockMvc;
 
-    // 2. Simulujeme Service, aby test nebyl závislý na databázi
     @MockitoBean
     private PlayerService playerService;
 
-    // --- Sekce pro GET ALL ---
     @Nested
     class GetPlayersTests {
+
         @Test
         void shouldReturnAllPlayers() throws Exception {
             // Given
-            PlayerResponse player1 = new PlayerResponse(1L, "David", 80);
-            PlayerResponse player2 = new PlayerResponse(2L, "Petr", 90);
-            List<PlayerResponse> mockPlayers = Arrays.asList(player1, player2);
+            PlayerResponse player1 = new PlayerResponse(1L, "Terminátor", 80);
+            PlayerResponse player2 = new PlayerResponse(2L, "T-1000", 90);
+            List<PlayerResponse> players = Arrays.asList(player1, player2);
+            when(playerService.getPlayers()).thenReturn(players);
 
-            // Mock playerService
-            when(playerService.getPlayers()).thenReturn(mockPlayers);
-
-            // When
-            mockMvc.perform(get("/api/players"))
-                    // Then
+            // When & Then
+            mockMvc.perform(get(PLAYERS_API))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType("application/json"))
+                    .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.size()").value(2))
-                    .andExpect(jsonPath("$[0].nickname").value("David"))
+                    .andExpect(jsonPath("$[0].nickname").value("Terminátor"))
+                    .andExpect(jsonPath("$[0].playerId").value(1))
+                    .andExpect(jsonPath("$[0].score").value(80))
+                    .andExpect(jsonPath("$[1].nickname").value("T-1000"))
                     .andExpect(jsonPath("$[1].playerId").value(2))
-                    .andExpect(jsonPath("$[1].score").value(90))
-                    ;
+                    .andExpect(jsonPath("$[1].score").value(90));
         }
 
         @Test
         void shouldReturnEmptyListWhenNoPlayersFound() throws Exception {
             // Given
-            List<PlayerResponse> mockPlayers = Arrays.asList();
+            when(playerService.getPlayers()).thenReturn(List.of());
 
-            // Mock playerService
-            when(playerService.getPlayers()).thenReturn(mockPlayers);
-
-            // When
-            mockMvc.perform(get("/api/players"))
-                    // Then
+            // When & Then
+            mockMvc.perform(get(PLAYERS_API))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType("application/json"))
-                    .andExpect(jsonPath("$.size()").value(0))
-                    ;
+                    .andExpect(content().contentType(APPLICATION_JSON))
+                    .andExpect(jsonPath("$.size()").value(0));
         }
 
         @Test
         void shouldReturn500WhenServiceFails() throws Exception {
             // Given
-            RuntimeException runtimeException = new RuntimeException("Chyba (např. databáze)");
+            when(playerService.getPlayers()).thenThrow(new RuntimeException("Chyba (např. databáze)"));
 
-            // Mock playerService
-            when(playerService.getPlayers()).thenThrow(runtimeException);
-
-            // When
-            mockMvc.perform(get("/api/players")
-                    // Then
-                    .contentType("application/json"))
+            // When & Then
+            mockMvc.perform(get(PLAYERS_API))
                     .andExpect(status().isInternalServerError())
-                    .andExpect(jsonPath("$.error").exists())
-                    .andExpect(jsonPath("$.error").value("Neočekávaná chyba serveru"))
-                    ;
+                    .andExpect(jsonPath("$.error").value("Neočekávaná chyba serveru"));
         }
     }
 
-    // --- Sekce pro POST ---
-    // addPlayer
     @Nested
     class AddPlayerTests {
+
         @Test
         void shouldAddPlayerSuccessfully() throws Exception {
             // Given
-            PlayerRequest mockPlayerRequest = new PlayerRequest("Alice", 80);
-            PlayerResponse mockPlayerResponse = new PlayerResponse(1L, "Alice", 80);
+            PlayerRequest request = new PlayerRequest("Terminátor", 80);
+            PlayerResponse response = new PlayerResponse(1L, "Terminátor", 80);
+            when(playerService.addPlayer(request)).thenReturn(response);
 
-            // Mock
-            when(playerService.addPlayer(mockPlayerRequest)).thenReturn(mockPlayerResponse);
-
-            // When
-            mockMvc.perform(
-                    post("/api/players")
-                    .content("{\"nickname\":\"Alice\",\"score\":80}")
-                    .contentType("application/json")
-            )
-                    // Then        
+            // When & Then
+            mockMvc.perform(post(PLAYERS_API)
+                            .contentType(APPLICATION_JSON)
+                            .content("{\"nickname\":\"Terminátor\",\"score\":80}"))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType("application/json"))
+                    .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.playerId").value(1))
-                    .andExpect(jsonPath("$.nickname").value("Alice"))
-                    .andExpect(jsonPath("$.score").value(80))
-
-                    ;
+                    .andExpect(jsonPath("$.nickname").value("Terminátor"))
+                    .andExpect(jsonPath("$.score").value(80));
         }
 
         @Test
         void shouldAddPlayerWithDefaultScoreWhenScoreNotProvided() throws Exception {
             // Given
-            PlayerRequest mockPlayerRequest = new PlayerRequest("BobDefault", null);
-            PlayerResponse mockPlayerResponse = new PlayerResponse(2L, "BobDefault", 100);
+            PlayerRequest request = new PlayerRequest("Terminátor", null);
+            PlayerResponse response = new PlayerResponse(2L, "Terminátor", 100);
+            when(playerService.addPlayer(request)).thenReturn(response);
 
-            // Mock
-            when(playerService.addPlayer(mockPlayerRequest)).thenReturn(mockPlayerResponse);
-
-            // When
-            mockMvc.perform(
-                    post("/api/players")
-                    .content("{\"nickname\":\"BobDefault\"}")
-                    .contentType("application/json")
-            )
-                    // Then        
+            // When & Then
+            mockMvc.perform(post(PLAYERS_API)
+                            .contentType(APPLICATION_JSON)
+                            .content("{\"nickname\":\"Terminátor\"}"))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType("application/json"))
+                    .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.playerId").value(2))
-                    .andExpect(jsonPath("$.nickname").value("BobDefault"))
+                    .andExpect(jsonPath("$.nickname").value("Terminátor"))
                     .andExpect(jsonPath("$.score").value(100));
         }
-                    
+
+        @SuppressWarnings("null")
         @ParameterizedTest
         @CsvSource(delimiterString = " | ", value = {
             "'{\"nickname\":\"AB\",\"score\":100}' | nickname | Přezdívka musí mít mezi 3 a 50 znaky",
+            "'{\"nickname\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"score\":100}' | nickname | Přezdívka musí mít mezi 3 a 50 znaky",
             "'{\"nickname\":\"ValidName\",\"score\":-5}' | score | Skóre nemůže být záporné",
             "'{\"score\":100}' | nickname | Přezdívka je povinná"
         })
-        void shouldReturn400WhenInvalidInput(String invalidJson, String fieldName, String expectedFieldError) throws Exception {
-            // When
-            mockMvc.perform(
-                    post("/api/players")
-                    .content(invalidJson)
-                    .contentType("application/json")
-            )
-                    // Then        
+        void shouldReturn400WhenInvalidInput(String invalidJson, String fieldName, String expectedFieldError)
+                throws Exception {
+            // When & Then
+            mockMvc.perform(post(PLAYERS_API)
+                            .contentType(APPLICATION_JSON)
+                            .content(invalidJson))
                     .andExpect(status().isBadRequest())
-                    .andExpect(content().contentType("application/json"))
+                    .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.error").value("Neplatná data v požadavku"))
                     .andExpect(jsonPath("$.status").value(400))
-                    .andExpect(jsonPath("$.fields." + fieldName).value(expectedFieldError))
-                    ;
+                    .andExpect(jsonPath("$.fields." + fieldName).value(expectedFieldError));
+        }
+
+        @Test
+        void shouldReturn409WhenDuplicateNickname() throws Exception {
+            // Given
+            PlayerRequest request = new PlayerRequest("TerminátorJižExistuje", 80);
+            when(playerService.addPlayer(request))
+                    .thenThrow(new DuplicateNicknameException("TerminátorJižExistuje"));
+
+            // When & Then
+            mockMvc.perform(post(PLAYERS_API)
+                            .contentType(APPLICATION_JSON)
+                            .content("{\"nickname\":\"TerminátorJižExistuje\",\"score\":80}"))
+                    .andExpect(status().isConflict())
+                    .andExpect(content().contentType(APPLICATION_JSON))
+                    .andExpect(jsonPath("$.status").value(409))
+                    .andExpect(jsonPath("$.error").value("Přezdívka již existuje: TerminátorJižExistuje"))
+                    .andExpect(jsonPath("$.fields.nickname").value("Přezdívka už je obsazená"));
+        }
+
+        @Test
+        void shouldReturn500WhenServiceFails() throws Exception {
+            // Given
+            PlayerRequest request = new PlayerRequest("Terminátor", 80);
+            when(playerService.addPlayer(request)).thenThrow(new RuntimeException("Chyba (např. databáze)"));
+
+            // When & Then
+            mockMvc.perform(post(PLAYERS_API)
+                            .contentType(APPLICATION_JSON)
+                            .content("{\"nickname\":\"Terminátor\",\"score\":80}"))
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(jsonPath("$.error").value("Neočekávaná chyba serveru"));
         }
     }
 
-    // --- Sekce pro GET ONE ---
-    // getPlayer
     @Nested
     class GetPlayerTests {
+
         @Test
         void shouldReturnPlayer() throws Exception {
             // Given
-            PlayerResponse mockPlayer = new PlayerResponse(1L, "Alice", 100);
-            
-            // Mock playerService
-            when(playerService.getPlayerById(1L)).thenReturn(mockPlayer);
+            PlayerResponse player = new PlayerResponse(1L, "Terminátor", 100);
+            when(playerService.getPlayerById(1L)).thenReturn(player);
 
-            // When
-            mockMvc.perform(get("/api/players/1"))
-                    // Then
+            // When & Then
+            mockMvc.perform(get(PLAYERS_API + "/{playerId}", 1L))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType("application/json"))
+                    .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.playerId").value(1))
-                    .andExpect(jsonPath("$.nickname").value("Alice"))
+                    .andExpect(jsonPath("$.nickname").value("Terminátor"))
                     .andExpect(jsonPath("$.score").value(100));
         }
 
-        @Test
-        void shouldReturn404WhenPlayerNotFound() throws Exception {
+        @ParameterizedTest
+        @CsvSource({"1", "0", "-1", "9999999999"})
+        void shouldReturn404WhenPlayerNotFound(Long playerId) throws Exception {
             // Given
-            Long nonExistentPlayerId = 999L;
-            PlayerNotFoundException playerNotFoundException = new PlayerNotFoundException(nonExistentPlayerId);
+            when(playerService.getPlayerById(playerId))
+                    .thenThrow(new PlayerNotFoundException(playerId));
 
-            // Mock playerService
-            when(playerService.getPlayerById(nonExistentPlayerId)).thenThrow(playerNotFoundException);
-
-            // When
-            mockMvc.perform(get("/api/players/{playerId}", nonExistentPlayerId))
-                    // Then
+            // When & Then
+            mockMvc.perform(get(PLAYERS_API + "/{playerId}", playerId))
                     .andExpect(status().isNotFound())
-                    .andExpect(jsonPath("$.error").exists())
-                    .andExpect(jsonPath("$.error").value("Hráč nenalezen pro ID: " + nonExistentPlayerId));
+                    .andExpect(jsonPath("$.error").value("Hráč nenalezen pro ID: " + playerId));
+        }
+
+        @Test
+        void shouldReturn500WhenServiceFails() throws Exception {
+            // Given
+            when(playerService.getPlayerById(1L)).thenThrow(new RuntimeException("Chyba (např. databáze)"));
+
+            // When & Then
+            mockMvc.perform(get(PLAYERS_API + "/{playerId}", 1L))
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(jsonPath("$.error").value("Neočekávaná chyba serveru"));
         }
     }
 
-    // --- Sekce pro PATCH ---
-    // updatePlayer
     @Nested
     class UpdatePlayerTests {
-        @Test
-        void shouldUpdatePlayerSuccessfully() throws Exception {
-            // Given
-            Long playerIdToUpdate = 1L;
-            PlayerRequest mockUpdateRequest = new PlayerRequest("AliceUpdated", 120);
-            PlayerResponse mockUpdatedResponse = new PlayerResponse(playerIdToUpdate, "AliceUpdated", 120);
-
-            // Mock
-            when(playerService.updatePlayer(playerIdToUpdate, mockUpdateRequest)).thenReturn(mockUpdatedResponse);
-
-            // When
-            mockMvc.perform(
-                    patch("/api/players/{playerId}", playerIdToUpdate)
-                    .content("{\"nickname\":\"AliceUpdated\",\"score\":120}")
-                    .contentType("application/json")
-            )
-                    // Then        
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType("application/json"))
-                    .andExpect(jsonPath("$.playerId").value(1))
-                    .andExpect(jsonPath("$.nickname").value("AliceUpdated"))
-                    .andExpect(jsonPath("$.score").value(120))
-                    ;
-        }
 
         @Test
         void shouldUpdatePlayerScoreSuccessfully() throws Exception {
             // Given
-            Long playerIdToUpdate = 1L;
-            PlayerRequest mockUpdateRequest = new PlayerRequest(null, 120);
-            PlayerResponse mockUpdatedResponse = new PlayerResponse(playerIdToUpdate, "AliceUpdated", 120);
+            PlayerUpdateRequest request = new PlayerUpdateRequest(null, 120);
+            PlayerResponse response = new PlayerResponse(1L, "Terminátor", 120);
+            when(playerService.updatePlayer(1L, request)).thenReturn(response);
 
-            // Mock
-            when(playerService.updatePlayer(playerIdToUpdate, mockUpdateRequest)).thenReturn(mockUpdatedResponse);
-
-            // When
-            mockMvc.perform(
-                    patch("/api/players/{playerId}", playerIdToUpdate)
-                    .content("{\"nickname\":null,\"score\":120}")
-                    .contentType("application/json")
-            )
-                    // Then        
+            // When & Then
+            mockMvc.perform(patch(PLAYERS_API + "/{playerId}", 1L)
+                            .contentType(APPLICATION_JSON)
+                            .content("{\"score\":120}"))
                     .andExpect(status().isOk())
-                    .andExpect(content().contentType("application/json"))
+                    .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.playerId").value(1))
-                    .andExpect(jsonPath("$.nickname").value("AliceUpdated"))
-                    .andExpect(jsonPath("$.score").value(120))
-                    ;
+                    .andExpect(jsonPath("$.nickname").value("Terminátor"))
+                    .andExpect(jsonPath("$.score").value(120));
+        }
+
+        @Test
+        void shouldUpdatePlayerNicknameSuccessfully() throws Exception {
+            // Given
+            PlayerUpdateRequest request = new PlayerUpdateRequest("TerminátorAktualizován", null);
+            PlayerResponse response = new PlayerResponse(1L, "TerminátorAktualizován", 100);
+            when(playerService.updatePlayer(1L, request)).thenReturn(response);
+
+            // When & Then
+            mockMvc.perform(patch(PLAYERS_API + "/1")
+                            .contentType(APPLICATION_JSON)
+                            .content("{\"nickname\":\"TerminátorAktualizován\"}"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(APPLICATION_JSON))
+                    .andExpect(jsonPath("$.playerId").value(1))
+                    .andExpect(jsonPath("$.nickname").value("TerminátorAktualizován"))
+                    .andExpect(jsonPath("$.score").value(100));
+        }
+
+        @Test
+        void shouldUpdatePlayerSuccessfully() throws Exception {
+            // Given
+            PlayerUpdateRequest request = new PlayerUpdateRequest("TerminátorAktualizován", 120);
+            PlayerResponse response = new PlayerResponse(1L, "TerminátorAktualizován", 120);
+            when(playerService.updatePlayer(1L, request)).thenReturn(response);
+
+            // When & Then
+            mockMvc.perform(patch(PLAYERS_API + "/1")
+                            .contentType(APPLICATION_JSON)
+                            .content("{\"nickname\":\"TerminátorAktualizován\", \"score\":120}"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(APPLICATION_JSON))
+                    .andExpect(jsonPath("$.playerId").value(1))
+                    .andExpect(jsonPath("$.nickname").value("TerminátorAktualizován"))
+                    .andExpect(jsonPath("$.score").value(120));
+        }
+
+        @SuppressWarnings("null")
+        @ParameterizedTest
+        @CsvSource(delimiterString = " | ", value = {
+            "'{\"nickname\":\"AB\"}' | nickname | Přezdívka musí mít mezi 3 a 50 znaky",
+            "'{\"nickname\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"}' | nickname | Přezdívka musí mít mezi 3 a 50 znaky",
+            "'{\"score\":-5}' | score | Skóre nemůže být záporné"
+        })
+        void shouldReturn400WhenInvalidInput(String invalidJson, String fieldName, String expectedFieldError)
+                throws Exception {
+            // When & Then
+            mockMvc.perform(patch(PLAYERS_API + "/1")
+                            .contentType(APPLICATION_JSON)
+                            .content(invalidJson))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().contentType(APPLICATION_JSON))
+                    .andExpect(jsonPath("$.error").value("Neplatná data v požadavku"))
+                    .andExpect(jsonPath("$.status").value(400))
+                    .andExpect(jsonPath("$.fields." + fieldName).value(expectedFieldError));
+        }
+
+        @ParameterizedTest
+        @CsvSource({"1", "0", "-1", "9999999999"})
+        void shouldReturn404WhenPlayerNotFound(Long playerId) throws Exception {
+            // Given
+            PlayerUpdateRequest request = new PlayerUpdateRequest("TerminátorAktualizován", 100);
+            when(playerService.updatePlayer(playerId, request))
+                    .thenThrow(new PlayerNotFoundException(playerId));
+
+            // When & Then
+            mockMvc.perform(patch(PLAYERS_API + "/{playerId}", playerId)
+                            .contentType(APPLICATION_JSON)
+                            .content("{\"nickname\":\"TerminátorAktualizován\",\"score\":100}"))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.error").value("Hráč nenalezen pro ID: " + playerId));
+        }
+
+        @Test
+        void shouldReturn409WhenDuplicateNickname() throws Exception {
+            // Given
+            PlayerUpdateRequest request = new PlayerUpdateRequest("TerminátorJižExistuje", null);
+            when(playerService.updatePlayer(1L, request))
+                    .thenThrow(new DuplicateNicknameException("TerminátorJižExistuje"));
+
+            // When & Then
+            mockMvc.perform(patch(PLAYERS_API + "/1")
+                            .contentType(APPLICATION_JSON)
+                            .content("{\"nickname\":\"TerminátorJižExistuje\"}"))
+                    .andExpect(status().isConflict())
+                    .andExpect(content().contentType(APPLICATION_JSON))
+                    .andExpect(jsonPath("$.status").value(409))
+                    .andExpect(jsonPath("$.error").value("Přezdívka již existuje: TerminátorJižExistuje"))
+                    .andExpect(jsonPath("$.fields.nickname").value("Přezdívka už je obsazená"));
+        }
+
+        @Test
+        void shouldReturn500WhenServiceFails() throws Exception {
+            // Given
+            PlayerUpdateRequest request = new PlayerUpdateRequest("Terminátor", 100);
+            when(playerService.updatePlayer(1L, request)).thenThrow(new RuntimeException("Chyba (např. databáze)"));
+
+            // When & Then
+            mockMvc.perform(patch(PLAYERS_API + "/1")
+                            .contentType(APPLICATION_JSON)
+                            .content("{\"nickname\":\"Terminátor\",\"score\":100}"))
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(jsonPath("$.error").value("Neočekávaná chyba serveru"));
         }
     }
 
-    // --- Sekce pro DELETE ---
-    // deletePlayer
+    @Nested
+    class DeletePlayerTests {
+
+        @Test
+        void shouldDeletePlayerSuccessfully() throws Exception {
+            // Given
+            PlayerResponse response = new PlayerResponse(1L, "Terminátor", 100);
+            when(playerService.deletePlayer(1L)).thenReturn(response);
+
+            // When & Then
+            mockMvc.perform(delete(PLAYERS_API + "/1"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType(APPLICATION_JSON))
+                    .andExpect(jsonPath("$.playerId").value(1))
+                    .andExpect(jsonPath("$.nickname").value("Terminátor"))
+                    .andExpect(jsonPath("$.score").value(100));
+        }
+
+        @ParameterizedTest
+        @CsvSource({"9999999999", "0", "-1"})
+        void shouldReturn204WhenPlayerNotFound(Long playerId) throws Exception {
+            // Given
+            when(playerService.deletePlayer(playerId)).thenReturn(null);
+
+            // When & Then
+            mockMvc.perform(delete(PLAYERS_API + "/{playerId}", playerId))
+                    .andExpect(status().isNoContent());
+        }
+
+        @Test
+        void shouldReturn500WhenServiceFails() throws Exception {
+            // Given
+            when(playerService.deletePlayer(1L)).thenThrow(new RuntimeException("Chyba (např. databáze)"));
+
+            // When & Then
+            mockMvc.perform(delete(PLAYERS_API + "/1"))
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(jsonPath("$.error").value("Neočekávaná chyba serveru"));
+        }
+    }
 }
-
-// @Test
-//     void shouldReturn404WhenPlayerNotFound() throws Exception {
-//         Long nonExistentId = 999L;
-
-//         // DŮLEŽITÉ: Zde musíte vyhodit PŘESNĚ tu výjimku, kterou chytá váš @ExceptionHandler
-//         when(playerService.getPlayerById(nonExistentId))
-//             .thenThrow(new PlayerNotFoundException("Hráč s ID " + nonExistentId + " neexistuje"));
-
-//         mockMvc.perform(get("/api/players/{playerId}", nonExistentId))
-//                 .andExpect(status().isNotFound()) // Nyní by to mělo projít (404)
-                
-//                 // Pokud vracíte Error404Response (jak máte v @ApiResponse), můžete otestovat i tělo:
-//                 .andExpect(jsonPath("$.message").exists()); 
-//     }
