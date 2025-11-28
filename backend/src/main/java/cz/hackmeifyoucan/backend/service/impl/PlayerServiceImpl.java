@@ -58,6 +58,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     /* --------------------------------------------------------------------------------------------------- */
     @Override
+    @SuppressWarnings("null")
     public PlayerResponse getPlayerById(Long playerId) {
         // vrací Optional<Player>
         Optional<Player> optionalPlayer = playerRepository.findById(playerId);
@@ -93,6 +94,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     /* --------------------------------------------------------------------------------------------------- */
     @Override
+    @SuppressWarnings("null")
     public PlayerResponse updatePlayer(Long playerId, PlayerUpdateRequest request) {
         // Najdeme hráče v databázi
         Optional<Player> optionalPlayer = playerRepository.findById(playerId);
@@ -123,6 +125,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     /* --------------------------------------------------------------------------------------------------- */
     @Override
+    @SuppressWarnings("null")
     public PlayerResponse deletePlayer(Long playerId) {
         // Zkusíme najít hráče
         Optional<Player> optionalPlayer = playerRepository.findById(playerId);
