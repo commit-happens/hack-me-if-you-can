@@ -56,4 +56,4 @@ jobs:
         with:
           name: test-results
           path: backend/target/surefire-reports/
-          retention-days: 3
+          retention-days: 7
