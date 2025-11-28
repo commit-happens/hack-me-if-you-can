@@ -60,6 +60,7 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public PlayerResponse getPlayerById(Long playerId) {
         // vrací Optional<Player>
+        @SuppressWarnings("null")
         Optional<Player> optionalPlayer = playerRepository.findById(playerId);
         
         // Pokud hráč neexistuje, vyhodíme chybu (vrátí se HTTP 404)
@@ -95,6 +96,7 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     public PlayerResponse updatePlayer(Long playerId, PlayerUpdateRequest request) {
         // Najdeme hráče v databázi
+        @SuppressWarnings("null")
         Optional<Player> optionalPlayer = playerRepository.findById(playerId);
         
         if (optionalPlayer.isEmpty()) {
@@ -116,12 +118,14 @@ public class PlayerServiceImpl implements PlayerService {
         }
         
         // Uložíme změny do databáze
+        @SuppressWarnings("null")
         Player updatedPlayer = playerRepository.save(player);
         
         return convertToResponse(updatedPlayer);
     }
 
     /* --------------------------------------------------------------------------------------------------- */
+    @SuppressWarnings("null")
     @Override
     public PlayerResponse deletePlayer(Long playerId) {
         // Zkusíme najít hráče
