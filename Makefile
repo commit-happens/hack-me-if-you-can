@@ -41,8 +41,12 @@ be-run:
 	@echo "Spuštění backendu..."
 	cd backend && mvn spring-boot:run
 
-be-hosts:
+## Další pomocné příkazy
+print-hosts:
 	@echo "--- Uživatelské a vývojářské odkazy ---"
+	@echo "Frontend (local) server: http://localhost:5173"
+	@echo "Frontend (docker) preview: http://localhost:3000"
 	@echo "Hello API: http://localhost:8080/api/hello"
+	@echo "Players API: http://localhost:8080/api/players"
 	@echo "H2 database: http://localhost:8080/h2-console (user/pass viz application.properties)"
 	@echo "Swagger API documentation: http://localhost:8080/swagger-ui.html"
