@@ -16,6 +16,10 @@ concurrency:
 jobs:
   backend-build-and-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     
     steps:
       - name: Checkout repository
