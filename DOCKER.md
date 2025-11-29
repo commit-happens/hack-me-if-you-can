@@ -29,7 +29,7 @@ Po úspěšném spuštění budou dostupné:
 - **Frontend**: [http://localhost:3000](http://localhost:3000)
 - **Backend API**: [http://localhost:8080/api/hello](http://localhost:8080/api/hello)
 - **H2 Console**: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
-  - JDBC URL: `jdbc:h2:file:./data/hack_db`
+  - JDBC URL: `jdbc:h2:file:./data/hmiyc`
   - Username: `sa`
   - Password: (prázdné)
 - **Swagger API**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)

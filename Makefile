@@ -39,7 +39,7 @@ be-test:
 
 be-run:
 	@echo "Spuštění backendu..."
-	cd backend && mvn spring-boot:run
+	cd backend && mvn spring-boot:run -Dspring-boot.run.arguments="--spring.config.import=optional:file:../.env[.properties]"
 
 be-hosts:
 	@echo "--- Uživatelské a vývojářské odkazy ---"

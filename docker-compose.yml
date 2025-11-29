@@ -28,12 +28,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # Tady přepíšeme nastavení z application.properties
-      # DŮLEŽITÉ: Místo 'localhost' píšeme 'hmiyc-postgres' (název kontejneru DB)
       SPRING_DATASOURCE_URL: jdbc:postgresql://hmiyc-postgres:5432/${DB_NAME}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
       SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
-      # Pro jistotu vypneme H2 konzoli, abychom měli jistotu
       SPRING_H2_CONSOLE_ENABLED: "false"
     depends_on:
       postgres:

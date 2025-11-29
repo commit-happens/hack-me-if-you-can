@@ -7,7 +7,7 @@
 
 Jak jsem spoustela postgreSQL u sebe (testovani ze to funguje)
 1. Spustim si docker pomoci: `docker-compose up build --no-cahce` (to instaluje vse uplne od zacatky -hodi se kdyz se docker image nejak rozbije a chces ho cely vytvorit znovu) pokud uz existuje a chces ho jen spustit tak staci `docker-compose up -d` a pro vypnuti `docker-compose down -v`
-2. Spustim si posgreSQL v dockeru: `docker exec -it hmiyc-postgres psql -U postgres -d hack_db`
+2. Spustim si posgreSQL v dockeru: `docker exec -it hmiyc-postgres psql -U postgres -d hmiyc`
 3. Muzu se ted divat co je v databazi: uzitecne prikazy
     1. `\dt` - vrati vsechny tabulky
     2. `\d player` - vrati informace o tabulce player
@@ -28,6 +28,6 @@ curl -X 'POST' \
 6. Pokud se podivas ha H2 databazi tak nebezi>: http://localhost:8080/h2-console/login.jsp?jsessionid=f91e667e117e5ef03d13d4d3b26296b0
 3. A po prihlaseni do postgreSQL v dockeru a podivani se do tabulky player uvidis player
 ```
-docker exec -it hmiyc-postgres psql -U postgres -d hack_db
+docker exec -it hmiyc-postgres psql -U postgres -d hmiyc
 SELECT * FROM player;
 ```
