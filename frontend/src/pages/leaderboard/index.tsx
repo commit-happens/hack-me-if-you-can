@@ -1,36 +1,32 @@
 import { Col, Container, Row } from "react-bootstrap";
-import playerScores from "../../data/player.mock.json";
-import { useAppSelector } from "../../store/hooks";
 import useTranslation from "../../hooks/useTranslation";
 
-type PlayerScore = {
-  id: number;
-  nickname: string;
-  score: number;
-};
+import useLeaderboard from "./useLeaderboard";
+import type { PlayerModel } from "../../services/playerService";
 
 const LeaderBoard = () => {
   const texts = useTranslation("leaderboard");
-  const { score, isPlaying } = useAppSelector((state) => state.game);
-  const { nickname, playerId } = useAppSelector((state) => state.player);
+  const {
+    isPlaying,
+    scoreIsBelowTop10,
+    currentPlayerScoreIndex,
+    nickname,
+    playerId,
+    top10Scores,
+    score,
+  } = useLeaderboard();
 
-  const scores = playerScores.players as PlayerScore[];
-
-  const sortedScores = scores.sort((a, b) => b.score - a.score);
-  const top10Scores = sortedScores.slice(0, 10);
-
-  const lowerScoreThanTop10 = score < top10Scores[top10Scores.length - 1]?.score;
-
-  const currentPlayerScoreIndex = sortedScores.findIndex((player) => player.id === playerId);
-
-  const LeaderBoardRow = (props: { player: PlayerScore; index: number }) => {
+  const LeaderBoardRow = (props: { player: PlayerModel; index: number }) => {
     const { player, index } = props;
 
     const icon = getScoreIcon(index);
-    const emphasize = isPlaying && player.id === playerId;
+    const emphasize = isPlaying && player.playerId === playerId;
 
     return (
-      <Row key={player.id} className={`border-bottom py-2${emphasize ? " fw-bold bg-light" : ""}`}>
+      <Row
+        key={player.playerId}
+        className={`border-bottom py-2${emphasize ? " fw-bold bg-light" : ""}`}
+      >
         <Col xs={1} className="text-center">
           {icon ? icon : index + 1}
         </Col>
@@ -56,10 +52,10 @@ const LeaderBoard = () => {
       </Row>
       <div>
         {top10Scores.map((player, index) => {
-          return <LeaderBoardRow key={player.id} player={player} index={index} />;
+          return <LeaderBoardRow key={player.playerId} player={player} index={index} />;
         })}
       </div>
-      {isPlaying && lowerScoreThanTop10 && (
+      {isPlaying && scoreIsBelowTop10 && (
         <>
           <Row>
             <Col>.</Col>
@@ -70,10 +66,7 @@ const LeaderBoard = () => {
           <Row>
             <Col>.</Col>
           </Row>
-          <LeaderBoardRow
-            player={{ id: playerId, nickname, score }}
-            index={currentPlayerScoreIndex}
-          />
+          <LeaderBoardRow player={{ playerId, nickname, score }} index={currentPlayerScoreIndex} />
         </>
       )}
     </Container>
