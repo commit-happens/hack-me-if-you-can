@@ -22,41 +22,39 @@ const ResultsPage: React.FC = () => {
       <Row className="g-3 mb-5 justify-content-center">
         <Col xs={12} md={6}>
           <Card>
-            <Card.Body>
-              <Card.Text className="fs-5 fw-semibold">
-                <Row>
-                  <Col xs={8}>
-                    <FontAwesomeIcon
-                      icon={faCheckCircle}
-                      aria-hidden="true"
-                      className="text-success"
-                    />{" "}
-                    {texts.correctAnswers}:
-                  </Col>
-                  <Col className="text-end">
-                    {correctAnswers} / {total}
-                  </Col>
-                  <Col xs={8}>
-                    <FontAwesomeIcon
-                      icon={faCircleXmark}
-                      aria-hidden="true"
-                      className="text-danger"
-                    />{" "}
-                    {texts.wrongAnswers}:
-                  </Col>
-                  <Col className="text-end">
-                    {wrongAnswers} / {total}
-                  </Col>
-                  <Col xs={12}>
-                    <hr />
-                  </Col>
-                  <Col xs={8}>
-                    <FontAwesomeIcon icon={faTrophy} aria-hidden="true" className="text-warning" />{" "}
-                    {texts.success}:
-                  </Col>
-                  <Col className="text-end">{successRate} %</Col>
-                </Row>
-              </Card.Text>
+            <Card.Body className="fs-5 fw-semibold">
+              <Row>
+                <Col xs={8}>
+                  <FontAwesomeIcon
+                    icon={faCheckCircle}
+                    aria-hidden="true"
+                    className="text-success"
+                  />{" "}
+                  {texts.correctAnswers}:
+                </Col>
+                <Col className="text-end">
+                  {correctAnswers} / {total}
+                </Col>
+                <Col xs={8}>
+                  <FontAwesomeIcon
+                    icon={faCircleXmark}
+                    aria-hidden="true"
+                    className="text-danger"
+                  />{" "}
+                  {texts.wrongAnswers}:
+                </Col>
+                <Col className="text-end">
+                  {wrongAnswers} / {total}
+                </Col>
+                <Col xs={12}>
+                  <hr />
+                </Col>
+                <Col xs={8}>
+                  <FontAwesomeIcon icon={faTrophy} aria-hidden="true" className="text-warning" />{" "}
+                  {texts.success}:
+                </Col>
+                <Col className="text-end">{successRate} %</Col>
+              </Row>
             </Card.Body>
           </Card>
         </Col>
