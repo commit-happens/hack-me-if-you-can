@@ -8,12 +8,12 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # Spring Boot profil
-      - SPRING_PROFILES_ACTIVE=prod
-      # Postgres připojení (viz služba postgres)
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hmiyc
-      - SPRING_DATASOURCE_USERNAME=hmiyc
-      - SPRING_DATASOURCE_PASSWORD=hmiyc
+      # Spring Boot profil (lze přepsat v .env souboru)
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE:-}
+      # Postgres připojení (hodnoty čtené z .env s defaulty)
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://${POSTGRES_HOST:-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-hmiyc}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-hmiyc}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-akjnd16546--)}
     networks:
       - hmiyc-network
     healthcheck:
@@ -29,9 +29,9 @@ services:
     image: postgres:16-alpine
     container_name: hmiyc-postgres
     environment:
-      - POSTGRES_DB=hmiyc
-      - POSTGRES_USER=hmiyc
-      - POSTGRES_PASSWORD=hmiyc
+      - POSTGRES_DB=${POSTGRES_DB:-hmiyc}
+      - POSTGRES_USER=${POSTGRES_USER:-hmiyc}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-akjnd16546--)}
     ports:
       - "5432:5432"
     volumes:

@@ -41,6 +41,16 @@ be-run:
 	@echo "Spuštění backendu..."
 	cd backend && mvn spring-boot:run
 
+# Spustí pouze Postgres v Dockeru (pokud nechcete spouštět celý stack)
+db-up:
+	@echo "Spouštění pouze postgres kontejneru..."
+	docker compose up -d postgres
+
+# Spuštění backendu proti dockerové DB (pokud nemáte lokální Postgres)
+be-run-docker-db:
+	@echo "Spuštění backendu proti dockerové DB na localhost:5432..."
+	cd backend && mvn spring-boot:run -Dspring-boot.run.arguments="--spring.datasource.url=jdbc:postgresql://localhost:5432/$(POSTGRES_DB) --spring.datasource.username=$(POSTGRES_USER) --spring.datasource.password=$(POSTGRES_PASSWORD)"
+
 be-hosts:
 	@echo "--- Uživatelské a vývojářské odkazy ---"
 	@echo "Hello API: http://localhost:8080/api/hello"

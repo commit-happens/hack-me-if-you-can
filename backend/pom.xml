@@ -96,6 +96,16 @@
 
     <!-- BUILD - NASTAVENÍ KOMPILACE -->
     <build>
+        <!-- Kopírování resource souborů s pojistkou: ignorujeme application-*.yaml (dev/prod apod.)
+             a necháváme pouze hlavní application.yaml (+ ostatní běžné resources). -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>application-*.yaml</exclude>
+                </excludes>
+            </resource>
+        </resources>
         <plugins>
 
             <!-- Maven Compiler Plugin - zajišťuje kompilaci kódu -->

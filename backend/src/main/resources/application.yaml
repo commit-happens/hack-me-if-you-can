@@ -4,14 +4,17 @@ spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/hmiyc}
     driver-class-name: org.postgresql.Driver
-    username: ${SPRING_DATASOURCE_USERNAME:hmiyc}
-    password: ${SPRING_DATASOURCE_PASSWORD:hmiyc}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD} # akjnd16546--
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
       hibernate:
+        # Nastavíme dialekt explicitně, aby se nelogovala dodatečná chyba
+        # "Unable to determine Dialect without JDBC metadata" při selhání připojení
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
   sql:
     init:

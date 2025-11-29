@@ -19,8 +19,8 @@ RUN ./mvnw dependency:go-offline
 # Kopírování zdrojového kódu
 COPY src ./src
 
-# Build aplikace (v Docker buildu přeskočíme testy, aby se nevyžadovala běžící DB)
-RUN ./mvnw clean package -DskipTests
+# Build aplikace (spouštíme testy – poběží proti H2 díky testovací konfiguraci)
+RUN ./mvnw clean package
 
 # ==================================
 # 🚀 STAGE 2: Runtime Stage
