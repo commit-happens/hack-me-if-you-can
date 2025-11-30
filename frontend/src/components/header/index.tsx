@@ -19,7 +19,7 @@ function Header({
 }: HeaderProps) {
   const location = useLocation();
   const pathname = location.pathname;
-  const texts = useTranslation("app"); // necháme, zatím ho používáme třeba později
+  const texts = useTranslation("header");
 
   // Header se nemá zobrazovat na Welcome stránce
   const hideOnWelcome = pathname === getPagePath(Page.Welcome);
@@ -68,13 +68,13 @@ function Header({
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           {/* ✅ ikona k hráči */}
           <span>🪪</span>
-          <strong>hráč: {nickname}</strong>
+          <strong>{texts.player}: {nickname}</strong>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           {/* ✅ ikona k score */}
           <span>🎯</span>
-          <strong>score: {score ?? 0}</strong>
+          <strong>{texts.score}: {score ?? 0}</strong>
         </div>
       </div>
     </header>
