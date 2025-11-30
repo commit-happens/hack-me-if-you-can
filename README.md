@@ -1,6 +1,6 @@
 # Hack me if you can
 
-Jednoduchý monorepo základ pro frontend (React + Vite + TypeScript). Tento dokument popisuje strukturu projektu a jak lokálně spustit frontend.
+**Hack me if you can** je interaktivní webová aplikace zaměřená na rozpoznávání phishingových e-mailů a školení kybernetické bezpečnosti. Hráči analyzují e-mailové zprávy, rozhodují, zda jsou legitimní nebo podvodné, přičemž špatné odpovědi snižují jejich skóre uložené v databázi. Aplikace kombinuje React 19 frontend s real-time hodnocením a Spring Boot backend s REST API pro správu hráčů a jejich výsledků.
 
 ## Tech stack
 - Frontend: React 19 + TypeScript, ESLint, Vite 7 (dev server, build, preview)
@@ -39,6 +39,33 @@ hack-me-if-you-can/
   - Java 21 (LTS)
   - Maven 3.9+
   - Doporučené IDE: IntelliJ IDEA (doporučeno) nebo VS Code
+
+## 🐳 Rychlý start: Docker (Frontend + Backend najednou)
+
+Nejrychlejší způsob, jak spustit celou aplikaci bez lokální instalace Node.js, Maven nebo JDK.
+
+### Předpoklady
+- **Docker Desktop** (obsahuje Docker Engine a Docker Compose)
+
+### Spuštění
+```bash
+docker-compose up --build
+```
+
+Po úspěšném buildu a spuštění budou dostupné:
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8080/api/hello
+- **Swagger API**: http://localhost:8080/swagger-ui.html
+- **H2 Console**: http://localhost:8080/h2-console
+
+### Zastavení
+```bash
+docker-compose down
+```
+
+Podrobné informace najdeš v [DOCKER.md](DOCKER.md).
+
+---
 
 ## Rychlý start: frontend
 
