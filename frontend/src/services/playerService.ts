@@ -15,7 +15,7 @@ export const getPlayers = async (): Promise<PlayerModel[]> => {
   try {
     const response = await fetch(`${API_BASE_URL}/players`);
     if (!response.ok) {
-      throw new Error(`Failed to fetch players: ${response.statusText}`);
+      throw new Error(`Chyba při načítání hráčů: ${response.statusText}`);
     }
     const result = await response.json();
 
@@ -44,14 +44,19 @@ export const createPlayer = async (nickname: string): Promise<PlayerModel> => {
       throw new Error(error.fields.nickname);
     }
     throw new Error(
-      error.error || error.message || `Failed to create player: ${response.statusText}`
+      error.error ||
+        error.message ||
+        `Chyba při vytváření hráče: ${response.statusText}`,
     );
   }
 
   return response.json();
 };
 
-export const updatePlayerScore = async (playerId: number, score: number): Promise<PlayerModel> => {
+export const updatePlayerScore = async (
+  playerId: number,
+  score: number,
+): Promise<PlayerModel> => {
   const response = await fetch(`${API_BASE_URL}/players/${playerId}`, {
     method: "PATCH",
     headers: {
@@ -65,7 +70,9 @@ export const updatePlayerScore = async (playerId: number, score: number): Promis
   if (!response.ok) {
     const error = await response.json();
     throw new Error(
-      error.error || error.message || `Failed to update player score: ${response.statusText}`
+      error.error ||
+        error.message ||
+        `Chyba při aktualizaci skóre hráče: ${response.statusText}`,
     );
   }
 
