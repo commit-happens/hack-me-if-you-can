@@ -23,12 +23,13 @@ const csCZ = {
       difficulty: "Obtížnost",
     },
     answers: {
-      phishing: "To je Phishing!",
+      phishing: "Phishing!",
       safe: "Je to OK",
     },
     feedback: {
-      correct: "Výborně!",
-      incorrect: "Bohužel :(",
+      correct: "Výborně, odpověděl(a) jsi správně!",
+      incorrect: "Bohužel, odpověděl(a) jsi špatně. ",
+      timeIsUp: "Čas vypršel! Bohužel ti musíme odečíst body.",
     },
     buttons: {
       continue: "Pokračovat",
