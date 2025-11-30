@@ -11,7 +11,9 @@ import playerReducer from "./playerSlice";
 
 // Mock služby pro backend
 vi.mock("../../services/playerService", () => ({
-  updatePlayerScore: vi.fn(async (_playerId: number, newScore: number) => ({ score: newScore })),
+  updatePlayerScore: vi.fn(async (_playerId: number, newScore: number) => ({
+    score: newScore,
+  })),
 }));
 
 function makeStore() {
@@ -58,6 +60,7 @@ describe("gameSlice updateScore thunk", () => {
   it("po úspěchu nastaví skóre na hodnotu ze serveru", async () => {
     const store = makeStore();
     // Výchozí score 100; změníme o +25 -> očekáváme 125
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await store.dispatch(updateScore({ playerId: 42, scoreChange: 25 }) as any);
     expect(store.getState().game.score).toBe(125);
   });

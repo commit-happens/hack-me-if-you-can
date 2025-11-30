@@ -13,6 +13,7 @@ import {
 import { selectPlayerId } from "../../store/slices/playerSlice";
 import { getEnvConfigValue } from "../../utils/envConfig";
 import { faAlarmClock } from "@fortawesome/free-solid-svg-icons";
+import type { IconDefinition } from "@fortawesome/fontawesome-common-types";
 
 export enum Answer {
   Phishing = "phishing",
@@ -60,7 +61,7 @@ enum FeedbackType {
 type FeedbackData = {
   title: string;
   variant: ProgressBarProps["variant"];
-  icon: any;
+  icon: IconDefinition;
 };
 
 export function useGame(props: UseGameProps) {
