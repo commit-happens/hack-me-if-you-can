@@ -5,6 +5,10 @@ const csCZ = {
     title: "Hack me if you can",
     titleAbbr: "HMIYC",
   },
+  header: {
+    player: "Hráč",
+    score: "Skóre",
+  },
   welcome: {
     welcomeMessage:
       "Ahoj, kyberdetektive! 🕵️‍♂️ Tvým úkolem je odhalit, které e-maily jsou falešné (phishing) a které jsou bezpečné.",

@@ -2,6 +2,7 @@ import { faWarning, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Col, Container, ProgressBar, Row } from "react-bootstrap";
 import { Answer } from "../../useGame";
+import type { Translation } from "../../../../languages/csCZ";
 
 type ActionsRowProps = {
   handleAnswer: (answer: Answer) => void;
@@ -9,7 +10,7 @@ type ActionsRowProps = {
   timeoutTextColor?: string;
   timeoutProgressBarVariant?: string;
   timePerQuestion: number;
-  texts: any;
+  texts: Translation["game"];
 };
 /**
  * Komponenta pro zobrazení řádku s tlačítky pro odpověď a odpočítávadlem času.
