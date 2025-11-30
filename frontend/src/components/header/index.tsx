@@ -6,14 +6,14 @@ import logo from "../../assets/logo-hmiyc.png";
 
 type HeaderProps = {
   nickname?: string;
-  score?: number;              // ✅ PŘIDÁNO
+  score?: number;
   currentQuestion?: number;
   totalQuestions?: number;
 };
 
 function Header({
   nickname = "Player",
-  score,                       // ✅ PŘIDÁNO
+  score,
   currentQuestion,
   totalQuestions,
 }: HeaderProps) {
@@ -25,7 +25,7 @@ function Header({
   const hideOnWelcome = pathname === getPagePath(Page.Welcome);
   if (hideOnWelcome) return null;
 
-  const isGamePage = pathname === getPagePath(Page.Game); // ✅ PŘIDÁNO
+  const isGamePage = pathname === getPagePath(Page.Game);
 
   return (
     <header
@@ -50,7 +50,6 @@ function Header({
         }}
       >
         <img src={logo} alt="HMIYC Logo" style={{ height: "36px" }} />
-        {/* ✅ ZMĚNA TEXTU */}
         <strong style={{ fontSize: "18px" }}>Hack me if you can</strong>
       </Link>
 
@@ -68,13 +67,17 @@ function Header({
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           {/* ✅ ikona k hráči */}
           <span>🪪</span>
-          <strong>{texts.player}: {nickname}</strong>
+          <strong>
+            {texts.player}: {nickname}
+          </strong>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           {/* ✅ ikona k score */}
           <span>🎯</span>
-          <strong>{texts.score}: {score ?? 0}</strong>
+          <strong>
+            {texts.score}: {score ?? 0}
+          </strong>
         </div>
       </div>
     </header>

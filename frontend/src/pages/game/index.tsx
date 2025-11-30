@@ -4,7 +4,7 @@ import { Alert, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header";
 import emailsData from "../../data/emails.json";
-import useTranslation, { getText } from "../../hooks/useTranslation";
+import useTranslation from "../../hooks/useTranslation";
 import Page from "../../models/Page";
 import { useAppSelector } from "../../store/hooks";
 import { getPagePath } from "../../utils/routing";
@@ -101,7 +101,7 @@ function Game() {
 
   return (
     <Container fluid="md" className="w-50">
-      <Header 
+      <Header
         nickname={nickname}
         score={score}
         currentQuestion={currentIndex + 1}
