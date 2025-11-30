@@ -6,6 +6,7 @@ import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import emailsData from "../../data/emails.json";
 import useTranslation from "../../hooks/useTranslation";
 import useResults from "./useResults";
+import LeaderBoard from "../leaderboard";
 
 const ResultsPage: React.FC = () => {
   const { correctAnswers, wrongAnswers, total, successRate, score, playAgain } = useResults({
@@ -58,6 +59,10 @@ const ResultsPage: React.FC = () => {
           </Card>
         </Col>
       </Row>
+
+      <div className="mb-4">
+        <LeaderBoard />
+      </div>
 
       <div className="text-center">
         <Button type="button" onClick={playAgain}>

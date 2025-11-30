@@ -3,6 +3,7 @@ import Page from "../models/Page";
 import Game from "../pages/game";
 import Welcome from "../pages/welcome";
 import Results from "../pages/results";
+import LeaderBoard from "../pages/leaderboard";
 
 type Route = {
   path: string;
@@ -24,6 +25,6 @@ export const routes: Record<Page, Route> = {
   },
   [Page.Leaderboard]: {
     path: "/leaderboard",
-    element: null,
+    element: <LeaderBoard />,
   },
 };

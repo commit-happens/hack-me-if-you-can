@@ -1,21 +1,35 @@
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = "http://localhost:8080/api";
 
 export interface PlayerRequest {
   nickname: string;
   score: number;
 }
 
-export interface PlayerResponse {
+export interface PlayerModel {
   playerId: number;
   nickname: string;
   score: number;
 }
 
-export const createPlayer = async (nickname: string): Promise<PlayerResponse> => {
+export const getPlayers = async (): Promise<PlayerModel[]> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/players`);
+    if (!response.ok) {
+      throw new Error(`Chyba při načítání hráčů: ${response.statusText}`);
+    }
+    const result = await response.json();
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createPlayer = async (nickname: string): Promise<PlayerModel> => {
   const response = await fetch(`${API_BASE_URL}/players`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       nickname,
@@ -29,26 +43,37 @@ export const createPlayer = async (nickname: string): Promise<PlayerResponse> =>
     if (error.fields?.nickname) {
       throw new Error(error.fields.nickname);
     }
-    throw new Error(error.error || error.message || `Failed to create player: ${response.statusText}`);
+    throw new Error(
+      error.error ||
+        error.message ||
+        `Chyba při vytváření hráče: ${response.statusText}`,
+    );
   }
 
   return response.json();
 };
 
-export const updatePlayerScore = async (playerId: number, score: number): Promise<PlayerResponse> => {
+export const updatePlayerScore = async (
+  playerId: number,
+  score: number,
+): Promise<PlayerModel> => {
   const response = await fetch(`${API_BASE_URL}/players/${playerId}`, {
-    method: 'PATCH',
+    method: "PATCH",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      "score": score,
+      score: score,
     }),
   });
 
   if (!response.ok) {
     const error = await response.json();
-    throw new Error(error.error || error.message || `Failed to update player score: ${response.statusText}`);
+    throw new Error(
+      error.error ||
+        error.message ||
+        `Chyba při aktualizaci skóre hráče: ${response.statusText}`,
+    );
   }
 
   return response.json();
