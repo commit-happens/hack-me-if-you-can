@@ -41,9 +41,7 @@ function Welcome() {
 
       // Uložení nickname + playerId do Redux store
       dispatch(startGame());
-      dispatch(
-        setPlayer({ nickname: player.nickname, playerId: player.playerId }),
-      );
+      dispatch(setPlayer({ nickname: player.nickname, playerId: player.playerId }));
       navigate(getPagePath(Page.Game));
     } catch (error) {
       console.error("Nastala chyba při vytváření uživatele:", error);
@@ -69,7 +67,7 @@ function Welcome() {
         <Col className="d-flex flex-column gap-4">
           <h1 className="display-4 text-center">{appTexts.title}</h1>
           <div>
-            <div className="border rounded-1 p-4 mx-auto welcome-message">
+            <div className="border rounded-1 p-4 mx-auto text-center welcome-message">
               <Image src={logo} alt="" roundedCircle className="guide-bubble" />
               <p>
                 {welcomeTexts.welcomeMessage} {welcomeTexts.instruction1}

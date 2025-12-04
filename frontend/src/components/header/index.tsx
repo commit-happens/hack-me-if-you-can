@@ -13,22 +13,13 @@ type HeaderProps = {
   totalQuestions?: number;
 };
 
-function Header({
-  nickname = "Player",
-  score,
-  currentQuestion,
-  totalQuestions,
-}: HeaderProps) {
+function Header({ nickname = "Player", score, currentQuestion, totalQuestions }: HeaderProps) {
   const location = useLocation();
   const pathname = location.pathname;
 
   const texts = useTranslation("header");
   const textsApp = useTranslation("app");
   const textsGame = useTranslation("game");
-
-  // Header se nemá zobrazovat na Welcome stránce
-  const hideOnWelcome = pathname === getPagePath(Page.Welcome);
-  if (hideOnWelcome) return null;
 
   const isGamePage = pathname === getPagePath(Page.Game);
 
@@ -52,21 +43,16 @@ function Header({
           color: "inherit",
         }}
       >
-        <img src={logo} alt="HMIYC Logo" style={{ height: "36px" }} />
+        <img src={logo} alt="HMIYC Logo" style={{ height: "36px", borderRadius: "4px" }} />
         <span>{textsApp.title}</span>
       </Link>
 
       <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
-        {isGamePage &&
-          currentQuestion !== undefined &&
-          totalQuestions !== undefined && (
-            <div>
-              {getText(textsGame.title, [currentQuestion, totalQuestions])}
-            </div>
-          )}
+        {isGamePage && currentQuestion !== undefined && totalQuestions !== undefined && (
+          <div>{getText(textsGame.title, [currentQuestion, totalQuestions])}</div>
+        )}
         <div style={{ display: "flex", alignItems: "center", gap: "0.2em" }}>
-          <FontAwesomeIcon icon={faUserAstronaut} className="text-warning" />{" "}
-          {nickname}
+          <FontAwesomeIcon icon={faUserAstronaut} className="text-warning" /> {nickname}
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "0.2em" }}>
