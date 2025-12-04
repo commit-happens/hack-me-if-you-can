@@ -1,8 +1,10 @@
+import { faBullseye, faUserAstronaut } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation } from "react-router-dom";
-import useTranslation from "../../hooks/useTranslation";
+import logo from "../../assets/logo-hmiyc.png";
+import useTranslation, { getText } from "../../hooks/useTranslation";
 import Page from "../../models/Page";
 import { getPagePath } from "../../utils/routing";
-import logo from "../../assets/logo-hmiyc.png";
 
 type HeaderProps = {
   nickname?: string;
@@ -19,7 +21,10 @@ function Header({
 }: HeaderProps) {
   const location = useLocation();
   const pathname = location.pathname;
+
   const texts = useTranslation("header");
+  const textsApp = useTranslation("app");
+  const textsGame = useTranslation("game");
 
   // Header se nemá zobrazovat na Welcome stránce
   const hideOnWelcome = pathname === getPagePath(Page.Welcome);
@@ -33,12 +38,10 @@ function Header({
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "12px 20px",
-        borderBottom: "1px solid #ddd",
-        background: "white",
+        padding: "0.5em 0.1em",
+        marginBottom: "2em",
       }}
     >
-      {/* 🟦 LEVÁ STRANA — LOGO */}
       <Link
         to={getPagePath(Page.Welcome)}
         style={{
@@ -50,34 +53,27 @@ function Header({
         }}
       >
         <img src={logo} alt="HMIYC Logo" style={{ height: "36px" }} />
-        <strong style={{ fontSize: "18px" }}>Hack me if you can</strong>
+        <span>{textsApp.title}</span>
       </Link>
 
-      {/* 🟨 STŘED — HRA A/N jen na Game stránce */}
-      {isGamePage &&
-        currentQuestion !== undefined &&
-        totalQuestions !== undefined && (
-          <div style={{ fontWeight: "bold", fontSize: "18px" }}>
-            HRA {currentQuestion}/{totalQuestions}
-          </div>
-        )}
-
-      {/* 🟥 PRAVÁ STRANA — hráč + score */}
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          {/* ✅ ikona k hráči */}
-          <span>🪪</span>
-          <strong>
-            {texts.player}: {nickname}
-          </strong>
+      <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
+        {isGamePage &&
+          currentQuestion !== undefined &&
+          totalQuestions !== undefined && (
+            <div>
+              {getText(textsGame.title, [currentQuestion, totalQuestions])}
+            </div>
+          )}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.2em" }}>
+          <FontAwesomeIcon icon={faUserAstronaut} className="text-warning" />{" "}
+          {nickname}
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          {/* ✅ ikona k score */}
-          <span>🎯</span>
-          <strong>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.2em" }}>
+          <FontAwesomeIcon icon={faBullseye} className="text-danger" />
+          <span>
             {texts.score}: {score ?? 0}
-          </strong>
+          </span>
         </div>
       </div>
     </header>

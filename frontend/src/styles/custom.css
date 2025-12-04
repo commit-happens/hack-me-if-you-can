@@ -1,0 +1,39 @@
+:root {
+  --welcome-message-width: 40ch;
+  --notch-width: 1em;
+}
+
+.max-w-90ch {
+  max-width: 90ch;
+}
+
+.guide-bubble {
+  border-radius: 50%;
+  width: 7em;
+  position: absolute;
+  left: -10em;
+  top: 0;
+}
+
+.welcome-message {
+  width: var(--welcome-message-width);
+  position: relative;
+}
+
+.welcome-message::before {
+  content: "";
+  position: absolute;
+  top: 3em;
+  left: calc(-1 * var(--notch-width));
+  width: 0;
+  height: 0;
+  border-top: 0.75em solid transparent;
+  border-bottom: 0.75em solid transparent;
+  border-right: var(--notch-width) solid silver;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.username-field {
+  width: var(--welcome-message-width);
+}
