@@ -30,7 +30,7 @@ function Header({ nickname = "Player", score, currentQuestion, totalQuestions }:
         justifyContent: "space-between",
         alignItems: "center",
         padding: "0.5em 0.1em",
-        marginBottom: "2em",
+        marginBlock: "1em 2em",
       }}
     >
       <Link
@@ -38,28 +38,29 @@ function Header({ nickname = "Player", score, currentQuestion, totalQuestions }:
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "10px",
+          gap: "0.6em",
           textDecoration: "none",
           color: "inherit",
         }}
       >
         <img src={logo} alt="HMIYC Logo" style={{ height: "36px", borderRadius: "4px" }} />
-        <span>{textsApp.title}</span>
+        <span className="nav-item--label">{textsApp.title}</span>
       </Link>
 
-      <div style={{ display: "flex", alignItems: "center", gap: "1em" }}>
+      <div className="nav-items">
         {isGamePage && currentQuestion !== undefined && totalQuestions !== undefined && (
-          <div>{getText(textsGame.title, [currentQuestion, totalQuestions])}</div>
+          <div className="nav-item">
+            {getText(textsGame.title, [currentQuestion, totalQuestions])}
+          </div>
         )}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.2em" }}>
+        <div className="nav-item">
           <FontAwesomeIcon icon={faUserAstronaut} className="text-warning" /> {nickname}
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "0.2em" }}>
+        <div className="nav-item">
           <FontAwesomeIcon icon={faBullseye} className="text-danger" />
-          <span>
-            {texts.score}: {score ?? 0}
-          </span>
+          <span className="nav-item--label">{texts.score}: </span>
+          <span>{score ?? 0}</span>
         </div>
       </div>
     </header>

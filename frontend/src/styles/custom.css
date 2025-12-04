@@ -2,6 +2,9 @@
   --welcome-message-width: 40ch;
   --notch-width: 1em;
   --notch-height: 0.75em;
+  --game-width: 80ch;
+
+  --breakpoint-sm: 450px;
 }
 
 .guide-bubble {
@@ -41,4 +44,20 @@
 
 .username-field {
   max-width: var(--welcome-message-width);
+}
+
+.nav-items {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+}
+
+.nav-item--label {
+  @media (max-width: 465px) {
+    display: none;
+  }
+}
+
+.game-container {
+  max-width: var(--game-width);
 }
