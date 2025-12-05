@@ -83,6 +83,19 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- Flyway - migrace a seed databáze -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
+
+        <!-- Lombok - generace boilerplate kódu -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>annotationProcessor</scope>
+        </dependency>
+
     </dependencies>
 
 
