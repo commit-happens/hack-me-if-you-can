@@ -127,7 +127,7 @@
       "subject": "Novinky ze světa her – únorová edice",
       "content": "Zdravíme hráče!\n\nPřipravili jsme pro vás přehled nových titulů pro únor. Také jsme aktualizovali sekci předobjednávek: [Prozkoumat novinky](https://www.xzone.cz/novinky).\n\nXzone tým",
       "explanation": "Běžný informační newsletter. Odkaz vede na oficiální doménu e-shopu.",
-      "penalty": 3,
+      "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
       "difficulty": 1
@@ -206,7 +206,7 @@
       "explanation": "Nátlak na aktualizaci účtu přes podezřelý odkaz a nedůvěryhodná doména.",
       "penalty": 7,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 6],
+      "phishingTypeIDs": [1, 4],
       "difficulty": 1
     },
     {
