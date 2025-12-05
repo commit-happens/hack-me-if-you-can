@@ -23,9 +23,10 @@ function makeStore() {
 }
 
 describe("gameSlice reducers", () => {
-  it("startGame nastaví výchozí stav hry", () => {
+  it("Akce startGame nastaví výchozí stav hry", () => {
     const store = makeStore();
     store.dispatch(startGame());
+
     const s = store.getState().game;
     expect(s.isPlaying).toBe(true);
     expect(s.score).toBe(100);
@@ -33,19 +34,19 @@ describe("gameSlice reducers", () => {
     expect(s.correctAnswers).toBe(0);
   });
 
-  it("increaseCorrectAnswers zvýší počet správných odpovědí", () => {
+  it("Akce increaseCorrectAnswers zvýší počet správných odpovědí", () => {
     const store = makeStore();
     store.dispatch(increaseCorrectAnswers());
     expect(store.getState().game.correctAnswers).toBe(1);
   });
 
-  it("setCurrentIndex nastaví index aktuální otázky", () => {
+  it("Akce setCurrentIndex nastaví index aktuální otázky", () => {
     const store = makeStore();
     store.dispatch(setCurrentIndex(3));
     expect(store.getState().game.currentIndex).toBe(3);
   });
 
-  it("endGame ukončí hru a resetuje počítadlo správných odpovědí", () => {
+  it("Akce endGame ukončí hru a resetuje počítadlo správných odpovědí", () => {
     const store = makeStore();
     store.dispatch(startGame());
     store.dispatch(increaseCorrectAnswers());
