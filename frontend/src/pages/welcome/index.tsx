@@ -68,7 +68,12 @@ function Welcome() {
           <h1 className="display-4 text-center">{appTexts.title}</h1>
           <div>
             <div className="border rounded-1 p-4 mx-auto text-center welcome-message">
-              <Image src={logo} alt="" roundedCircle className="guide-bubble" />
+              <Image
+                src={logo}
+                alt={appTexts.guide.bubble}
+                roundedCircle
+                className="guide-bubble"
+              />
               <p>
                 {welcomeTexts.welcomeMessage} {welcomeTexts.instruction1}
               </p>

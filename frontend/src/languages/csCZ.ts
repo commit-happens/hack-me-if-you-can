@@ -4,6 +4,9 @@ const csCZ = {
   app: {
     title: "Hack me if you can",
     titleAbbr: "HMIYC",
+    guide: {
+      bubble: "Průvodce hrou",
+    },
   },
   header: {
     player: "Hráč",

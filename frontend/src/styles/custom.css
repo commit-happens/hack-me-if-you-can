@@ -13,7 +13,10 @@
   position: absolute;
   left: -10em;
   top: 0;
-  @media (max-width: 680px) {
+}
+
+@media (max-width: 680px) {
+  .guide-bubble {
     position: static;
     margin: 0 auto 1em auto;
     display: block;
@@ -37,7 +40,10 @@
   border-right: var(--notch-width) solid silver;
   z-index: 10;
   pointer-events: none;
-  @media (max-width: 680px) {
+}
+
+@media (max-width: 680px) {
+  .welcome-message::before {
     display: none;
   }
 }
