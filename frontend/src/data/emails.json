@@ -109,6 +109,117 @@
       "phishingPlatformID": 1,
       "phishingTypeIDs": [4, 1, 2],
       "difficulty": 1
+    },
+
+    {
+      "id": 21,
+      "sender": "eRecept@zdravotniportal-info.com",
+      "subject": "Váš elektronický recept vyprší za 24 hodin",
+      "content": "Dobrý den,\n\nupozorňujeme vás, že platnost eReceptu na váš lék brzy vyprší. Pro prodloužení klikněte zde: http://erecept-prodlouzeni.example/verify.\n\nPokud recept neprodloužíte, nebude možné lék vydat.",
+      "explanation": "Zdravotnictví nikdy nevyžaduje prodlužování eReceptu přes externí odkazy. Doména není oficiální. Kombinace falešné URL a urgentní hrozby.",
+      "penalty": 10,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [1, 2, 4],
+      "difficulty": 1
+    },
+    {
+      "id": 22,
+      "sender": "urad@mojedatovkaservis.com",
+      "subject": "Zpráva ve vaší datové schránce: vyzvednutí nutné",
+      "content": "Vážený uživateli,\n\nobdrželi jste novou datovou zprávu. Pro přihlášení použijte bezpečný přístup: http://datovka-login.example/auth.\n\nZpráva bude automaticky smazána po 48 hodinách.",
+      "explanation": "Útočníci často napodobují datové schránky. Doména nemá nic společného s gov.cz. Sběr přihlašovacích údajů + urgence.",
+      "penalty": 10,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [4, 1, 2],
+      "difficulty": 1
+    },
+    {
+      "id": 23,
+      "sender": "info@vseobecnazdrpoj.cz",
+      "subject": "Nadstandardní doplatek za vyšetření",
+      "content": "Dobrý den,\n\nv systému evidujeme doplatek 125 Kč. Uhradit ho můžete zde: http://pojistovna-doplatek.example/payment.\n\nDěkujeme.",
+      "explanation": "Falešná faktura z pojišťovny – doména je neexistující, pojišťovny neposílají platební odkazy e-mailem.",
+      "penalty": 9,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [3, 1],
+      "difficulty": 1
+    },
+    {
+      "id": 24,
+      "sender": "info@prepravce-doplatek.cz",
+      "subject": "Zásilka č. 4789 – nutný doplatek 19 Kč",
+      "content": "Dobrý den,\n\nk doručení vaší zásilky je potřeba doplatit 19 Kč. Zaplaťte zde: http://moje-zasilka.example/pay.\n\nBez úhrady nebude možné zásilku vydat.",
+      "explanation": "Nízko částkové doplatky jsou pověstné mezi seniorskými podvody. Nejde o oficiální dopravce. Falešná URL + urgentní akce.",
+      "penalty": 8,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [3, 1, 2],
+      "difficulty": 1
+    },
+    {
+      "id": 25,
+      "sender": "servis@televizniset-top.cz",
+      "subject": "Vaše satelitní karta bude deaktivována",
+      "content": "Dobrý den,\n\nv systému nevidíme platnou autorizaci vaší satelitní karty. Pokračujte zde pro ověření: http://tv-karta.example/activate.\n\nJinak může dojít k přerušení příjmu.",
+      "explanation": "Podvodníci využívají strach ze ztráty TV signálu. Doména je falešná, vyžaduje přihlášení – sběr přihlašovacích údajů.",
+      "penalty": 8,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [4, 1],
+      "difficulty": 1
+    },
+    {
+      "id": 26,
+      "sender": "vnuk.pavel@rodina-alert.info",
+      "subject": "Babí, potřebuju rychle poslat peníze",
+      "content": "Babi, prosím, stala se mi nepříjemnost a potřebuju půjčit trochu peněz. Tady můžeš poslat částku: http://rychla-pomoc.example/send.\n\nOzvu se hned, jak budu moct.",
+      "explanation": "Personalizovaný útok typu 'vnuk volá o pomoc'. Emoční manipulace, falešná doména, urgentní sociální inženýrství.",
+      "penalty": 10,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [5, 2],
+      "difficulty": 1
+    },
+    {
+      "id": 27,
+      "sender": "info@obecni-urad-oznameni.com",
+      "subject": "Poplatek za odpad – poslední výzva",
+      "content": "Dobrý den,\n\npoplatek za komunální odpad je nutné uhradit ještě dnes. Úhradu proveďte: http://obec-poplatek.example/pay.\n\nDěkujeme.",
+      "explanation": "Obecní úřady nemají generické .com domény. Jde o falešnou fakturu + urgentní výhružku.",
+      "penalty": 9,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [3, 2, 1],
+      "difficulty": 1
+    },
+    {
+      "id": 28,
+      "sender": "info@seniorpomoc.cz",
+      "subject": "Pozvánka na bezplatný seminář",
+      "content": "Vážený pane / paní,\n\nrádi vás pozveme na seminář o bezpečnosti seniorů. Prosíme o potvrzení účasti odpovědí na tento e-mail.\n\nTěšíme se na vás.",
+      "explanation": "Legitimně působící zpráva bez odkazů a bez urgentního tlaku. Žádost o jednoduchou odpověď je obvykle bezpečná.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 29,
+      "sender": "bankovni.sluzba@ucet-bezpecne.com",
+      "subject": "Nutné ověření platební karty",
+      "content": "Vážený klient,\n\nkvůli podezřelé aktivitě musíme ověřit vaši platební kartu. Proveďte prosím bezpečné ověření zde: http://bezpecna-karta.example/verify.\n\nJinak bude karta dočasně blokována.",
+      "explanation": "Kombinace falešného loginu, získávání citlivých údajů a urgence. Banky nikdy neposílají ověřovací odkazy tímto způsobem.",
+      "penalty": 10,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [4, 1, 2],
+      "difficulty": 1
+    },
+    {
+      "id": 30,
+      "sender": "hlidac-elektro@domacnost-servis.cz",
+      "subject": "Hrozí přetížení domácí sítě – nutná kontrola",
+      "content": "Dobrý den,\n\nautomaticky jsme detekovali potenciální přetížení vaší elektrické sítě. Doporučujeme provést online kontrolu: http://elektricka-kontrola.example/check.\n\nPrevence chrání před požárem.",
+      "explanation": "Podvod využívající strach o bezpečí domácnosti. Falešná URL, psychologický nátlak, neexistující služba.",
+      "penalty": 9,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [2, 1],
+      "difficulty": 1
     }
   ]
 }
