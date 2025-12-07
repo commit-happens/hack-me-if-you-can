@@ -12,8 +12,10 @@ import {
 } from "../../store/slices/gameSlice";
 import { selectPlayerId } from "../../store/slices/playerSlice";
 import { getEnvConfigValue } from "../../utils/envConfig";
-import { faAlarmClock } from "@fortawesome/free-solid-svg-icons";
-import type { IconDefinition } from "@fortawesome/fontawesome-common-types";
+import {
+  faAlarmClock,
+  type IconDefinition,
+} from "@fortawesome/free-solid-svg-icons";
 
 export enum Answer {
   Phishing = "phishing",

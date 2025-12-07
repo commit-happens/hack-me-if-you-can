@@ -109,6 +109,116 @@
       "phishingPlatformID": 1,
       "phishingTypeIDs": [4, 1, 2],
       "difficulty": 1
+    },
+    {
+      "id": 11,
+      "sender": "support@steam-rewards.com",
+      "subject": "Získali jste bonusové kredity – potvrďte převzetí",
+      "content": "Ahoj,\n\nna váš Steam účet vám byly přiděleny **bonusové kredity**. Pro jejich aktivaci klikněte zde: [Aktivovat kredity](http://steam-rewards-confirmation.com/bonus).\n\nDěkujeme,\nSteam Team",
+      "explanation": "Doména neodpovídá skutečné službě Steam (použita podvodná doména). Tlačí na rychlou akci.",
+      "penalty": 8,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [1, 2],
+      "difficulty": 1
+    },
+    {
+      "id": 12,
+      "sender": "newsletter@xzone.cz",
+      "subject": "Novinky ze světa her – únorová edice",
+      "content": "Zdravíme hráče!\n\nPřipravili jsme pro vás přehled nových titulů pro únor. Také jsme aktualizovali sekci předobjednávek: [Prozkoumat novinky](https://www.xzone.cz/novinky).\n\nXzone tým",
+      "explanation": "Běžný informační newsletter. Odkaz vede na oficiální doménu e-shopu.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 13,
+      "sender": "billing@eshop-prodejnalevne.cz",
+      "subject": "Vaše objednávka byla pozastavena",
+      "content": "Dobrý den,\n\nobjednávka z vašeho účtu byla **pozastavena** kvůli chybě v platbě. Pro pokračování prosím potvrďte údaje: [Potvrdit platbu](http://eshop-verify-payment.info/confirm).\n\nTým podpory",
+      "explanation": "Vyžaduje zadání platebních údajů přes nedůvěryhodnou URL. Neexistující nebo podezřelá doména.",
+      "penalty": 9,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [1, 3],
+      "difficulty": 1
+    },
+    {
+      "id": 14,
+      "sender": "info@alza.cz",
+      "subject": "Doručení zboží – aktualizace termínu",
+      "content": "Dobrý den,\n\nu vaší objednávky došlo k aktualizaci doručovacího času. Detaily naleznete zde: [Stav objednávky](https://www.alza.cz/mojeobjednavky).\n\nDěkujeme za nákup!",
+      "explanation": "Standardní notifikace z e-shopu, odkazy směřují na oficiální doménu.",
+      "penalty": 2,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 15,
+      "sender": "rcmodely-support@secure-check.com",
+      "subject": "Nutná aktualizace účtu v RC Model Clubu",
+      "content": "Dobrý den,\n\ntento e-mail vyžaduje ověření vašeho účtu, jinak budete odstraněni z klubu. K ověření použijte tento odkaz: [Ověřit účet](http://rcmodel-verification.net/secure).\n\nRC Model Club",
+      "explanation": "Použita generická a nedůvěryhodná doména, nátlak na okamžité ověření účtu.",
+      "penalty": 10,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [1, 4],
+      "difficulty": 1
+    },
+    {
+      "id": 16,
+      "sender": "info@modelplac.cz",
+      "subject": "Nové modely letadel – skladem!",
+      "content": "Ahoj modeláři,\n\nnaskladnili jsme nové modely letadel a příslušenství. Podívej se na ně zde: [Novinky](https://www.modelplac.cz/novinky).\n\nS pozdravem,\nModelPlác",
+      "explanation": "Legitimní newsletter s odkazem na oficiální doménu.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 17,
+      "sender": "garden-support@update-panel.com",
+      "subject": "Problém s objednávkou zahradního vybavení",
+      "content": "Dobrý den,\n\nve vaší poslední objednávce jsme zaznamenali problém. Klikněte sem a přihlaste se, abyste chybu odstranili: [Vyřešit problém](http://garden-fix-account.org/login).\n\nDěkujeme.",
+      "explanation": "Podvodná URL a vyžadování přihlášení mimo skutečný e-shop.",
+      "penalty": 8,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [1, 5],
+      "difficulty": 1
+    },
+    {
+      "id": 18,
+      "sender": "info@zahradnictvi-zelena.cz",
+      "subject": "Sleva na zahradní nářadí – jen tento týden",
+      "content": "Dobrý den,\n\npřipravili jsme pro vás slevu na zahradní nářadí. Více zde: [Zobrazit nabídku](https://www.zahradnictvi-zelena.cz/akce).\n\nPřejeme krásný den!",
+      "explanation": "Běžný marketingový e-mail s odkazem na oficiální doménu firmy.",
+      "penalty": 2,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 19,
+      "sender": "support@fitness-center-security.com",
+      "subject": "Pozastavené členství – nutná aktualizace údajů",
+      "content": "Dobrý den,\n\nz bezpečnostních důvodů bylo vaše členství dočasně pozastaveno. Pro pokračování prosím aktualizujte údaje: [Aktualizovat účet](http://fitness-members-update.info/login).\n\nDěkujeme.",
+      "explanation": "Nátlak na aktualizaci účtu přes podezřelý odkaz a nedůvěryhodná doména.",
+      "penalty": 7,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [1, 4],
+      "difficulty": 1
+    },
+    {
+      "id": 20,
+      "sender": "info@decathlon.cz",
+      "subject": "Potvrzení registrace do závodu – doplňující informace",
+      "content": "Ahoj sportovče,\n\ndokončili jste registraci na náš běžecký závod. Přikládáme doplnění k trati a mapu: [Informace o závodu](https://www.decathlon.cz/zavod-info).\n\nTěšíme se na vás!",
+      "explanation": "Legitimní potvrzení registrace, odkaz vede na oficiální doménu.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
     }
   ]
 }
