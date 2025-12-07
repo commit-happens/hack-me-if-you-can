@@ -19,7 +19,6 @@ const ActionsRow = (props: ActionsRowProps) => {
   const {
     handleAnswer,
     remainingTime,
-    timeoutTextColor,
     timeoutProgressBarVariant,
     timePerQuestion,
     texts,
@@ -45,9 +44,28 @@ const ActionsRow = (props: ActionsRowProps) => {
           xs={2}
           className="d-flex align-items-center justify-content-center"
         >
-          <div className={`text-center px-3 ${timeoutTextColor}`}>
-            {remainingTime} s
+          <div className="text-center">
+            <span
+              style={{
+                background: 
+                        timeoutProgressBarVariant === "warning"
+                ? "#f0ad4e" // žlutá
+                : timeoutProgressBarVariant === "danger"
+                ? "#d9534f" // červená
+                : "#0d6efd", // modrá (bootstrap primary)
+                      color: "white",
+                padding: "4px 12px",
+                borderRadius: "6px",
+                fontWeight: "600",
+                display: "inline-block",
+                minWidth: "60px",
+                textAlign: "center",
+                      }}
+            >
+              {remainingTime} s
+            </span>
           </div>
+
         </Col>
         <Col className="text-start">
           <Button
