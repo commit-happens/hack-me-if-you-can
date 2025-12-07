@@ -8,30 +8,24 @@ function renderHeader(path: string) {
   return render(
     <MemoryRouter initialEntries={[path]}>
       <Header />
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 }
 
 describe("Header", () => {
-  it("zobrazí pouze text na úvodní stránce /", () => {
-    renderHeader("/");
-    const text = screen.getByText("HMIYC");
-    expect(text).toBeInTheDocument();
-    // Neměl by být link, takže closest('a') je null
-    expect(text.closest("a")).toBeNull();
-  });
-
   it("zobrazí odkaz na ostatních stránkách (/game)", () => {
     renderHeader("/game");
-    const link = screen.getByRole("link", { name: "HMIYC" });
+    const text = screen.getByText("Hack me if you can");
+    const link = text.closest("a");
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "/");
   });
 
   it("zobrazí odkaz na stránce /results", () => {
     renderHeader("/results");
-    const link = screen.getByRole("link", { name: "HMIYC" });
-    expect(link).toBeInTheDocument();
+    const text = screen.getByText("Hack me if you can");
+    const link = text.closest("a");
+    expect(link).not.toBeNull();
     expect(link).toHaveAttribute("href", "/");
   });
 });

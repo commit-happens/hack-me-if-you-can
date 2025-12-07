@@ -41,6 +41,7 @@ function Header({
       {/* 🟦 LEVÁ STRANA — LOGO */}
       <Link
         to={getPagePath(Page.Welcome)}
+        role="link"
         style={{
           display: "flex",
           alignItems: "center",
@@ -49,7 +50,11 @@ function Header({
           color: "inherit",
         }}
       >
-        <img src={logo} alt="HMIYC Logo" style={{ height: "36px" }} />
+        <img
+          src={logo}
+          alt="Hack me if you can Logo"
+          style={{ height: "36px" }}
+        />
         <strong style={{ fontSize: "18px" }}>Hack me if you can</strong>
       </Link>
 
