@@ -41,7 +41,9 @@ function Welcome() {
 
       // Uložení nickname + playerId do Redux store
       dispatch(startGame());
-      dispatch(setPlayer({ nickname: player.nickname, playerId: player.playerId }));
+      dispatch(
+        setPlayer({ nickname: player.nickname, playerId: player.playerId }),
+      );
       navigate(getPagePath(Page.Game));
     } catch (error) {
       console.error("Nastala chyba při vytváření uživatele:", error);
@@ -74,8 +76,10 @@ function Welcome() {
                 roundedCircle
                 className="guide-bubble"
               />
+              <p>{welcomeTexts.welcomeMessage}</p>
               <p>
-                {welcomeTexts.welcomeMessage} {welcomeTexts.instruction1}
+                {welcomeTexts.instruction0}
+                {welcomeTexts.instruction1}
               </p>
               <p>{welcomeTexts.instruction2}</p>
             </div>
