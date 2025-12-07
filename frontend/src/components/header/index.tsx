@@ -13,7 +13,12 @@ type HeaderProps = {
   totalQuestions?: number;
 };
 
-function Header({ nickname = "Player", score, currentQuestion, totalQuestions }: HeaderProps) {
+function Header({
+  nickname = "Player",
+  score,
+  currentQuestion,
+  totalQuestions,
+}: HeaderProps) {
   const location = useLocation();
   const pathname = location.pathname;
 
@@ -43,18 +48,25 @@ function Header({ nickname = "Player", score, currentQuestion, totalQuestions }:
           color: "inherit",
         }}
       >
-        <img src={logo} alt="HMIYC Logo" style={{ height: "36px", borderRadius: "4px" }} />
+        <img
+          src={logo}
+          alt="HMIYC Logo"
+          style={{ height: "36px", borderRadius: "4px" }}
+        />
         <span className="nav-item--label">{textsApp.title}</span>
       </Link>
 
       <div className="nav-items">
-        {isGamePage && currentQuestion !== undefined && totalQuestions !== undefined && (
-          <div className="nav-item">
-            {getText(textsGame.title, [currentQuestion, totalQuestions])}
-          </div>
-        )}
+        {isGamePage &&
+          currentQuestion !== undefined &&
+          totalQuestions !== undefined && (
+            <div className="nav-item">
+              🎮 {getText(textsGame.title, [currentQuestion, totalQuestions])}
+            </div>
+          )}
         <div className="nav-item">
-          <FontAwesomeIcon icon={faUserAstronaut} className="text-warning" /> {nickname}
+          <FontAwesomeIcon icon={faUserAstronaut} className="text-warning" />
+          {texts.player}: {nickname}
         </div>
 
         <div className="nav-item">
