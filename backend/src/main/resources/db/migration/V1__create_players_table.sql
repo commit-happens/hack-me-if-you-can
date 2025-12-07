@@ -1,5 +1,5 @@
--- Flyway migration V1: Create players table
--- This migration creates the initial schema for the players table
+-- Flyway migrace V1: Vytvoření tabulky hráčů
+-- Tato migrace vytváří počáteční schéma pro tabulku hráčů
 
 CREATE TABLE IF NOT EXISTS players (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
