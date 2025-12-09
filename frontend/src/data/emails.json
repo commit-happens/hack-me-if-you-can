@@ -305,7 +305,10 @@
       "subject": "Pozvánka na bezplatný seminář",
       "content": "Vážený pane / paní,\n\nrádi vás pozveme na seminář o bezpečnosti seniorů. Prosíme o potvrzení účasti odpovědí na tento e-mail.\n\nTěšíme se na vás.",
       "explanation": "Legitimně působící zpráva bez odkazů a bez urgentního tlaku. Žádost o jednoduchou odpověď je obvykle bezpečná.",
-      "penalty": 1
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
     },
     {
       "id": 39,
@@ -326,7 +329,8 @@
       "explanation": "Podvod využívající strach o bezpečí domácnosti. Falešná URL, psychologický nátlak, neexistující služba.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [2, 1]
+      "phishingTypeIDs": [2, 1],
+      "difficulty": 1
     }
   ]
 }
