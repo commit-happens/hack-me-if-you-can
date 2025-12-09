@@ -11,7 +11,7 @@ services:
       # Spring Boot konfigurace
       - SPRING_PROFILES_ACTIVE=prod
       # H2 databáze - file-based pro perzistenci dat
-      - SPRING_DATASOURCE_URL=jdbc:h2:file:./data/hack_db
+      - SPRING_DATASOURCE_URL=jdbc:h2:mem:hack_db
       - SPRING_DATASOURCE_USERNAME=sa
       - SPRING_DATASOURCE_PASSWORD=
       - SPRING_H2_CONSOLE_ENABLED=true
