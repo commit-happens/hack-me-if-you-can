@@ -199,7 +199,8 @@
       "phishingTypeIDs": [],
       "difficulty": 1
     },
-     "id": 19,
+    {
+      "id": 19,
       "sender": "support@fitness-center-security.com",
       "subject": "Pozastavené členství – nutná aktualizace údajů",
       "content": "Dobrý den,\n\nz bezpečnostních důvodů bylo vaše členství dočasně pozastaveno. Pro pokračování prosím aktualizujte údaje: [Aktualizovat účet](http://fitness-members-update.info/login).\n\nDěkujeme.",
@@ -219,7 +220,7 @@
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
       "difficulty": 1
-    }
+    },
 
     {
       "id": 31,
@@ -304,10 +305,9 @@
       "subject": "Pozvánka na bezplatný seminář",
       "content": "Vážený pane / paní,\n\nrádi vás pozveme na seminář o bezpečnosti seniorů. Prosíme o potvrzení účasti odpovědí na tento e-mail.\n\nTěšíme se na vás.",
       "explanation": "Legitimně působící zpráva bez odkazů a bez urgentního tlaku. Žádost o jednoduchou odpověď je obvykle bezpečná.",
-      "penalty": 1,
-
-{
-
+      "penalty": 1
+    },
+    {
       "id": 39,
       "sender": "bankovni.sluzba@ucet-bezpecne.com",
       "subject": "Nutné ověření platební karty",
@@ -326,9 +326,7 @@
       "explanation": "Podvod využívající strach o bezpečí domácnosti. Falešná URL, psychologický nátlak, neexistující služba.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [2, 1],
-      
-
-   
+      "phishingTypeIDs": [2, 1]
+    }
   ]
 }
