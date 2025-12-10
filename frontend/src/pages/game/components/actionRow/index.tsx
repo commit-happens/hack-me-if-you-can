@@ -47,22 +47,23 @@ const ActionsRow = (props: ActionsRowProps) => {
           <div className="text-center">
             <span
               style={{
-                background: 
-                        timeoutProgressBarVariant === "warning"
-                ? "#f0ad4e" // žlutá
-                : timeoutProgressBarVariant === "danger"
-                ? "#d9534f" // červená
-                : "#0d6efd", // modrá (bootstrap primary)
-                      color: "white",
+                background:
+                  timeoutProgressBarVariant === "warning"
+                    ? "var(--bs-warning)" // yelllow from Bootstrap
+                    : timeoutProgressBarVariant === "danger"
+                    ? "var(--bs-danger)" // red from Bootstrap
+                    : "var(--bs-primary)", // blue from Bootstrap
+                color: "white",
                 padding: "4px 12px",
                 borderRadius: "6px",
                 fontWeight: "600",
-                display: "inline-block",
-                minWidth: "60px",
-                textAlign: "center",
-                      }}
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minWidth: "70px",
+              }}
             >
-              {remainingTime} s
+               {remainingTime} s
             </span>
           </div>
 
