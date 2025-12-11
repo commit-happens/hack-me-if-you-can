@@ -33,15 +33,15 @@ jobs:
           echo "DB_PASSWORD=${{ env.DB_PASSWORD }}" >> .env
 
       - name: Build Docker images
-        run: docker-compose build --no-cache
+        run: docker compose build --no-cache
 
       - name: Start services
-        run: docker-compose up -d
+        run: docker compose up -d
 
       - name: Wait for PostgreSQL to be healthy
         run: |
           echo "Waiting for PostgreSQL..."
-          timeout 60 bash -c 'until docker-compose exec -T postgres pg_isready -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }}; do sleep 2; done'
+          timeout 60 bash -c 'until docker compose exec -T postgres pg_isready -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }}; do sleep 2; done'
           echo "PostgreSQL is ready!"
 
       - name: Wait for Backend to be healthy
@@ -62,12 +62,12 @@ jobs:
       - name: Check Flyway migrations applied
         run: |
           echo "Checking Flyway migration status..."
-          docker-compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -c "SELECT version, description, success FROM flyway_schema_history ORDER BY installed_rank;"
+          docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -c "SELECT version, description, success FROM flyway_schema_history ORDER BY installed_rank;"
 
       - name: Check players table has data
         run: |
           echo "Checking players table..."
-          PLAYER_COUNT=$(docker-compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM players;")
+          PLAYER_COUNT=$(docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM players;")
           echo "Player count: $PLAYER_COUNT"
           if [ "$PLAYER_COUNT" -lt 1 ]; then
             echo "ERROR: No players found in database!"
@@ -83,16 +83,16 @@ jobs:
 
       - name: Show running containers
         if: always()
-        run: docker-compose ps
+        run: docker compose ps
 
       - name: Show backend logs on failure
         if: failure()
-        run: docker-compose logs backend
+        run: docker compose logs backend
 
       - name: Show postgres logs on failure
         if: failure()
-        run: docker-compose logs postgres
+        run: docker compose logs postgres
 
       - name: Cleanup
         if: always()
-        run: docker-compose down -v
+        run: docker compose down -v
