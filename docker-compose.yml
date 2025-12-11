@@ -1,4 +1,24 @@
 services:
+  # PostgreSQL databáze
+  postgres:
+    image: postgres:18-alpine
+    container_name: hmiyc-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks: 
+      - hmiyc-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # Backend služba (Spring Boot)
   backend:
     build:
@@ -8,13 +28,23 @@ services:
     ports:
       - "8080:8080"
     environment:
-      # Spring Boot konfigurace
-      - SPRING_PROFILES_ACTIVE=prod
-      # H2 databáze - file-based pro perzistenci dat
-      - SPRING_DATASOURCE_URL=jdbc:h2:mem:hack_db
-      - SPRING_DATASOURCE_USERNAME=sa
-      - SPRING_DATASOURCE_PASSWORD=
-      - SPRING_H2_CONSOLE_ENABLED=true
+      # Datasource konfigurace
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      # JPA konfigurace
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      # Flyway konfigurace
+      SPRING_FLYWAY_ENABLED: "true"
+      SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"
+      SPRING_FLYWAY_LOCATIONS: classpath:db/migration
+      # Vypnutí SQL init (data vkládá Flyway)
+      SPRING_SQL_INIT_MODE: never
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - hmiyc-network
     healthcheck:
@@ -41,3 +71,6 @@ services:
 networks:
   hmiyc-network:
     driver: bridge
+
+volumes:
+  postgres-data:

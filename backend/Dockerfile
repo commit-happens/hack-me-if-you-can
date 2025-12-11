@@ -19,8 +19,10 @@ RUN ./mvnw dependency:go-offline
 # Kopírování zdrojového kódu
 COPY src ./src
 
-# Build aplikace (spouští testy pro zajištění kvality kódu)
-RUN ./mvnw clean package
+# Build aplikace (přeskakujeme testy - ty se spouští v CI/CD pipeline)
+RUN ./mvnw clean package -DskipTests && \
+    ls -la /app/target/ && \
+    mv /app/target/backend-*-SNAPSHOT.jar /app/target/app.jar
 
 # ==================================
 # 🚀 STAGE 2: Runtime Stage
@@ -30,8 +32,8 @@ FROM eclipse-temurin:21-jre-alpine
 
 WORKDIR /app
 
-# Kopírování pouze JAR souboru z build stage
-COPY --from=build /app/target/*.jar app.jar
+# Kopírování pouze spustitelného JAR souboru z build stage
+COPY --from=build /app/target/app.jar app.jar
 
 # Exponování portu pro Spring Boot aplikaci
 EXPOSE 8080
