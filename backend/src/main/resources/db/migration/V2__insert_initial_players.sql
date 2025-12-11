@@ -90,4 +90,4 @@ INSERT INTO players (id, nickname, score) VALUES (89, 'dvojity̌̌test', 10);
 INSERT INTO players (id, nickname, score) VALUES (90, '¯\_(ツ)_/¯', 33);
 
 -- Reset auto-increment sequence for next inserts
-ALTER TABLE PLAYERS ALTER COLUMN ID RESTART WITH 91;
+ALTER TABLE players ALTER COLUMN id RESTART WITH 91;
