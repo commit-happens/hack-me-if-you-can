@@ -189,6 +189,10 @@ Tipy po přihlášení:
 - Spouštět vlastní SQL dotazy
 - Zkontrolovat uložená data přímo během běhu aplikace
 
+Flyway
+```
+cd backend && mvn flyway:repair -Dflyway.url=jdbc:postgresql://localhost:5432/hack_db -Dflyway.user=postgres -Dflyway.password=postgres@123
+```
 
 -----
 

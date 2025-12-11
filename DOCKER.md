@@ -1,12 +1,23 @@
 # 🐳 Docker Compose - Spuštění aplikace
 
-Tento dokument popisuje, jak spustit celou aplikaci (backend + frontend) pomocí Docker Compose bez nutnosti lokální instalace Maven, npm nebo JDK.
+Tento dokument popisuje, jak spustit celou aplikaci (backend + frontend + PostgreSQL) pomocí Docker Compose bez nutnosti lokální instalace Maven, npm nebo JDK.
 
 ## Předpoklady
 
 Na tvém počítači musí být nainstalovaný pouze:
 - **Docker Desktop** (obsahuje Docker Engine a Docker Compose)
   - macOS: [https://docs.docker.com/desktop/install/mac-install/](https://docs.docker.com/desktop/install/mac-install/)
+
+## Konfigurace prostředí
+
+Před spuštěním vytvoř soubor `.env` v kořenovém adresáři projektu:
+
+```bash
+# Databázové přihlašovací údaje
+DB_NAME=hmiyc
+DB_USER=postgres
+DB_PASSWORD=postgres@123
+```
 
 ## Spuštění aplikace
 
@@ -17,22 +28,23 @@ docker-compose up --build
 ```
 
 Tento příkaz:
-- Stáhne potřebné Docker image (Maven, JDK, Node.js, Nginx)
+- Spustí PostgreSQL databázi
 - Vytvoří backend pomocí build (Java 21 + Spring Boot)
+- Spustí Flyway migrace pro inicializaci databáze
 - Vytvoří frontend pomocí build (React + Vite)
-- Spustí obě služby
+- Spustí všechny služby
 
 ### 2. Přístup k aplikaci
 
 Po úspěšném spuštění budou dostupné:
 
-- **Frontend**: [http://localhost:3000](http://localhost:3000)
-- **Backend API**: [http://localhost:8080/api/hello](http://localhost:8080/api/hello)
-- **H2 Console**: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
-  - JDBC URL: `jdbc:h2:mem:hack_db`
-  - Username: `sa`
-  - Password: (prázdné)
-- **Swagger API**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+| Služba | URL |
+|--------|-----|
+| **Frontend** | [http://localhost:3000](http://localhost:3000) |
+| **Backend API** | [http://localhost:8080/api/hello](http://localhost:8080/api/hello) |
+| **Players API** | [http://localhost:8080/api/players](http://localhost:8080/api/players) |
+| **Swagger API** | [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) |
+| **PostgreSQL** | `localhost:5432` |
 
 ### 3. Zastavení aplikace
 
@@ -40,11 +52,79 @@ Po úspěšném spuštění budou dostupné:
 # Graceful stop
 docker-compose down
 
-# Stop a smazání volume (databáze)
+# Stop a smazání volumes (databáze)
 docker-compose down -v
 
 # Stop a smazání images
 docker-compose down --rmi all
+```
+
+## PostgreSQL a Flyway
+
+### Architektura databáze
+
+Aplikace používá **PostgreSQL** jako databázi a **Flyway** pro správu migrací:
+
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│    Frontend     │────▶│    Backend      │────▶│   PostgreSQL    │
+│   (Nginx:3000)  │     │ (Spring:8080)   │     │    (:5432)      │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+                               │
+                               ▼
+                        ┌─────────────────┐
+                        │     Flyway      │
+                        │   (migrace)     │
+                        └─────────────────┘
+```
+
+### Flyway migrace
+
+Migrace se nacházejí v `backend/src/main/resources/db/migration/`:
+
+| Migrace | Popis |
+|---------|-------|
+| `V1__create_players_table.sql` | Vytvoření tabulky `players` |
+| `V2__insert_initial_players.sql` | Vložení testovacích dat |
+
+Flyway se automaticky spustí při startu backendu a aplikuje všechny pending migrace.
+
+## Docker příkazy pro PostgreSQL
+
+### Připojení k databázi v kontejneru
+
+```bash
+# Připojení přes psql
+docker exec -it hmiyc-postgres psql -U postgres -d hmiyc
+
+# Spuštění SQL příkazu
+docker exec -it hmiyc-postgres psql -U postgres -d hmiyc -c "SELECT * FROM players LIMIT 5;"
+```
+
+### Zobrazení tabulek
+
+```bash
+docker exec -it hmiyc-postgres psql -U postgres -d hmiyc -c "\dt"
+```
+
+### Zobrazení hráčů
+
+```bash
+docker exec -it hmiyc-postgres psql -U postgres -d hmiyc -c "SELECT * FROM players ORDER BY id;"
+```
+
+### Stav Flyway migrací
+
+```bash
+docker exec -it hmiyc-postgres psql -U postgres -d hmiyc -c "SELECT version, description, success FROM flyway_schema_history;"
+```
+
+### Reset databáze
+
+```bash
+# Smazání volumes (kompletní reset)
+docker-compose down -v
+docker-compose up --build
 ```
 
 ## Užitečné příkazy
@@ -161,9 +241,7 @@ docker-compose up -d --build frontend
 
 ## Produkční poznámky
 
-Pro produkční nasazení doporučuji:
-- Použít externí databázi (PostgreSQL, MySQL) místo H2 in-memory
-- Přidat volume pro perzistenci dat
-- Nastavit environment variables přes `.env` soubor
-- Použít `docker-compose.prod.yml` pro produkční konfiguraci
-- Přidat health checks a restart policies
+- Aplikace používá PostgreSQL jako produkční databázi
+- Data jsou perzistentní díky Docker volumes (`postgres-data`)
+- Environment variables jsou nastaveny přes `.env` soubor
+- Flyway zajišťuje konzistentní stav databázového schématu
