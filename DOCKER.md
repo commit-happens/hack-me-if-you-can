@@ -85,7 +85,6 @@ Migrace se nacházejí v `backend/src/main/resources/db/migration/`:
 | Migrace | Popis |
 |---------|-------|
 | `V1__create_players_table.sql` | Vytvoření tabulky `players` |
-| `V2__insert_initial_players.sql` | Vložení testovacích dat |
 
 Flyway se automaticky spustí při startu backendu a aplikuje všechny pending migrace.
 
