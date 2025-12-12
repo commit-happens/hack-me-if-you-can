@@ -49,7 +49,7 @@ Nejrychlejší způsob, jak spustit celou aplikaci bez lokální instalace Node.
 
 ### Spuštění
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 Po úspěšném buildu a spuštění budou dostupné:
@@ -60,7 +60,7 @@ Po úspěšném buildu a spuštění budou dostupné:
 
 ### Zastavení
 ```bash
-docker-compose down
+docker compose down
 ```
 
 Podrobné informace najdeš v [DOCKER.md](DOCKER.md).

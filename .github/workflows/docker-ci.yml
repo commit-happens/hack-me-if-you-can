@@ -33,10 +33,10 @@ jobs:
           echo "DB_PASSWORD=${{ env.DB_PASSWORD }}" >> .env
 
       - name: Build Docker images
-        run: docker compose build --no-cache
+        run: make docker-build
 
       - name: Start services
-        run: docker compose up -d
+        run: make docker-up-detached
 
       - name: Wait for PostgreSQL to be healthy
         run: |

@@ -91,25 +91,25 @@ print-hosts:
 
 
 ## Docker pomocné příkazy
-docker-up:
-	@echo "Spuštění všech služeb v Dockeru..."
-	docker-compose up --build
+docker-build:
+	@echo "Buildování Docker obrazů..."
+	docker compose build --no-cache
 
 docker-up-detached:
 	@echo "Spuštění všech služeb v Dockeru na pozadí..."
-	docker-compose up -d --build
+	docker compose up -d --build
 
 docker-down:
 	@echo "Zastavení všech služeb..."
-	docker-compose down
+	docker compose down
 
 docker-down-volumes:
 	@echo "Zastavení všech služeb a smazání volumes (reset databáze)..."
-	docker-compose down -v
+	docker compose down -v
 
 docker-restart:
 	@echo "Restart všech služeb..."
-	docker-compose restart
+	docker compose restart
 
 docker-db-connect:
 	@echo "Připojení k PostgreSQL v Dockeru..."

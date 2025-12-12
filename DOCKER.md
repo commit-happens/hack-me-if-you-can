@@ -24,7 +24,7 @@ DB_PASSWORD=postgres@123
 ### 1. Spuštění všech služeb
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 Tento příkaz:
@@ -50,13 +50,13 @@ Po úspěšném spuštění budou dostupné:
 
 ```bash
 # Graceful stop
-docker-compose down
+docker compose down
 
 # Stop a smazání volumes (databáze)
-docker-compose down -v
+docker compose down -v
 
 # Stop a smazání images
-docker-compose down --rmi all
+docker compose down --rmi all
 ```
 
 ## PostgreSQL a Flyway
@@ -122,50 +122,50 @@ docker exec -it hmiyc-postgres psql -U postgres -d hmiyc -c "SELECT version, des
 
 ```bash
 # Smazání volumes (kompletní reset)
-docker-compose down -v
-docker-compose up --build
+docker compose down -v
+docker compose up --build
 ```
 
 ## Užitečné příkazy
 
 ### Spuštění na pozadí (detached mode)
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Zobrazení logů
 ```bash
 # Všechny služby
-docker-compose logs -f
+docker compose logs -f
 
 # Pouze backend
-docker-compose logs -f backend
+docker compose logs -f backend
 
 # Pouze frontend
-docker-compose logs -f frontend
+docker compose logs -f frontend
 ```
 
 ### Restart služby
 ```bash
 # Restart všech služeb
-docker-compose restart
+docker compose restart
 
 # Restart pouze backendu
-docker-compose restart backend
+docker compose restart backend
 ```
 
 ### Rebuild konkrétní služby
 ```bash
 # Rebuild pouze backendu
-docker-compose build backend
+docker compose build backend
 
 # Rebuild a restart backendu
-docker-compose up -d --build backend
+docker compose up -d --build backend
 ```
 
 ### Zobrazení běžících kontejnerů
 ```bash
-docker-compose ps
+docker compose ps
 ```
 
 ### Přístup do kontejneru (debugging)
@@ -181,7 +181,7 @@ docker exec -it hmiyc-frontend sh
 
 ```
 .
-├── docker-compose.yml          # Orchestrace služeb
+├── docker compose.yml          # Orchestrace služeb
 ├── backend/
 │   ├── Dockerfile             # Multi-stage build pro Java aplikaci
 │   └── .dockerignore          # Ignorované soubory při buildu
@@ -223,19 +223,19 @@ ports:
 ### Backend nenaběhne
 ```bash
 # Zkontroluj logy
-docker-compose logs backend
+docker compose logs backend
 
 # Restart s rebuildem
-docker-compose up -d --build backend
+docker compose up -d --build backend
 ```
 
 ### Frontend nenaběhne
 ```bash
 # Zkontroluj logy
-docker-compose logs frontend
+docker compose logs frontend
 
 # Restart s rebuildem
-docker-compose up -d --build frontend
+docker compose up -d --build frontend
 ```
 
 ## Produkční poznámky
