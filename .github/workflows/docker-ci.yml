@@ -67,10 +67,14 @@ jobs:
       - name: Check players table has data
         run: |
           echo "Checking players table..."
-          PLAYER_COUNT=$(docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM players;")
-          echo "Player count: $PLAYER_COUNT"
-          if [ "$PLAYER_COUNT" -lt 1 ]; then
+          PLAYER_COUNT=$(docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM players;" | tr -d '[:space:]')
+          echo "Player count: '$PLAYER_COUNT'"
+          if [ -z "$PLAYER_COUNT" ] || [ "$PLAYER_COUNT" -lt 1 ]; then
             echo "ERROR: No players found in database!"
+            echo "Debug: Checking if table exists..."
+            docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -c "\dt players"
+            echo "Debug: Showing first 5 rows..."
+            docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -c "SELECT * FROM players LIMIT 5;"
             exit 1
           fi
           echo "✅ Database has $PLAYER_COUNT players"
