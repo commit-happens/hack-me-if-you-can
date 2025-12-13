@@ -439,6 +439,116 @@
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
       "difficulty": 1
+    },
+    {
+      "id": 61,
+      "sender": "vyhry@mobilni-soutez-cz.net",
+      "subject": "Gratulujeme k výhře v soutěži O2!",
+      "content": "Dobrý den,\n\nbyli jste vybráni jako výherce naší soutěže O2 o Samsung Galaxy S24! Pro dokončení převzetí výhry prosím ověřte svou identitu a uhraďte poštovné 149 Kč: [Převzít výhru](http://o2-soutez-vyhra.example/claim).\n\nVýhra bude rezervována pouze 24 hodin.",
+      "explanation": "Podvodný e-mail vydávající se za operátora O2. Doména neodpovídá oficiální doméně O2, vyžaduje platbu za 'poštovné' a vytváří umělou urgenci. Legitimní soutěže nikdy nevyžadují platbu od výherce.",
+      "penalty": 9,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [6, 3, 2],
+      "difficulty": 1
+    },
+    {
+      "id": 62,
+      "sender": "koordinator@svatby-na-klic.cz",
+      "subject": "Harmonogram vaší svatby – finální verze",
+      "content": "Milí snoubenci,\n\nv příloze zasílám finální harmonogram vaší svatby na 15. června. Prosím o kontrolu časů a potvrzení, že je vše v pořádku. V případě jakýchkoli změn mě kontaktujte na telefonu +420 603 456 789.\n\nS láskou,\nPetra – Vaše svatební koordinátorka",
+      "explanation": "Legitimní komunikace od svatebního koordinátora. Osobní tón, konkrétní datum, kontakt přes telefon, žádné podezřelé odkazy.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 63,
+      "sender": "info@lezecka-stena-smichoff.cz",
+      "subject": "Nové boulder problémy – leden 2025",
+      "content": "Ahoj lezci!\n\nV tomto týdnu jsme přestavěli žlutý a oranžový sektor. Přijďte si vyzkoušet 15 nových boulder problémů od 4a do 7b. Otevírací doba zůstává beze změn.\n\nTěšíme se na vás,\nTým Smíchoff",
+      "explanation": "Standardní informační e-mail z lezecké stěny. Žádné odkazy ani požadavky na akci, pouze informace o novinkách.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 64,
+      "sender": "program@kinoaero.cz",
+      "subject": "Tento týden v Aeru: Přehlídka českého filmu",
+      "content": "Dobrý den,\n\ntento týden se v Kině Aero koná přehlídka českého filmu 90. let. Program a vstupenky najdete na našem webu: [www.kinoaero.cz/program](https://www.kinoaero.cz/program).\n\nPřejeme příjemné filmové zážitky!",
+      "explanation": "Legitimní newsletter z kina. Odkaz vede na oficiální doménu, standardní marketingová komunikace bez nátlaku.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 65,
+      "sender": "instruktor@fitko-zdravi.cz",
+      "subject": "Změna času cvičení – tento pátek",
+      "content": "Ahoj,\n\njen rychlá informace – páteční lekce kruhového tréninku se posouvá z 18:00 na 18:30 kvůli údržbě sálu. Omlouváme se za komplikace.\n\nUvidíme se v pátek!\nTomáš",
+      "explanation": "Legitimní oznámení od instruktora fitness centra. Konkrétní informace o změně, osobní tón, žádné podezřelé požadavky.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 66,
+      "sender": "akademie@bjj-praha.cz",
+      "subject": "Pozvánka na seminář s mistrem světa",
+      "content": "Ahoj borci!\n\nV sobotu 8. února pořádáme seminář s dvojnásobným mistrem světa v BJJ. Kapacita je omezená na 30 míst. Registrace na recepci nebo odpovědí na tento e-mail.\n\nCena: 800 Kč pro členy, 1200 Kč pro nečleny.\n\nRoman, BJJ Akademie Praha",
+      "explanation": "Legitimní pozvánka na seminář od BJJ akademie. Konkrétní informace, standardní způsob registrace, žádné podezřelé odkazy.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 67,
+      "sender": "objednavky@prazirna-kava.cz",
+      "subject": "Vaše objednávka byla odeslána",
+      "content": "Dobrý den,\n\nvaše objednávka č. 2025-1847 (Etiopie Sidamo 500g, Brazílie Santos 250g) byla dnes odeslána. Sledování zásilky: [tracking.ppl.cz/123456](https://tracking.ppl.cz/123456).\n\nDěkujeme za nákup!\nPražírna u Karla",
+      "explanation": "Legitimní potvrzení odeslání objednávky. Konkrétní číslo objednávky, odkaz na sledování zásilky u známého dopravce.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 68,
+      "sender": "info@fitness007.cz",
+      "subject": "Vaše oblíbené proteiny opět skladem!",
+      "content": "Dobrý den,\n\nrádi vám oznamujeme, že Whey Protein Isolate čokoláda je opět skladem. Jako stálý zákazník máte nárok na 10% slevu s kódem LOYAL10.\n\nNakupujte na [www.fitness007.cz](https://www.fitness007.cz).\n\nVáš Fitness007 tým",
+      "explanation": "Legitimní marketingový e-mail od známého e-shopu se suplementy. Odkaz vede na oficiální doménu, slevový kód je běžná praxe.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 69,
+      "sender": "lektor@jazykova-skola-bridge.cz",
+      "subject": "Domácí úkol na příští hodinu angličtiny",
+      "content": "Ahoj,\n\nna příští hodinu si prosím připravte popis svého oblíbeného filmu v angličtině (5-10 vět). Budeme procvičovat minulý čas a slovní zásobu.\n\nTěším se v úterý!\nMark",
+      "explanation": "Legitimní e-mail od lektora angličtiny. Osobní tón, konkrétní úkol, žádné podezřelé odkazy ani požadavky.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 70,
+      "sender": "registrace@anglictina-online.cz",
+      "subject": "Potvrzení registrace do kurzu Business English",
+      "content": "Dobrý den,\n\npotvrzujeme vaši registraci do kurzu Business English – úroveň B2. Kurz začíná 3. února v 18:00. Přístupové údaje do online učebny obdržíte den před zahájením.\n\nS pozdravem,\nJazyková škola Online",
+      "explanation": "Legitimní potvrzení registrace do jazykového kurzu. Konkrétní informace o kurzu, standardní komunikace bez podezřelých prvků.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
     }
   ]
 }
