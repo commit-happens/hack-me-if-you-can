@@ -44,6 +44,16 @@
         "Ověř identitu zasílatele telefonátem či jiným kanálem.",
         "Buď ostražitý u nevyžádaných zpráv, i když obsahují osobní údaje."
       ]
+    },
+    {
+      "id": 6,
+      "name": "Soutěžní / loterijní phishing",
+      "securityHints": [
+        "Buď skeptický k oznámením o výhrách v soutěžích, kterých jste se neúčastnili.",
+        "Legitimní soutěže nikdy nevyžadují platbu za převzetí výhry.",
+        "Ověř existenci soutěže přes oficiální kanály organizátora.",
+        "Nikdy nesděluj osobní či platební údaje pro 'aktivaci' výhry."
+      ]
     }
   ]
 }

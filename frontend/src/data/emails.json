@@ -110,7 +110,6 @@
       "phishingTypeIDs": [4, 1, 2],
       "difficulty": 1
     },
-
     {
       "id": 11,
       "sender": "support@steam-rewards.com",
@@ -119,7 +118,7 @@
       "explanation": "Doména neodpovídá skutečné službě Steam (použita podvodná doména). Tlačí na rychlou akci.",
       "penalty": 8,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 2],
+      "phishingTypeIDs": [1, 2, 6],
       "difficulty": 1
     },
     {
@@ -221,7 +220,6 @@
       "phishingTypeIDs": [],
       "difficulty": 1
     },
-
     {
       "id": 31,
       "sender": "eRecept@zdravotniportal-info.com",
@@ -330,6 +328,116 @@
       "penalty": 9,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [2, 1],
+      "difficulty": 1
+    },
+    {
+      "id": 51,
+      "sender": "fakturace@dodavatel-kancelar.net",
+      "subject": "Faktura za kancelářské potřeby – splatnost DNES",
+      "content": "Dobrý den,\n\nv příloze zasíláme fakturu č. 2025-0892 za dodané kancelářské potřeby. Částka 4 850 Kč je splatná ještě dnes. Pro rychlou úhradu použijte tento odkaz: [Zaplatit fakturu](http://faktura-platba-rychle.example/pay).\n\nDěkujeme za spolupráci.",
+      "explanation": "Falešná faktura s nátlakem na okamžitou platbu. Doména odkazu je podezřelá a neodpovídá žádnému známému dodavateli. Vždy ověřte faktury přímo u dodavatele.",
+      "penalty": 9,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [3, 2, 1],
+      "difficulty": 1
+    },
+    {
+      "id": 52,
+      "sender": "loterie-vyhry@super-loterie.info",
+      "subject": "Byli jste vylosováni! Výhra 50 000 Kč čeká",
+      "content": "Gratulujeme!\n\nVaše e-mailová adresa byla náhodně vylosována v naší mezinárodní loterii. Vyhráli jste 50 000 Kč! Pro převzetí výhry prosím vyplňte formulář: [Nárokovat výhru](http://loterie-vyzvedni.example/claim).\n\nVýhra propadá za 48 hodin.",
+      "explanation": "Klasický loterijní podvod. Uživatel se žádné loterie neúčastnil. Cílem je získat osobní údaje nebo platbu za 'poplatky' spojené s výhrou.",
+      "penalty": 8,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [6, 2, 1],
+      "difficulty": 1
+    },
+    {
+      "id": 53,
+      "sender": "kolega.martin@firma-ext.com",
+      "subject": "Urgentní – potřebuji tvou pomoc",
+      "content": "Ahoj,\n\nomlouvám se, že tě ruším, ale mám problém. Jsem na služební cestě a ztratil jsem peněženku. Potřeboval bych, abys mi poslal/a 3000 Kč přes tento odkaz: [Poslat peníze](http://pomoc-kolegovi.example/send). Vrátím ti to hned v pondělí.\n\nDíky moc,\nMartin",
+      "explanation": "Personalizovaný útok vydávající se za kolegu v nouzi. E-mail přichází z podezřelé domény (firma-ext.com místo firemní domény). Vždy ověřte identitu jiným kanálem.",
+      "penalty": 9,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [5, 2],
+      "difficulty": 2
+    },
+    {
+      "id": 54,
+      "sender": "uctarna@nase-spolecnost-faktury.com",
+      "subject": "Nezaplacená faktura – hrozí penále",
+      "content": "Vážený zákazníku,\n\nevidujeme u vás nezaplacenou fakturu č. FA-2025-445 ve výši 2 340 Kč. Pokud nebude uhrazena do konce dne, bude účtováno penále. Fakturu a platební údaje naleznete zde: [Zobrazit fakturu](http://faktury-splatnost.example/doc).\n\nS pozdravem,\nÚčtárna",
+      "explanation": "Falešná faktura s hrozbou penále pro vytvoření tlaku. Podezřelá doména a obecný text bez konkrétních údajů o společnosti.",
+      "penalty": 8,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [3, 2, 1],
+      "difficulty": 1
+    },
+    {
+      "id": 55,
+      "sender": "soutez@elektronika-vyhraj.net",
+      "subject": "Výherce soutěže o iPhone 15 Pro!",
+      "content": "Dobrý den,\n\nbyli jste vybráni jako výherce naší soutěže o iPhone 15 Pro! Pro dokončení registrace a odeslání výhry prosím uhraďte manipulační poplatek 299 Kč: [Dokončit registraci](http://iphone-vyhra-claim.example/pay).\n\nNabídka platí pouze 24 hodin.",
+      "explanation": "Soutěžní podvod vyžadující platbu za 'manipulační poplatek'. Legitimní soutěže nikdy nevyžadují platbu od výherce. Kombinace urgence a lákavé nabídky.",
+      "penalty": 9,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [6, 2, 3],
+      "difficulty": 1
+    },
+    {
+      "id": 56,
+      "sender": "info@svatebni-salon-elegant.cz",
+      "subject": "Potvrzení termínu zkoušky šatů",
+      "content": "Dobrý den,\n\npotvrzujeme Váš termín zkoušky svatebních šatů na sobotu 18. ledna v 10:00. V případě potřeby změny termínu nás prosím kontaktujte na telefonu +420 777 123 456.\n\nTěšíme se na Vás,\nSvatební salon Elegant",
+      "explanation": "Legitimní potvrzení termínu ze svatebního salonu. Žádné podezřelé odkazy, kontakt pouze přes telefon.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 57,
+      "sender": "newsletter@kavarna-zrnko.cz",
+      "subject": "Nová limitovaná edice – Etiopská káva",
+      "content": "Milí kávomilci,\n\ndo naší nabídky jsme zařadili limitovanou edici etiopské kávy z oblasti Yirgacheffe. Přijďte ochutnat do naší kavárny nebo objednejte online na [www.kavarna-zrnko.cz/eshop](https://www.kavarna-zrnko.cz/eshop).\n\nTěšíme se na vás!",
+      "explanation": "Běžný newsletter z kavárny. Odkaz vede na oficiální doménu, žádné podezřelé požadavky.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 58,
+      "sender": "rezervace@lezecke-centrum-boulder.cz",
+      "subject": "Připomínka kurzu lezení pro začátečníky",
+      "content": "Ahoj,\n\npřipomínáme ti, že zítra v 18:00 začíná tvůj kurz lezení pro začátečníky. Nezapomeň si vzít pohodlné oblečení a přezůvky. Lezečky ti zapůjčíme na místě.\n\nV případě dotazů volej na +420 602 345 678.\n\nTým Boulder Centra",
+      "explanation": "Legitimní připomínka kurzu z lezeckého centra. Osobní tón, konkrétní informace, kontakt přes telefon.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 59,
+      "sender": "turnaj@pinball-klub-praha.cz",
+      "subject": "Pozvánka na pinballový turnaj – 25. ledna",
+      "content": "Ahoj pinballisté!\n\nZveme vás na první letošní turnaj v našem klubu. Startujeme 25. ledna od 14:00. Registrace probíhá na místě, startovné je 150 Kč. Více info na našem webu: [www.pinball-klub-praha.cz/turnaje](https://www.pinball-klub-praha.cz/turnaje).\n\nTěšíme se!",
+      "explanation": "Legitimní pozvánka na turnaj od pinballového klubu. Odkaz vede na oficiální web, žádné podezřelé požadavky.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 60,
+      "sender": "program@kino-lucerna.cz",
+      "subject": "Filmový klub – tento čtvrtek: Pulp Fiction",
+      "content": "Dobrý den,\n\nv rámci našeho filmového klubu promítáme tento čtvrtek kultovní film Pulp Fiction (1994). Začínáme ve 20:00, vstupenky zakoupíte na pokladně nebo online na [www.kino-lucerna.cz/vstupenky](https://www.kino-lucerna.cz/vstupenky).\n\nPřejeme příjemný filmový zážitek!",
+      "explanation": "Běžný informační e-mail z kina. Odkaz vede na oficiální doménu, standardní marketingová komunikace.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
       "difficulty": 1
     }
   ]
