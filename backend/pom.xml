@@ -103,16 +103,32 @@
     <build>
         <plugins>
 
-          <!-- Maven Compiler Plugin - zajišťuje kompilaci kódu -->
+            <!-- Maven Compiler Plugin - zajišťuje kompilaci kódu s Lombok -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
             </plugin>
 
-          <!-- Spring Boot Maven Plugin - spouštění aplikace a tvorba JAR -->
+            <!-- Spring Boot Maven Plugin - vytváří spustitelný fat JAR -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
         </plugins>
