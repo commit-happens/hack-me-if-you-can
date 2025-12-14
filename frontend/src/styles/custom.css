@@ -1,0 +1,69 @@
+:root {
+  --welcome-message-width: 40ch;
+  --notch-width: 1em;
+  --notch-height: 0.75em;
+  --game-width: 80ch;
+
+  --breakpoint-sm: 450px;
+}
+
+.guide-bubble {
+  border-radius: 50%;
+  width: 7em;
+  position: absolute;
+  left: -10em;
+  top: 0;
+}
+
+@media (max-width: 680px) {
+  .guide-bubble {
+    position: static;
+    margin: 0 auto 1em auto;
+    display: block;
+  }
+}
+
+.welcome-message {
+  max-width: var(--welcome-message-width);
+  position: relative;
+}
+
+.welcome-message::before {
+  content: "";
+  position: absolute;
+  top: 3em;
+  left: calc(-1 * var(--notch-width));
+  width: 0;
+  height: 0;
+  border-top: var(--notch-height) solid transparent;
+  border-bottom: var(--notch-height) solid transparent;
+  border-right: var(--notch-width) solid silver;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@media (max-width: 680px) {
+  .welcome-message::before {
+    display: none;
+  }
+}
+
+.username-field {
+  max-width: var(--welcome-message-width);
+}
+
+.nav-items {
+  display: flex;
+  align-items: center;
+  gap: 0.9em;
+}
+
+.nav-item--label {
+  @media (max-width: 465px) {
+    display: none;
+  }
+}
+
+.game-container {
+  max-width: var(--game-width);
+}
