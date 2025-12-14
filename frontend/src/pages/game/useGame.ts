@@ -179,7 +179,7 @@ export function useGame(props: UseGameProps) {
       (threshold) => threshold.secondsRemaining >= remainingTime,
     ) || {};
 
-  const timeoutTextColor = colorVariant ? `text-${colorVariant}` : undefined;
+  const timeoutBgColor = colorVariant ? `bg-${colorVariant}` : undefined;
   const timeoutProgressBarVariant = colorVariant;
 
   /** Vrátí typ FeedbackType pro zobrazení reakce na odpověď. */
@@ -266,7 +266,7 @@ export function useGame(props: UseGameProps) {
     emailsOfDifficulty,
     remainingTime,
     timePerQuestion,
-    timeoutTextColor,
+    timeoutBgColor,
     timeoutProgressBarVariant,
     feedbackData,
   };

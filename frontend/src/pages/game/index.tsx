@@ -30,7 +30,7 @@ function Game() {
     handleAnswer,
     handleContinue,
     remainingTime,
-    timeoutTextColor,
+    timeoutBgColor,
     timePerQuestion,
     timeoutProgressBarVariant,
     feedbackData,
@@ -75,7 +75,7 @@ function Game() {
       <ActionsRow
         handleAnswer={handleAnswer}
         remainingTime={remainingTime}
-        timeoutTextColor={timeoutTextColor}
+        timeoutBgColor={timeoutBgColor}
         timeoutProgressBarVariant={timeoutProgressBarVariant}
         timePerQuestion={timePerQuestion}
         texts={texts}

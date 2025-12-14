@@ -1,13 +1,20 @@
 import { faWarning, faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button, Col, Container, ProgressBar, Row } from "react-bootstrap";
+import {
+  Badge,
+  Button,
+  Col,
+  Container,
+  ProgressBar,
+  Row,
+} from "react-bootstrap";
 import { Answer } from "../../useGame";
 import type { Translation } from "../../../../languages/csCZ";
 
 type ActionsRowProps = {
   handleAnswer: (answer: Answer) => void;
   remainingTime: number;
-  timeoutTextColor?: string;
+  timeoutBgColor?: string;
   timeoutProgressBarVariant?: string;
   timePerQuestion: number;
   texts: Translation["game"];
@@ -19,8 +26,8 @@ const ActionsRow = (props: ActionsRowProps) => {
   const {
     handleAnswer,
     remainingTime,
-    timeoutTextColor,
     timeoutProgressBarVariant,
+    timeoutBgColor,
     timePerQuestion,
     texts,
   } = props;
@@ -45,8 +52,10 @@ const ActionsRow = (props: ActionsRowProps) => {
           xs={2}
           className="d-flex align-items-center justify-content-center"
         >
-          <div className={`text-center px-3 ${timeoutTextColor}`}>
-            {remainingTime} s
+          <div className="text-center">
+            <Badge className={`px-2 py-2 fw-bold ${timeoutBgColor}`}>
+              {remainingTime} s
+            </Badge>
           </div>
         </Col>
         <Col className="text-start">
