@@ -2,6 +2,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
 import { updatePlayerScore } from "../../services/playerService";
+import { getEnvConfigValue } from "../../utils/envConfig";
+
+const gameQuestionsLimitDefault = getEnvConfigValue(
+  "VITE_GAME_QUESTIONS_LIMIT",
+  20,
+);
+const gameInitialScoreDefault = getEnvConfigValue("VITE_INITIAL_SCORE", 200);
 
 interface GameState {
   score: number;
@@ -12,11 +19,11 @@ interface GameState {
 }
 
 const initialState: GameState = {
-  score: 100,
+  score: gameInitialScoreDefault,
   correctAnswers: 0,
   currentIndex: 0,
   isPlaying: false,
-  totalQuestions: 0,
+  totalQuestions: gameQuestionsLimitDefault,
 };
 
 // Async thunk pro update skóre na backendu
@@ -44,10 +51,10 @@ const gameSlice = createSlice({
   reducers: {
     startGame: (state) => {
       state.isPlaying = true;
-      state.score = 100;
+      state.score = gameInitialScoreDefault;
       state.currentIndex = 0;
       state.correctAnswers = 0;
-      state.totalQuestions = 0;
+      state.totalQuestions = gameQuestionsLimitDefault;
     },
     endGame: (state) => {
       state.isPlaying = false;

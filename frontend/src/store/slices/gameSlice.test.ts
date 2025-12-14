@@ -5,9 +5,11 @@ import gameReducer, {
   endGame,
   increaseCorrectAnswers,
   setCurrentIndex,
+  setTotalQuestions,
   updateScore,
 } from "./gameSlice";
 import playerReducer from "./playerSlice";
+import { getEnvConfigValue } from "../../utils/envConfig";
 
 // Mock služby pro backend
 vi.mock("../../services/playerService", () => ({
@@ -29,9 +31,12 @@ describe("gameSlice reducers", () => {
 
     const s = store.getState().game;
     expect(s.isPlaying).toBe(true);
-    expect(s.score).toBe(100);
+    expect(s.score).toBe(getEnvConfigValue("VITE_INITIAL_SCORE", 200));
     expect(s.currentIndex).toBe(0);
     expect(s.correctAnswers).toBe(0);
+    expect(s.totalQuestions).toBe(
+      getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20),
+    );
   });
 
   it("Akce increaseCorrectAnswers zvýší počet správných odpovědí", () => {
@@ -44,6 +49,12 @@ describe("gameSlice reducers", () => {
     const store = makeStore();
     store.dispatch(setCurrentIndex(3));
     expect(store.getState().game.currentIndex).toBe(3);
+  });
+
+  it("Akce setTotalQuestions nastaví celkový počet otázek", () => {
+    const store = makeStore();
+    store.dispatch(setTotalQuestions(10));
+    expect(store.getState().game.totalQuestions).toBe(10);
   });
 
   it("Akce endGame ukončí hru a resetuje počítadlo správných odpovědí", () => {
@@ -60,9 +71,9 @@ describe("gameSlice reducers", () => {
 describe("gameSlice updateScore thunk", () => {
   it("po úspěchu nastaví skóre na hodnotu ze serveru", async () => {
     const store = makeStore();
-    // Výchozí score 100; změníme o +25 -> očekáváme 125
+    // Výchozí score 200; změníme o +25 -> očekáváme 225
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await store.dispatch(updateScore({ playerId: 42, scoreChange: 25 }) as any);
-    expect(store.getState().game.score).toBe(125);
+    expect(store.getState().game.score).toBe(225);
   });
 });

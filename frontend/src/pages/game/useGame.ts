@@ -112,7 +112,7 @@ export function useGame(props: UseGameProps) {
   });
   const playerId = useAppSelector(selectPlayerId);
 
-  const questionsLimit = getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 10);
+  const questionsLimit = getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20);
 
   const emailsOfDifficulty = useMemo(() => {
     const filteredQuestions = randomizedEmails.filter(
