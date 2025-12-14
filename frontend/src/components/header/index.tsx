@@ -1,8 +1,10 @@
+import { faBullseye, faUserAstronaut } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useLocation } from "react-router-dom";
-import useTranslation from "../../hooks/useTranslation";
+import logo from "../../assets/logo-hmiyc.png";
+import useTranslation, { getText } from "../../hooks/useTranslation";
 import Page from "../../models/Page";
 import { getPagePath } from "../../utils/routing";
-import logo from "../../assets/logo-hmiyc.png";
 
 type HeaderProps = {
   nickname?: string;
@@ -19,11 +21,10 @@ function Header({
 }: HeaderProps) {
   const location = useLocation();
   const pathname = location.pathname;
-  const texts = useTranslation("header");
 
-  // Header se nemá zobrazovat na Welcome stránce
-  const hideOnWelcome = pathname === getPagePath(Page.Welcome);
-  if (hideOnWelcome) return null;
+  const texts = useTranslation("header");
+  const textsApp = useTranslation("app");
+  const textsGame = useTranslation("game");
 
   const isGamePage = pathname === getPagePath(Page.Game);
 
@@ -33,51 +34,46 @@ function Header({
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "12px 20px",
-        borderBottom: "1px solid #ddd",
-        background: "white",
+        padding: "0.5em 0.1em",
+        marginBlock: "1em 2em",
       }}
     >
-      {/* 🟦 LEVÁ STRANA — LOGO */}
       <Link
         to={getPagePath(Page.Welcome)}
+        role="link"
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "10px",
+          gap: "0.6em",
           textDecoration: "none",
           color: "inherit",
         }}
       >
-        <img src={logo} alt="HMIYC Logo" style={{ height: "36px" }} />
-        <strong style={{ fontSize: "18px" }}>Hack me if you can</strong>
+        <img
+          src={logo}
+          alt="HMIYC Logo"
+          style={{ height: "36px", borderRadius: "4px" }}
+        />
+        <span className="nav-item--label">{textsApp.title}</span>
       </Link>
 
-      {/* 🟨 STŘED — HRA A/N jen na Game stránce */}
-      {isGamePage &&
-        currentQuestion !== undefined &&
-        totalQuestions !== undefined && (
-          <div style={{ fontWeight: "bold", fontSize: "18px" }}>
-            HRA {currentQuestion}/{totalQuestions}
-          </div>
-        )}
-
-      {/* 🟥 PRAVÁ STRANA — hráč + score */}
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          {/* ✅ ikona k hráči */}
-          <span>🪪</span>
-          <strong>
-            {texts.player}: {nickname}
-          </strong>
+      <div className="nav-items">
+        {isGamePage &&
+          currentQuestion !== undefined &&
+          totalQuestions !== undefined && (
+            <div className="nav-item">
+              🎮 {getText(textsGame.title, [currentQuestion, totalQuestions])}
+            </div>
+          )}
+        <div className="nav-item">
+          <FontAwesomeIcon icon={faUserAstronaut} className="text-warning" />
+          {texts.player}: {nickname}
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-          {/* ✅ ikona k score */}
-          <span>🎯</span>
-          <strong>
-            {texts.score}: {score ?? 0}
-          </strong>
+        <div className="nav-item">
+          <FontAwesomeIcon icon={faBullseye} className="text-danger" />
+          <span className="nav-item--label">{texts.score}: </span>
+          <span>{score ?? 0}</span>
         </div>
       </div>
     </header>
