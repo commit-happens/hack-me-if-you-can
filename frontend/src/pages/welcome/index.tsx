@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Header from "../../components/header";
-import useTranslation from "../../hooks/useTranslation";
-import Page from "../../models/Page";
-import { getPagePath } from "../../utils/routing";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import { useAppDispatch } from "../../store/hooks";
-import { startGame } from "../../store/slices/gameSlice";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
+import Form from "react-bootstrap/Form";
+import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
-import { setPlayer } from "../../store/slices/playerSlice";
+import { useNavigate } from "react-router-dom";
+import logo from "../../assets/logo-hmiyc.png";
+import useTranslation from "../../hooks/useTranslation";
+import Page from "../../models/Page";
 import { createPlayer } from "../../services/playerService";
+import { useAppDispatch } from "../../store/hooks";
+import { startGame } from "../../store/slices/gameSlice";
+import { setPlayer } from "../../store/slices/playerSlice";
+import { getPagePath } from "../../utils/routing";
 
 function Welcome() {
   const navigate = useNavigate();
@@ -63,16 +64,25 @@ function Welcome() {
     }
   };
   return (
-    <Container fluid="md">
-      <Header />
+    <Container className="mt-4">
       <Row>
         <Col className="d-flex flex-column gap-4">
-          <h1 className="display-3 text-center">{appTexts.title}</h1>
+          <h1 className="display-4 text-center">{appTexts.title}</h1>
           <div>
-            <p>
-              {welcomeTexts.welcomeMessage} {welcomeTexts.instruction1}
-            </p>
-            <p>{welcomeTexts.instruction2}</p>
+            <div className="border rounded-1 p-4 mx-auto text-center welcome-message">
+              <Image
+                src={logo}
+                alt={appTexts.guide.bubble}
+                roundedCircle
+                className="guide-bubble"
+              />
+              <p>{welcomeTexts.welcomeMessage}</p>
+              <p>
+                {welcomeTexts.instruction0}
+                {welcomeTexts.instruction1}
+              </p>
+              <p>{welcomeTexts.instruction2}</p>
+            </div>
             <div className="text-center">
               <div className="mt-5 mb-3">
                 <h2 className="display-6">{welcomeTexts.nicknameLabel}</h2>
@@ -86,13 +96,14 @@ function Welcome() {
                   name="nickname"
                   value={nickname}
                   required
-                  className="d-inline-block w-50 text-center"
+                  className="d-inline-block text-center username-field"
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
                 />
               </p>
               <Button
                 variant="primary"
+                size="lg"
                 disabled={error || isLoading}
                 onClick={() => handleStart()}
               >

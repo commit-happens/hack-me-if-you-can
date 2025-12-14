@@ -12,17 +12,13 @@ export interface PlayerModel {
 }
 
 export const getPlayers = async (): Promise<PlayerModel[]> => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/players`);
-    if (!response.ok) {
-      throw new Error(`Chyba při načítání hráčů: ${response.statusText}`);
-    }
-    const result = await response.json();
-
-    return result;
-  } catch (error) {
-    throw error;
+  const response = await fetch(`${API_BASE_URL}/players`);
+  if (!response.ok) {
+    throw new Error(`Chyba při načítání hráčů: ${response.statusText}`);
   }
+  const result = await response.json();
+
+  return result;
 };
 
 export const createPlayer = async (nickname: string): Promise<PlayerModel> => {

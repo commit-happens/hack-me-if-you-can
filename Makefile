@@ -26,6 +26,10 @@ fe-sync-deps:
 	@echo "Synchronizace závislostí frontendu..."
 	cd frontend && npm ci
 
+fe-test:
+	@echo "Spuštění testů frontendu s coverage..."
+	cd frontend && npm run test:coverage
+
 
 ## Backend pomocné příkazy
 be-clean:

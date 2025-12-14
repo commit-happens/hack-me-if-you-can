@@ -30,7 +30,7 @@ function Game() {
     handleAnswer,
     handleContinue,
     remainingTime,
-    timeoutTextColor,
+    timeoutBgColor,
     timePerQuestion,
     timeoutProgressBarVariant,
     feedbackData,
@@ -46,11 +46,7 @@ function Game() {
   const renderFeedback = () => {
     return (
       <Alert variant={feedbackData.variant} className="text-center">
-        <FontAwesomeIcon
-          icon={feedbackData.icon}
-          aria-hidden="true"
-          fontSize={20}
-        />{" "}
+        <FontAwesomeIcon icon={feedbackData.icon} aria-hidden="true" fontSize={20} />{" "}
         {feedbackData.title}
       </Alert>
     );
@@ -79,7 +75,7 @@ function Game() {
       <ActionsRow
         handleAnswer={handleAnswer}
         remainingTime={remainingTime}
-        timeoutTextColor={timeoutTextColor}
+        timeoutBgColor={timeoutBgColor}
         timeoutProgressBarVariant={timeoutProgressBarVariant}
         timePerQuestion={timePerQuestion}
         texts={texts}
@@ -100,20 +96,15 @@ function Game() {
   }
 
   return (
-    <Container fluid="md" className="w-50">
+    <Container fluid="sm" className="game-container">
       <Header
         nickname={nickname}
         score={score}
         currentQuestion={currentIndex + 1}
         totalQuestions={emailsOfDifficulty.length}
       />
-      <div className="mx-auto mb-4" style={{ maxWidth: "50vw" }}>
-        <EmailTemplate
-          key={id}
-          sender={sender}
-          subject={subject}
-          content={content}
-        />
+      <div className="mx-auto mb-4">
+        <EmailTemplate key={id} sender={sender} subject={subject} content={content} />
       </div>
       {renderContent()}
     </Container>
