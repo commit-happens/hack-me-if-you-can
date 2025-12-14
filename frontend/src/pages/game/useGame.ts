@@ -1,6 +1,6 @@
 import { faSkullCrossbones } from "@fortawesome/free-solid-svg-icons/faSkullCrossbones";
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons/faThumbsUp";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ProgressBarProps } from "react-bootstrap";
 import useCountdown from "../../hooks/useCountdown";
 import type { Translation } from "../../languages/csCZ";
@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   increaseCorrectAnswers,
   setCurrentIndex,
+  setTotalQuestions,
   updateScore,
 } from "../../store/slices/gameSlice";
 import { selectPlayerId } from "../../store/slices/playerSlice";
@@ -111,15 +112,26 @@ export function useGame(props: UseGameProps) {
   });
   const playerId = useAppSelector(selectPlayerId);
 
-  const emailsOfDifficulty = useMemo(
-    () =>
-      randomizedEmails.filter(
-        (item) =>
-          item.difficulty === difficulty &&
-          item.phishingPlatformID === platformId,
-      ),
-    [randomizedEmails, difficulty, platformId],
-  );
+  const questionsLimit = getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 10);
+
+  const emailsOfDifficulty = useMemo(() => {
+    const filteredQuestions = randomizedEmails.filter(
+      (item) =>
+        item.difficulty === difficulty &&
+        item.phishingPlatformID === platformId,
+    );
+
+    if (questionsLimit > 0 && questionsLimit < filteredQuestions.length) {
+      return filteredQuestions.slice(0, questionsLimit);
+    }
+
+    return filteredQuestions;
+  }, [randomizedEmails, difficulty, platformId, questionsLimit]);
+
+  // Uložit celkový počet otázek do Redux při změně emailsOfDifficulty
+  useEffect(() => {
+    dispatch(setTotalQuestions(emailsOfDifficulty.length));
+  }, [dispatch, emailsOfDifficulty.length]);
 
   const [answer, setAnswer] = useState<Answer | undefined>(undefined);
 

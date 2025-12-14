@@ -8,6 +8,7 @@ interface GameState {
   correctAnswers: number;
   currentIndex: number;
   isPlaying: boolean;
+  totalQuestions: number;
 }
 
 const initialState: GameState = {
@@ -15,6 +16,7 @@ const initialState: GameState = {
   correctAnswers: 0,
   currentIndex: 0,
   isPlaying: false,
+  totalQuestions: 0,
 };
 
 // Async thunk pro update skóre na backendu
@@ -45,6 +47,7 @@ const gameSlice = createSlice({
       state.score = 100;
       state.currentIndex = 0;
       state.correctAnswers = 0;
+      state.totalQuestions = 0;
     },
     endGame: (state) => {
       state.isPlaying = false;
@@ -55,6 +58,9 @@ const gameSlice = createSlice({
     },
     setCurrentIndex: (state, action: PayloadAction<number>) => {
       state.currentIndex = action.payload;
+    },
+    setTotalQuestions: (state, action: PayloadAction<number>) => {
+      state.totalQuestions = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -70,8 +76,13 @@ const gameSlice = createSlice({
   },
 });
 
-export const { startGame, endGame, setCurrentIndex, increaseCorrectAnswers } =
-  gameSlice.actions;
+export const {
+  startGame,
+  endGame,
+  setCurrentIndex,
+  increaseCorrectAnswers,
+  setTotalQuestions,
+} = gameSlice.actions;
 
 // Selektory
 export const selectScore = (state: RootState) => state.game.score;

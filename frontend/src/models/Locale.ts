@@ -1,6 +1,6 @@
 enum Locale {
-  csCZ = "csCZ",
-  enUS = "enUS",
+  csCZ = "cs-CZ",
+  enUS = "en-US",
 }
 
 export default Locale;
