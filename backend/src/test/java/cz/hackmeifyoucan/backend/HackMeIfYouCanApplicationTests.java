@@ -6,10 +6,10 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class HackMeIfYouCanApplicationTests {
+class ApplicationBootstrapTest {
 
     @Test
-    void contextLoads() {
+    void given_application_when_context_loads_then_should_start_successfully() {
     }
 
 }

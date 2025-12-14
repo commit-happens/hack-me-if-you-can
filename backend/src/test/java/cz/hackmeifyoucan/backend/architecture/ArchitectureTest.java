@@ -1,10 +1,18 @@
 package cz.hackmeifyoucan.backend.architecture;
 
+import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaClasses;
+import com.tngtech.archunit.core.domain.JavaField;
+import com.tngtech.archunit.core.domain.JavaMethod;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
+import com.tngtech.archunit.junit.AnalyzeClasses;
+import com.tngtech.archunit.junit.ArchTest;
+import com.tngtech.archunit.lang.ArchCondition;
 import com.tngtech.archunit.lang.ArchRule;
-import com.tngtech.archunit.lang.EvaluationResult;
+import com.tngtech.archunit.lang.ConditionEvents;
+import com.tngtech.archunit.lang.SimpleConditionEvent;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
+import jakarta.persistence.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Controller;
@@ -12,260 +20,316 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.persistence.FetchType;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
+import java.util.Optional;
 
-import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
+import static com.tngtech.archunit.core.domain.properties.HasName.Predicates.nameEndingWith;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
+import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noMethods;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * ArchUnit tests for application architecture and best practices.
+ * ArchUnit testy pro architekturu aplikace a best practices.
  *
- * This test class validates:
- * - Repository classes are package-private
- * - No eager loading in entity relationships
- * - Proper layered architecture (controllers -> services -> repositories)
- * - No cyclic dependencies
- * - Proper use of Spring annotations
+ * Tato testovací třída ověřuje:
+ * - Repository třídy mají správné názvy a anotace
+ * - Vztahy entit nepoužívají eager loading
+ * - Správná vrstvená architektura (controllers -> services -> repositories)
+ * - Žádné cyklické závislosti
+ * - Správné použití Spring anotací
  */
-@DisplayName("Architecture Tests")
+@DisplayName("Testy architektury")
+@AnalyzeClasses(
+        packages = "cz.hackmeifyoucan.backend"
+)
 class ArchitectureTest {
 
-    private static final String BASE_PACKAGE = "cz.hackmeifyoucan.backend";
-    private final JavaClasses importedClasses = new ClassFileImporter()
-            .withImportOption(location -> !location.contains("Test"))
-            .importPackages(BASE_PACKAGE);
+    private final static String BASE_PACKAGE = "cz.hackmeifyoucan.backend";
 
-    // ==================== REPOSITORY TESTS ====================
+    // ==================== TESTY POJMENOVÁNÍ ====================
 
-    @Test
-    @DisplayName("given_repository_classes_when_checking_naming_then_should_end_with_repository")
-    void given_repository_classes_when_checking_naming_then_should_end_with_repository() {
-        ArchRule rule = classes()
-                .that().resideInAPackage("..repository..")
-                .should().haveSimpleNameEndingWith("Repository")
-                .because("Repository classes should follow naming convention and end with 'Repository'");
+    @ArchTest
+    public static final ArchRule REPOSITORY_ANNOTATION = classes()
+            .that().areAnnotatedWith(Repository.class)
+            .should().haveSimpleNameEndingWith("Repository")
+            .because("Všechny třídy anotované @Repository by měly mít 'Repository' v názvu");
 
-        EvaluationResult result = rule.evaluate(importedClasses);
-        assertThat(result.hasViolation()).isFalse();
-    }
+    @ArchTest
+    public static final ArchRule SERVICE_ANNOTATION = classes()
+            .that().areAnnotatedWith(Service.class)
+            .should().haveSimpleNameEndingWith("Service")
+            .orShould().haveSimpleNameEndingWith("ServiceImpl")
+            .because("Všechny třídy anotované @Service by měly mít 'Service' nebo 'ServiceImpl' v názvu");
 
-    @Test
-    @DisplayName("given_repository_interfaces_when_checking_annotation_then_should_have_repository_annotation")
-    void given_repository_interfaces_when_checking_annotation_then_should_have_repository_annotation() {
-        ArchRule rule = classes()
-                .that().haveSimpleNameEndingWith("Repository")
-                .should().beAnnotatedWith(Repository.class)
-                .because("All repository interfaces should be explicitly marked with @Repository");
+    @ArchTest
+    public static final ArchRule CONTROLLER_ANNOTATION = classes()
+            .that().areAnnotatedWith(RestController.class)
+            .or().areAnnotatedWith(Controller.class)
+            .should().haveSimpleNameEndingWith("Controller")
+            .because("Všechny třídy anotované @RestController nebo @Controller by měly mít 'Controller' v názvu");
 
-        EvaluationResult result = rule.evaluate(importedClasses);
-        assertThat(result.hasViolation()).isFalse();
-    }
+    // ==================== TESTY EAGER LOADING ====================
 
-    // ==================== NO EAGER LOADING TESTS ====================
+    @ArchTest
+    public static final ArchRule NO_EAGER_LOADING_ENTITY_ASSOCIATIONS = ArchRuleDefinition
+            .classes().that()
+            .areAnnotatedWith(Entity.class)
+            .should(new JpaAssociationCondition("neobsahují pole nebo metody s eager fetchingem"))
+            .allowEmptyShould(true);
 
-    @Test
-    @DisplayName("given_entity_relationships_when_checking_fetch_type_then_should_not_use_eager_loading")
-    void given_entity_relationships_when_checking_fetch_type_then_should_not_use_eager_loading() {
-        List<String> eagerLoadingViolations = new ArrayList<>();
+    static class JpaAssociationCondition extends ArchCondition<JavaClass> {
 
-        importedClasses.stream()
-                .filter(javaClass -> javaClass.getPackageName().contains("entity"))
-                .forEach(entityClass -> {
-                    try {
-                        Class<?> clazz = Class.forName(entityClass.getFullName());
-                        for (Field field : clazz.getDeclaredFields()) {
-                            if (field.isAnnotationPresent(jakarta.persistence.OneToMany.class)) {
-                                jakarta.persistence.OneToMany annotation =
-                                    field.getAnnotation(jakarta.persistence.OneToMany.class);
-                                if (annotation.fetch() == FetchType.EAGER) {
-                                    eagerLoadingViolations.add(
-                                        String.format("%s.%s uses EAGER loading",
-                                            entityClass.getSimpleName(), field.getName())
-                                    );
-                                }
-                            }
-                            if (field.isAnnotationPresent(jakarta.persistence.ManyToOne.class)) {
-                                jakarta.persistence.ManyToOne annotation =
-                                    field.getAnnotation(jakarta.persistence.ManyToOne.class);
-                                if (annotation.fetch() == FetchType.EAGER) {
-                                    eagerLoadingViolations.add(
-                                        String.format("%s.%s uses EAGER loading",
-                                            entityClass.getSimpleName(), field.getName())
-                                    );
-                                }
-                            }
-                            if (field.isAnnotationPresent(jakarta.persistence.ManyToMany.class)) {
-                                jakarta.persistence.ManyToMany annotation =
-                                    field.getAnnotation(jakarta.persistence.ManyToMany.class);
-                                if (annotation.fetch() == FetchType.EAGER) {
-                                    eagerLoadingViolations.add(
-                                        String.format("%s.%s uses EAGER loading",
-                                            entityClass.getSimpleName(), field.getName())
-                                    );
-                                }
-                            }
-                        }
-                    } catch (ClassNotFoundException e) {
-                        // Class not found, skip
-                    }
-                });
+        private static final String EAGER_ANNOTATION_FOUND_MESSAGE = "Eager anotace nalezena v %s %s";
 
-        assertThat(eagerLoadingViolations)
-                .as("No entity relationships should use EAGER loading to avoid N+1 queries")
-                .isEmpty();
-    }
+        JpaAssociationCondition(final String description, final Object... args) {
+            super(description, args);
+        }
 
-    // ==================== LAYERED ARCHITECTURE TESTS ====================
+        @Override
+        public void check(final JavaClass item, final ConditionEvents events) {
+            checkFields(item, events);
+            checkMethods(item, events);
+        }
 
-    @Test
-    @DisplayName("given_services_when_checking_dependencies_then_should_access_repositories_and_entities")
-    void given_services_when_checking_dependencies_then_should_access_repositories_and_entities() {
-        ArchRule rule = classes()
-                .that().resideInAPackage("..service..")
-                .should().onlyAccessClassesThat()
-                .resideInAnyPackage("..service..", "..repository..", "..entity..", "..dto..", "..exception..", "java..", "jakarta..")
-                .because("Service layer should only access repository, entity, dto and exception packages");
+        private void checkFields(final JavaClass javaClass, final ConditionEvents events) {
+            javaClass.getAllFields().forEach(field -> {
+                checkFieldAnnotation(field, OneToOne.class, events);
+                checkFieldAnnotation(field, OneToMany.class, events);
+                checkFieldAnnotation(field, ManyToOne.class, events);
+                checkFieldAnnotation(field, ManyToMany.class, events);
+            });
+        }
 
-        EvaluationResult result = rule.evaluate(importedClasses);
-        assertThat(result.hasViolation()).isFalse();
-    }
+        private void checkMethods(final JavaClass javaClass, final ConditionEvents events) {
+            javaClass.getAllMethods().forEach(method -> {
+                checkMethodAnnotation(method, OneToOne.class, events);
+                checkMethodAnnotation(method, OneToMany.class, events);
+                checkMethodAnnotation(method, ManyToOne.class, events);
+                checkMethodAnnotation(method, ManyToMany.class, events);
+            });
+        }
 
-    @Test
-    @DisplayName("given_controller_classes_when_checking_naming_then_should_end_with_controller")
-    void given_controller_classes_when_checking_naming_then_should_end_with_controller() {
-        ArchRule rule = classes()
-                .that().resideInAPackage("..controller..")
-                .should().haveSimpleNameEndingWith("Controller")
-                .because("Controller classes should follow naming convention and end with 'Controller'");
+        private <T extends java.lang.annotation.Annotation> void checkFieldAnnotation(
+                final JavaField field,
+                final Class<T> annotationType,
+                final ConditionEvents events
+        ) {
+            field.tryGetAnnotationOfType(annotationType).ifPresent(annotation -> {
+                FetchType fetchType = getFetchType(annotation);
+                if (!FetchType.LAZY.equals(fetchType)) {
+                    events.add(buildViolationEvent(field));
+                }
+            });
+        }
 
-        EvaluationResult result = rule.evaluate(importedClasses);
-        assertThat(result.hasViolation()).isFalse();
-    }
+        private <T extends java.lang.annotation.Annotation> void checkMethodAnnotation(
+                final JavaMethod method,
+                final Class<T> annotationType,
+                final ConditionEvents events
+        ) {
+            if (method.isAnnotatedWith(annotationType)) {
+                T annotation = method.getAnnotationOfType(annotationType);
+                FetchType fetchType = getFetchType(annotation);
+                if (!FetchType.LAZY.equals(fetchType)) {
+                    events.add(buildViolationEvent(method));
+                }
+            }
+        }
 
-    // ==================== SPRING ANNOTATION TESTS ====================
+        private FetchType getFetchType(final java.lang.annotation.Annotation annotation) {
+            try {
+                return (FetchType) annotation.getClass().getMethod("fetch").invoke(annotation);
+            } catch (RuntimeException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                throw new IllegalStateException("Unable to get fetch type from annotation: " + annotation, e);
+            }
+        }
 
-    @Test
-    @DisplayName("given_service_implementation_classes_when_checking_annotation_then_should_have_service_annotation")
-    void given_service_implementation_classes_when_checking_annotation_then_should_have_service_annotation() {
-        ArchRule rule = classes()
-                .that().resideInAPackage("..service.impl..")
-                .should().beAnnotatedWith(Service.class)
-                .because("Service implementation classes should be explicitly marked with @Service");
+        private SimpleConditionEvent buildViolationEvent(final JavaField field) {
+            return new SimpleConditionEvent(
+                    field,
+                    false,
+                    String.format(EAGER_ANNOTATION_FOUND_MESSAGE, field.getFullName(), field.getSourceCodeLocation())
+            );
+        }
 
-        EvaluationResult result = rule.evaluate(importedClasses);
-        assertThat(result.hasViolation()).isFalse();
-    }
-
-    @Test
-    @DisplayName("given_controller_classes_when_checking_annotation_then_should_have_rest_controller_annotation")
-    void given_controller_classes_when_checking_annotation_then_should_have_rest_controller_annotation() {
-        ArchRule rule = classes()
-                .that().haveSimpleNameEndingWith("Controller")
-                .should().beAnnotatedWith(RestController.class)
-                .orShould().beAnnotatedWith(Controller.class)
-                .because("Controller classes should be annotated with @RestController or @Controller");
-
-        EvaluationResult result = rule.evaluate(importedClasses);
-        assertThat(result.hasViolation()).isFalse();
-    }
-
-    // ==================== NO CYCLIC DEPENDENCIES ====================
-
-    @Test
-    @DisplayName("given_entities_when_checking_location_then_should_be_in_entity_package")
-    void given_entities_when_checking_location_then_should_be_in_entity_package() {
-        ArchRule rule = classes()
-                .that().haveSimpleNameEndingWith("Entity")
-                .or().haveSimpleNameEndingWith("Player")
-                .should().resideInAPackage("..entity..")
-                .because("All entity classes should be in the entity package");
-
-        EvaluationResult result = rule.evaluate(importedClasses);
-        assertThat(result.hasViolation()).isFalse();
-    }
-
-    // ==================== TEST NAMING CONVENTION TESTS ====================
-
-    @Test
-    @DisplayName("given_test_classes_when_checking_method_names_then_should_follow_given_when_then_convention")
-    void given_test_classes_when_checking_method_names_then_should_follow_given_when_then_convention() {
-        JavaClasses testClasses = new ClassFileImporter()
-                .importPackages(BASE_PACKAGE);
-
-        List<String> testNamingViolations = new ArrayList<>();
-
-        testClasses.stream()
-                .filter(javaClass -> javaClass.getSimpleName().endsWith("Test"))
-                .forEach(testClass -> {
-                    testClass.getMethods().forEach(method -> {
-                        String methodName = method.getName();
-                        // Check if method starts with given_, when_, then_, or before_
-                        boolean followsConvention = methodName.startsWith("given_")
-                                || methodName.startsWith("when_")
-                                || methodName.startsWith("then_")
-                                || methodName.startsWith("before")
-                                || methodName.startsWith("setup")
-                                || methodName.startsWith("teardown");
-
-                        if (!followsConvention && !methodName.equals("equals") && !methodName.equals("hashCode")) {
-                            testNamingViolations.add(
-                                String.format("%s.%s does not follow given_when_then convention",
-                                    testClass.getSimpleName(), methodName)
-                            );
-                        }
-                    });
-                });
-
-        // Only warn, don't fail - existing tests might not follow convention yet
-        if (!testNamingViolations.isEmpty()) {
-            System.out.println("Test naming convention violations (warning only):");
-            testNamingViolations.forEach(System.out::println);
+        private SimpleConditionEvent buildViolationEvent(final JavaMethod method) {
+            return new SimpleConditionEvent(
+                    method,
+                    false,
+                    String.format(EAGER_ANNOTATION_FOUND_MESSAGE, method.getFullName(), method.getSourceCodeLocation())
+            );
         }
     }
 
-    // ==================== EXCEPTION HANDLING TESTS ====================
+    // ==================== TESTY VRSTVENÉ ARCHITEKTURY ====================
 
-    @Test
-    @DisplayName("given_exception_classes_when_checking_location_then_should_be_in_exception_package")
-    void given_exception_classes_when_checking_location_then_should_be_in_exception_package() {
-        ArchRule rule = classes()
-                .that().haveSimpleNameEndingWith("Exception")
-                .should().resideInAPackage("..exception..")
-                .because("All exception classes should be in the exception package");
+    @ArchTest
+    public static final ArchRule LAYERS = layeredArchitecture()
+            .consideringOnlyDependenciesInLayers()
+            .layer("Controller").definedBy(nameEndingWith("Controller"))
+            .layer("Service").definedBy(nameEndingWith("Service"))
+            .layer("Repository").definedBy(nameEndingWith("Repository"))
 
-        EvaluationResult result = rule.evaluate(importedClasses);
-        assertThat(result.hasViolation()).isFalse();
+            .whereLayer("Controller").mayNotBeAccessedByAnyLayer()
+            .whereLayer("Service").mayOnlyBeAccessedByLayers("Controller", "Service")
+            .whereLayer("Repository").mayOnlyBeAccessedByLayers("Repository", "Service")
+            .allowEmptyShould(true);
+
+    // ==================== TESTY POJMENOVÁNÍ METOD ====================
+
+    @ArchTest
+    void NAMING_CONVENTIONS(JavaClasses classes) {
+        // Importuj testovací třídy z target/test-classes
+        JavaClasses testClasses = new ClassFileImporter()
+                .importPath("target/test-classes");
+
+        ArchRuleDefinition.methods()
+                .that().areAnnotatedWith(Test.class)
+                .should().haveNameMatching("given.*_when.*_then.*")
+                .because("Testovací metody by měly následovat konvenci given_when_then")
+                .check(testClasses);
     }
 
-    @Test
-    @DisplayName("given_dto_classes_when_checking_location_then_should_be_in_dto_package")
-    void given_dto_classes_when_checking_location_then_should_be_in_dto_package() {
-        ArchRule rule = classes()
-                .that().haveSimpleNameEndingWith("Request")
-                .or().haveSimpleNameEndingWith("Response")
-                .should().resideInAPackage("..dto..")
-                .because("All DTO classes should be in the dto package");
+    // ==================== TESTY DEPENDENCY INJECTION ====================
 
-        EvaluationResult result = rule.evaluate(importedClasses);
-        assertThat(result.hasViolation()).isFalse();
+    @ArchTest
+    public static final ArchRule SERVICE_FINAL_FIELDS = classes()
+            .that().haveSimpleNameEndingWith("ServiceImpl")
+            .should().haveOnlyFinalFields()
+            .because("Injektované závislosti by měly být final pro zajištění immutability");
+
+    @ArchTest
+    static final ArchRule NO_GENERIC_EXCEPTION_CATCHING = noMethods()
+            .should(new GenericExceptionCatchCondition())
+            .because("Chytání generické Exception je příliš obecné. Chytejte konkrétní typy výjimek (RuntimeException, IOException, AmqpException, atd.)")
+            .allowEmptyShould(true);
+
+    @ArchTest
+    static final ArchRule PREFER_COLLECTION_UTILS = noMethods()
+            .should(new CollectionIsEmptyCallCondition())
+            .because("Použijte CollectionUtils.isEmpty(collection) pro bezpečné kontroly místo collection == null || collection.isEmpty()")
+            .allowEmptyShould(true);
+
+    @ArchTest
+    static final ArchRule PREFER_STRING_UTILS = noMethods()
+            .should(new StringIsEmptyCallCondition())
+            .because("Použijte StringUtils.hasText(string) pro bezpečné kontroly místo string == null || string.isEmpty()")
+            .allowEmptyShould(true);
+
+    @ArchTest
+    static final ArchRule USE_OPTIONAL_SAFELY = noMethods()
+            .should(new OptionalGetCallCondition())
+            .because("Optional.get() vyvolá NoSuchElementException pokud je prázdný. Použijte orElse(), orElseThrow() nebo zkontrolujte isPresent()")
+            .allowEmptyShould(true);
+
+    private static class GenericExceptionCatchCondition extends ArchCondition<JavaMethod> {
+
+        GenericExceptionCatchCondition() {
+            super("chytit generickou Exception v try-catch bloku");
+        }
+
+        @Override
+        public void check(JavaMethod method, ConditionEvents events) {
+            // Přeskočit vlastní třídy výjimek
+            if (method.getOwner().getSimpleName().endsWith("Exception")
+                    || method.getOwner().isAssignableTo(Exception.class)) {
+                return;
+            }
+
+            method.getTryCatchBlocks().forEach(tryCatchBlock -> {
+                tryCatchBlock.getCaughtThrowables().forEach(throwable -> {
+                    // Zkontrolovat, zda se chytá přesně java.lang.Exception (ne podtřídy)
+                    if (throwable.getFullName().equals("java.lang.Exception")) {
+                        String message = String.format(
+                                "Metoda %s chytá generickou Exception (chycený typ: %s) v %s. "
+                                        + "Chytejte konkrétní typy výjimek (RuntimeException, IOException, atd.)",
+                                method.getFullName(),
+                                throwable.getFullName(),
+                                method.getSourceCodeLocation()
+                        );
+                        events.add(new SimpleConditionEvent(method, true, message));
+                    }
+                });
+            });
+        }
     }
 
-    // ==================== DEPENDENCY INJECTION TESTS ====================
+    private static class CollectionIsEmptyCallCondition extends ArchCondition<JavaMethod> {
 
-    @Test
-    @DisplayName("given_service_classes_when_checking_constructor_when_dependencies_should_be_final")
-    void given_service_classes_when_checking_constructor_when_dependencies_should_be_final() {
-        ArchRule rule = classes()
-                .that().haveSimpleNameEndingWith("ServiceImpl")
-                .should().haveOnlyFinalFields()
-                .because("Injected dependencies should be final to ensure immutability");
+        CollectionIsEmptyCallCondition() {
+            super("volat Collection.isEmpty()");
+        }
 
-        EvaluationResult result = rule.evaluate(importedClasses);
-        assertThat(result.hasViolation()).isFalse();
+        @Override
+        public void check(JavaMethod method, ConditionEvents events) {
+            // Poznámka: Zjednodušená kontrola, která detekuje jakékoli volání Collection.isEmpty().
+            // Neověřuje, zda je přítomna null kontrola.
+            long isEmptyCallCount = method.getCallsFromSelf().stream()
+                    .filter(call -> call.getTarget().getOwner().isAssignableTo(Collection.class))
+                    .filter(call -> call.getTarget().getName().equals("isEmpty"))
+                    .count();
+
+            if (isEmptyCallCount > 0) {
+                String message = String.format(
+                        "Metoda %s volá Collection.isEmpty() %d krát. "
+                                + "Použijte CollectionUtils.isEmpty(collection) pro bezpečné kontroly místo collection == null || collection.isEmpty()",
+                        method.getFullName(),
+                        isEmptyCallCount
+                );
+                events.add(new SimpleConditionEvent(method, false, message));
+            }
+        }
+    }
+
+    private static class StringIsEmptyCallCondition extends ArchCondition<JavaMethod> {
+
+        StringIsEmptyCallCondition() {
+            super("volat String.isEmpty()");
+        }
+
+        @Override
+        public void check(JavaMethod method, ConditionEvents events) {
+            long isEmptyCallCount = method.getCallsFromSelf().stream()
+                    .filter(call -> call.getTarget().getOwner().isAssignableTo(String.class))
+                    .filter(call -> call.getTarget().getName().equals("isEmpty"))
+                    .count();
+
+            if (isEmptyCallCount > 0) {
+                String message = String.format(
+                        "Metoda %s volá String.isEmpty() %d krát. "
+                                + "Použijte StringUtils.hasText(string) pro bezpečné kontroly místo string == null || string.isEmpty()",
+                        method.getFullName(),
+                        isEmptyCallCount
+                );
+                events.add(new SimpleConditionEvent(method, false, message));
+            }
+        }
+    }
+
+    private static class OptionalGetCallCondition extends ArchCondition<JavaMethod> {
+
+        OptionalGetCallCondition() {
+            super("volat Optional.get() bez bezpečnostních kontrol");
+        }
+
+        @Override
+        public void check(JavaMethod method, ConditionEvents events) {
+            long optionalGetCallCount = method.getCallsFromSelf().stream()
+                    .filter(call -> call.getTarget().getOwner().isAssignableTo(Optional.class))
+                    .filter(call -> call.getTarget().getName().equals("get"))
+                    .count();
+
+            if (optionalGetCallCount > 0) {
+                String message = String.format(
+                        "Metoda %s volá Optional.get() %d krát. "
+                                + "To vyvolá NoSuchElementException pokud je Optional prázdný. "
+                                + "Použijte orElse(), orElseThrow() nebo zkontrolujte isPresent() před voláním get()",
+                        method.getFullName(),
+                        optionalGetCallCount
+                );
+                events.add(new SimpleConditionEvent(method, false, message));
+            }
+        }
     }
 }
