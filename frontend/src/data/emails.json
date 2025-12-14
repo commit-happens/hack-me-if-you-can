@@ -581,7 +581,7 @@
       "penalty": 9,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [5, 2],
-      "difficulty": 2
+      "difficulty": 1
     },
     {
       "id": 54,
