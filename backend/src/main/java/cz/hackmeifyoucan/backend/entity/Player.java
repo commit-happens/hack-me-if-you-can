@@ -13,12 +13,11 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Entity
+@Data
 @Builder
-@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "players")
-@Data
 public class Player {
 
     @Id // Primární klíč, generován automaticky databází
