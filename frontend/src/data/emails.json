@@ -263,7 +263,7 @@
       "penalty": 8,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [2, 5],
-      "difficulty": 2
+      "difficulty": 1
     },
     {
       "id": 25,
@@ -285,7 +285,7 @@
       "penalty": 10,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [1, 4, 3],
-      "difficulty": 2
+      "difficulty": 1
     },
     {
       "id": 27,
@@ -307,7 +307,7 @@
       "penalty": 10,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [1, 2, 4],
-      "difficulty": 2
+      "difficulty": 1
     },
     {
       "id": 29,
@@ -439,6 +439,116 @@
       "penalty": 9,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [2, 1],
+      "difficulty": 1
+    },
+    {
+      "id": 41,
+      "sender": "bezpecnost@moje-banka-verifikace.com",
+      "subject": "DŮLEŽITÉ: Váš účet byl dočasně omezen",
+      "content": "Vážený zákazníku, \n\nzaznamenali jsme podezřelé přihlášení k vašemu účtu. Pro obnovení přístupu prosím ověřte svou totožnost zde: [http://moje-banka-verify.com/login](http://moje-banka-verify.com/login). Pokud akci neprovedete do 24 hodin, bude účet uzamčen.",
+      "explanation": "Podezřelá doména, výzva k okamžitému ověření a hrozba uzamčení účtu. Typické znaky phishingu.",
+      "penalty": 10,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [1, 2, 4],
+      "difficulty": 1
+    },
+    {
+      "id": 42,
+      "sender": "billing@ucetni-portal-pay.net",
+      "subject": "Faktura 2025/118 – vyžaduje okamžitou úhradu",
+      "content": "Dobrý den,\n\ndokument k faktuře naleznete zde: [http://secure-faktura-pay.com/doc](http://secure-faktura-pay.com/doc). Pokud nebude uhrazena do dnešního konce dne, dojde k omezení služeb.",
+      "explanation": "Odkaz vede na neznámou doménu a e-mail vytváří nepřirozený tlak. Žádná legitimní služba nevyžaduje platbu přes neověřený odkaz.",
+      "penalty": 8,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [3, 2],
+      "difficulty": 1
+    },
+    {
+      "id": 43,
+      "sender": "noreply@m1crosoft-security.com",
+      "subject": "Vyžaduje se reset vašeho Microsoft hesla",
+      "content": "Vážený uživateli,\n\nz důvodu nových bezpečnostních opatření je nutné resetovat vaše heslo. Pro pokračování klikněte zde: [http://microsoft-security-reset.example/verify](http://microsoft-security-reset.example/verify).",
+      "explanation": "Falešná doména (m1crosoft), žádost o rychlou akci a odkaz na podezřelou URL.",
+      "penalty": 9,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [4, 1, 2],
+      "difficulty": 1
+    },
+    {
+      "id": 44,
+      "sender": "ceskaposta@delivery-cz.net",
+      "subject": "Doplatek 49 Kč – zásilka nemohla být doručena",
+      "content": "Vážený zákazníku,\n\npro doručení zásilky uhraďte doplatek 49 Kč zde: [http://posta-doruceni-cz.net/pay](http://posta-doruceni-cz.net/pay). Pokud nebude doplatek uhrazen do 48 hodin, zásilka bude vrácena odesílateli.",
+      "explanation": "Typický phishing: falešná doména, malá částka, tlak na rychlou akci.",
+      "penalty": 6,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [2, 5],
+      "difficulty": 1
+    },
+    {
+      "id": 45,
+      "sender": "vyherce@promo-rewards-win.com",
+      "subject": "Gratulujeme! Vyhrál jste poukaz 5 000 Kč",
+      "content": "Dobrý den,\n\ntento unikátní poukaz lze aktivovat pouze dnes. Potvrďte prosím své údaje zde: [http://reward-claim-win.com/activate](http://reward-claim-win.com/activate).",
+      "explanation": "Extrémně lákavá nabídka, agresivní časový limit a podezřelá doména jsou klasické rysy podvodu.",
+      "penalty": 7,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [2],
+      "difficulty": 1
+    },
+    {
+      "id": 46,
+      "sender": "hr@firma.cz",
+      "subject": "Pozvánka na školení kybernetické bezpečnosti",
+      "content": "Dobrý den,\n\nsrdečně vás zveme na interní školení v úterý v 10:00. Přihlásit se můžete zde: [https://intranet.firma.cz/skoleni](https://intranet.firma.cz/skoleni).",
+      "explanation": "Oficiální firemní doména, žádné požadavky na přihlašovací údaje nebo platby.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 47,
+      "sender": "objednavky@elektro-shop.cz",
+      "subject": "Potvrzení objednávky č. 2025-4821",
+      "content": "Dobrý den,\n\npotvrzujeme přijetí vaší objednávky. Stav objednávky můžete sledovat zde: [https://www.elektro-shop.cz/muj-ucet](https://www.elektro-shop.cz/muj-ucet).",
+      "explanation": "Standardní potvrzení objednávky z důvěryhodné domény. Žádné podezřelé požadavky.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 48,
+      "sender": "it-support@firma.cz",
+      "subject": "Plánovaná odstávka VPN – středa 19:00–20:00",
+      "content": "Ahoj všichni,\n\nzítra proběhne plánovaná odstávka VPN. Během této doby nebude možné se připojit. Nevyžaduje se žádná akce.",
+      "explanation": "Běžné interní oznámení bez odkazů a bez nátlaku.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 49,
+      "sender": "info@zakladni-skola.cz",
+      "subject": "Informace o třídních schůzkách",
+      "content": "Vážení rodiče,\n\ntřídní schůzky proběhnou příští čtvrtek v 17:00. Prosíme o potvrzení účasti odpovědí na tento e-mail.",
+      "explanation": "Typická komunikace školy, bez podezřelých odkazů a bez požadavků na platby.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
+      "difficulty": 1
+    },
+    {
+      "id": 50,
+      "sender": "noreply@clouddrive.com",
+      "subject": "Údržba služby CloudDrive – 23. 3.",
+      "content": "Vážený uživateli,\n\ndne 23. 3. proběhne údržba služby CloudDrive mezi 01:00 a 03:00. Informace o stavu najdete zde: [https://status.clouddrive.com](https://status.clouddrive.com).",
+      "explanation": "Legitimní servisní oznámení. Odkaz vede na oficiální doménu poskytovatele.",
+      "penalty": 1,
+      "phishingPlatformID": 1,
+      "phishingTypeIDs": [],
       "difficulty": 1
     }
   ]
