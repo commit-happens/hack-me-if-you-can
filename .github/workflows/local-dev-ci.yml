@@ -1,0 +1,139 @@
+name: Local Dev CI
+
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+  workflow_dispatch:
+
+concurrency:
+  group: local-dev-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DB_NAME: hmiyc_test
+  DB_USER: postgres
+  DB_PASSWORD: postgres123
+
+jobs:
+  backend-run-check:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_DB: ${{ env.DB_NAME }}
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Create .env file
+        run: |
+          echo "DB_NAME=${{ env.DB_NAME }}" >> .env
+          echo "DB_USER=${{ env.DB_USER }}" >> .env
+          echo "DB_PASSWORD=${{ env.DB_PASSWORD }}" >> .env
+
+      - name: Run backend (make be-run)
+        run: |
+          cd backend
+          # Spustíme backend na pozadí a počkáme na health check
+          timeout 120 bash -c '
+            mvn spring-boot:run &
+            BACKEND_PID=$!
+            
+            # Čekáme na start backendu
+            echo "Waiting for backend to start..."
+            until curl -sf http://localhost:8080/api/hello; do
+              # Zkontrolujeme, jestli proces stále běží
+              if ! kill -0 $BACKEND_PID 2>/dev/null; then
+                echo "Backend process died!"
+                exit 1
+              fi
+              sleep 5
+            done
+            
+            echo "Backend is running!"
+            
+            # Test API endpointů
+            echo "Testing /api/hello..."
+            curl -sf http://localhost:8080/api/hello
+            echo ""
+            
+            echo "Testing /api/players..."
+            curl -sf http://localhost:8080/api/players | head -c 500
+            echo ""
+            
+            # Ukončíme backend
+            kill $BACKEND_PID 2>/dev/null || true
+            echo "✅ make be-run check passed!"
+          '
+
+  frontend-dev-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: cd frontend && npm ci
+
+      - name: Run frontend dev server (make fe-dev)
+        run: |
+          cd frontend
+          # Spustíme dev server na pozadí a počkáme na health check
+          timeout 60 bash -c '
+            npm run dev &
+            DEV_PID=$!
+            
+            # Čekáme na start dev serveru
+            echo "Waiting for frontend dev server to start..."
+            until curl -sf http://localhost:5173; do
+              # Zkontrolujeme, jestli proces stále běží
+              if ! kill -0 $DEV_PID 2>/dev/null; then
+                echo "Frontend dev server process died!"
+                exit 1
+              fi
+              sleep 3
+            done
+            
+            echo "Frontend dev server is running!"
+            
+            # Ukončíme dev server
+            kill $DEV_PID 2>/dev/null || true
+            echo "✅ make fe-dev check passed!"
+          '
+
+      - name: Run frontend lint (make fe-lint)
+        run: cd frontend && npm run lint
+
+      - name: Run frontend build (make fe-build)
+        run: cd frontend && npm run build

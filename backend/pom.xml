@@ -30,12 +30,6 @@
     <!-- ZÁVISLOSTI (DEPENDENCIES) -->
     <dependencies>
 
-        <!-- Spring Boot Actuator - monitoring (volitelně) -->
-        <!-- <dependency> -->
-            <!-- <groupId>org.springframework.boot</groupId> -->
-            <!-- <artifactId>spring-boot-starter-actuator</artifactId> -->
-        <!-- </dependency> -->
-
         <!-- OpenAPI/Swagger UI - generuje interaktivní API dokumentaci -->
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -76,11 +70,24 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-        <!-- H2 databáze - embedded runtime databáze -->
+        <!-- PostgreSQL JDBC Driver -->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
+        </dependency>
+
+        <!-- Testcontainers PostgreSQL - izolované testování s PostgreSQL v kontejnerech -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Flyway PostgreSQL support -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
         </dependency>
 
         <!-- Flyway - migrace a seed databáze -->
