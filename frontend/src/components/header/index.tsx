@@ -40,6 +40,7 @@ function Header({
     >
       <Link
         to={getPagePath(Page.Welcome)}
+        role="link"
         style={{
           display: "flex",
           alignItems: "center",
