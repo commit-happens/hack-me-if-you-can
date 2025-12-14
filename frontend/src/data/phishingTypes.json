@@ -49,7 +49,7 @@
       "id": 6,
       "name": "Soutěžní / loterijní phishing",
       "securityHints": [
-        "Buď skeptický k oznámením o výhrách v soutěžích, kterých jste se neúčastnili.",
+        "Buď skeptický k oznámením o výhrách v soutěžích, kterých jsi se neúčastnil.",
         "Legitimní soutěže nikdy nevyžadují platbu za převzetí výhry.",
         "Ověř existenci soutěže přes oficiální kanály organizátora.",
         "Nikdy nesděluj osobní či platební údaje pro 'aktivaci' výhry."
