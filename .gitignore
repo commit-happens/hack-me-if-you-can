@@ -9,3 +9,6 @@
 *.iml
 *.ipr
 *.iws
+
+# Env proměnné soubory
+*.env

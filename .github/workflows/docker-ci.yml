@@ -1,0 +1,102 @@
+name: Docker CI
+
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+  workflow_dispatch:
+
+concurrency:
+  group: docker-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DB_NAME: hmiyc_test
+  DB_USER: postgres
+  DB_PASSWORD: postgres123
+
+jobs:
+  docker-build-and-health-check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create .env file
+        run: |
+          echo "DB_NAME=${{ env.DB_NAME }}" >> .env
+          echo "DB_USER=${{ env.DB_USER }}" >> .env
+          echo "DB_PASSWORD=${{ env.DB_PASSWORD }}" >> .env
+
+      - name: Build Docker images
+        run: make docker-build
+
+      - name: Start services
+        run: make docker-up-detached
+
+      - name: Wait for PostgreSQL to be healthy
+        run: |
+          echo "Waiting for PostgreSQL..."
+          timeout 60 bash -c 'until docker compose exec -T postgres pg_isready -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }}; do sleep 2; done'
+          echo "PostgreSQL is ready!"
+
+      - name: Wait for Backend to be healthy
+        run: |
+          echo "Waiting for Backend..."
+          timeout 120 bash -c 'until curl -sf http://localhost:8080/api/hello; do sleep 5; done'
+          echo "Backend is ready!"
+
+      - name: Check Backend API response
+        run: |
+          echo "Testing /api/hello endpoint..."
+          curl -sf http://localhost:8080/api/hello
+          echo ""
+          echo "Testing /api/players endpoint..."
+          curl -sf http://localhost:8080/api/players | head -c 500
+          echo ""
+
+      - name: Check Flyway migrations applied
+        run: |
+          echo "Checking Flyway migration status..."
+          docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -c "SELECT version, description, success FROM flyway_schema_history ORDER BY installed_rank;"
+
+      - name: Check players table has data
+        run: |
+          echo "Checking players table..."
+          PLAYER_COUNT=$(docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM players;" | tr -d '[:space:]')
+          echo "Player count: '$PLAYER_COUNT'"
+          if [ -z "$PLAYER_COUNT" ] || [ "$PLAYER_COUNT" -lt 1 ]; then
+            echo "ERROR: No players found in database!"
+            echo "Debug: Checking if table exists..."
+            docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -c "\dt players"
+            echo "Debug: Showing first 5 rows..."
+            docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -c "SELECT * FROM players LIMIT 5;"
+            exit 1
+          fi
+          echo "✅ Database has $PLAYER_COUNT players"
+
+      - name: Wait for Frontend to be healthy
+        run: |
+          echo "Waiting for Frontend..."
+          timeout 60 bash -c 'until curl -sf http://localhost:3000; do sleep 5; done'
+          echo "Frontend is ready!"
+
+      - name: Show running containers
+        if: always()
+        run: docker compose ps
+
+      - name: Show backend logs on failure
+        if: failure()
+        run: docker compose logs backend
+
+      - name: Show postgres logs on failure
+        if: failure()
+        run: docker compose logs postgres
+
+      - name: Cleanup
+        if: always()
+        run: docker compose down -v

@@ -52,7 +52,7 @@ Nejrychlejší způsob, jak spustit celou aplikaci bez lokální instalace Node.
 ### Spuštění
 
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 Po úspěšném buildu a spuštění budou dostupné:
@@ -65,7 +65,7 @@ Po úspěšném buildu a spuštění budou dostupné:
 ### Zastavení
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 Podrobné informace najdeš v [DOCKER.md](DOCKER.md).
@@ -201,6 +201,12 @@ Tipy po přihlášení:
 - Prohlížet a upravovat tabulky
 - Spouštět vlastní SQL dotazy
 - Zkontrolovat uložená data přímo během běhu aplikace
+
+Flyway
+
+```
+cd backend && mvn flyway:repair -Dflyway.url=jdbc:postgresql://localhost:5432/hack_db -Dflyway.user=postgres -Dflyway.password=postgres@123
+```
 
 ---
 
