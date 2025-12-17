@@ -115,12 +115,13 @@ class ArchitectureTest {
                 final Class<T> annotationType,
                 final ConditionEvents events
         ) {
-            field.tryGetAnnotationOfType(annotationType).ifPresent(annotation -> {
+            if (field.isAnnotatedWith(annotationType)) {
+                T annotation = field.getAnnotationOfType(annotationType);
                 FetchType fetchType = getFetchType(annotation);
                 if (!FetchType.LAZY.equals(fetchType)) {
                     events.add(buildViolationEvent(field));
                 }
-            });
+            }
         }
 
         private <T extends java.lang.annotation.Annotation> void checkMethodAnnotation(
