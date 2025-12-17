@@ -46,7 +46,7 @@ class PlayerControllerTest {
     class GetPlayersTests {
 
         @Test
-        void shouldReturnAllPlayers() throws Exception {
+        void given_players_exist_when_getting_all_players_then_return_all_players() throws Exception {
             // Given
             PlayerResponse player1 = new PlayerResponse(1L, "Terminátor", 80);
             PlayerResponse player2 = new PlayerResponse(2L, "T-1000", 90);
@@ -67,7 +67,7 @@ class PlayerControllerTest {
         }
 
         @Test
-        void shouldReturnEmptyListWhenNoPlayersFound() throws Exception {
+        void given_no_players_when_getting_all_players_then_return_empty_list() throws Exception {
             // Given
             when(playerService.getPlayers()).thenReturn(List.of());
 
@@ -79,7 +79,7 @@ class PlayerControllerTest {
         }
 
         @Test
-        void shouldReturn500WhenServiceFails() throws Exception {
+        void given_service_throws_exception_when_getting_players_then_return_500_error() throws Exception {
             // Given
             when(playerService.getPlayers()).thenThrow(new RuntimeException("Chyba (např. databáze)"));
 
@@ -94,7 +94,7 @@ class PlayerControllerTest {
     class AddPlayerTests {
 
         @Test
-        void shouldAddPlayerSuccessfully() throws Exception {
+        void given_valid_player_request_when_adding_player_then_return_created_player() throws Exception {
             // Given
             PlayerRequest request = new PlayerRequest("Terminátor", 80);
             PlayerResponse response = new PlayerResponse(1L, "Terminátor", 80);
@@ -112,7 +112,7 @@ class PlayerControllerTest {
         }
 
         @Test
-        void shouldAddPlayerWithDefaultScoreWhenScoreNotProvided() throws Exception {
+        void given_player_request_without_score_when_adding_player_then_assign_default_score() throws Exception {
             // Given
             PlayerRequest request = new PlayerRequest("Terminátor", null);
             PlayerResponse response = new PlayerResponse(2L, "Terminátor", 100);
@@ -137,7 +137,7 @@ class PlayerControllerTest {
             "'{\"nickname\":\"ValidName\",\"score\":-5}' | score | Skóre nemůže být záporné",
             "'{\"score\":100}' | nickname | Přezdívka je povinná"
         })
-        void shouldReturn400WhenInvalidInput(String invalidJson, String fieldName, String expectedFieldError)
+        void given_invalid_player_data_when_adding_player_then_return_400_bad_request(String invalidJson, String fieldName, String expectedFieldError)
                 throws Exception {
             // When & Then
             mockMvc.perform(post(PLAYERS_API)
@@ -151,7 +151,7 @@ class PlayerControllerTest {
         }
 
         @Test
-        void shouldReturn409WhenDuplicateNickname() throws Exception {
+        void given_duplicate_nickname_when_adding_player_then_return_409_conflict() throws Exception {
             // Given
             PlayerRequest request = new PlayerRequest("TerminátorJižExistuje", 80);
             when(playerService.addPlayer(request))
@@ -169,7 +169,7 @@ class PlayerControllerTest {
         }
 
         @Test
-        void shouldReturn500WhenServiceFails() throws Exception {
+        void given_service_throws_exception_when_adding_player_then_return_500_error() throws Exception {
             // Given
             PlayerRequest request = new PlayerRequest("Terminátor", 80);
             when(playerService.addPlayer(request)).thenThrow(new RuntimeException("Chyba (např. databáze)"));
@@ -187,7 +187,7 @@ class PlayerControllerTest {
     class GetPlayerTests {
 
         @Test
-        void shouldReturnPlayer() throws Exception {
+        void given_valid_player_id_when_getting_player_then_return_player() throws Exception {
             // Given
             PlayerResponse player = new PlayerResponse(1L, "Terminátor", 100);
             when(playerService.getPlayerById(1L)).thenReturn(player);
@@ -203,7 +203,7 @@ class PlayerControllerTest {
 
         @ParameterizedTest
         @CsvSource({"1", "0", "-1", "9999999999"})
-        void shouldReturn404WhenPlayerNotFound(Long playerId) throws Exception {
+        void given_invalid_player_id_when_getting_player_then_return_404_not_found(Long playerId) throws Exception {
             // Given
             when(playerService.getPlayerById(playerId))
                     .thenThrow(new PlayerNotFoundException(playerId));
@@ -215,7 +215,7 @@ class PlayerControllerTest {
         }
 
         @Test
-        void shouldReturn500WhenServiceFails() throws Exception {
+        void given_service_throws_exception_when_getting_player_then_return_500_error() throws Exception {
             // Given
             when(playerService.getPlayerById(1L)).thenThrow(new RuntimeException("Chyba (např. databáze)"));
 
@@ -230,7 +230,7 @@ class PlayerControllerTest {
     class UpdatePlayerTests {
 
         @Test
-        void shouldUpdatePlayerScoreSuccessfully() throws Exception {
+        void given_valid_score_update_when_updating_player_then_return_updated_player() throws Exception {
             // Given
             PlayerUpdateRequest request = new PlayerUpdateRequest(null, 120);
             PlayerResponse response = new PlayerResponse(1L, "Terminátor", 120);
@@ -248,7 +248,7 @@ class PlayerControllerTest {
         }
 
         @Test
-        void shouldUpdatePlayerNicknameSuccessfully() throws Exception {
+        void given_valid_nickname_update_when_updating_player_then_return_updated_player() throws Exception {
             // Given
             PlayerUpdateRequest request = new PlayerUpdateRequest("TerminátorAktualizován", null);
             PlayerResponse response = new PlayerResponse(1L, "TerminátorAktualizován", 100);
@@ -266,7 +266,7 @@ class PlayerControllerTest {
         }
 
         @Test
-        void shouldUpdatePlayerSuccessfully() throws Exception {
+        void given_valid_nickname_and_score_update_when_updating_player_then_return_updated_player() throws Exception {
             // Given
             PlayerUpdateRequest request = new PlayerUpdateRequest("TerminátorAktualizován", 120);
             PlayerResponse response = new PlayerResponse(1L, "TerminátorAktualizován", 120);
@@ -290,7 +290,7 @@ class PlayerControllerTest {
             "'{\"nickname\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\"}' | nickname | Přezdívka musí mít mezi 3 a 50 znaky",
             "'{\"score\":-5}' | score | Skóre nemůže být záporné"
         })
-        void shouldReturn400WhenInvalidInput(String invalidJson, String fieldName, String expectedFieldError)
+        void given_invalid_player_update_data_when_updating_player_then_return_400_bad_request(String invalidJson, String fieldName, String expectedFieldError)
                 throws Exception {
             // When & Then
             mockMvc.perform(patch(PLAYERS_API + "/1")
@@ -305,7 +305,7 @@ class PlayerControllerTest {
 
         @ParameterizedTest
         @CsvSource({"1", "0", "-1", "9999999999"})
-        void shouldReturn404WhenPlayerNotFound(Long playerId) throws Exception {
+        void given_invalid_player_id_when_updating_player_then_return_404_not_found(Long playerId) throws Exception {
             // Given
             PlayerUpdateRequest request = new PlayerUpdateRequest("TerminátorAktualizován", 100);
             when(playerService.updatePlayer(playerId, request))
@@ -320,7 +320,7 @@ class PlayerControllerTest {
         }
 
         @Test
-        void shouldReturn409WhenDuplicateNickname() throws Exception {
+        void given_duplicate_nickname_when_updating_player_then_return_409_conflict() throws Exception {
             // Given
             PlayerUpdateRequest request = new PlayerUpdateRequest("TerminátorJižExistuje", null);
             when(playerService.updatePlayer(1L, request))
@@ -338,7 +338,7 @@ class PlayerControllerTest {
         }
 
         @Test
-        void shouldReturn500WhenServiceFails() throws Exception {
+        void given_service_throws_exception_when_updating_player_then_return_500_error() throws Exception {
             // Given
             PlayerUpdateRequest request = new PlayerUpdateRequest("Terminátor", 100);
             when(playerService.updatePlayer(1L, request)).thenThrow(new RuntimeException("Chyba (např. databáze)"));
@@ -356,7 +356,7 @@ class PlayerControllerTest {
     class DeletePlayerTests {
 
         @Test
-        void shouldDeletePlayerSuccessfully() throws Exception {
+        void given_valid_player_id_when_deleting_player_then_return_deleted_player() throws Exception {
             // Given
             PlayerResponse response = new PlayerResponse(1L, "Terminátor", 100);
             when(playerService.deletePlayer(1L)).thenReturn(response);
@@ -372,7 +372,7 @@ class PlayerControllerTest {
 
         @ParameterizedTest
         @CsvSource({"9999999999", "0", "-1"})
-        void shouldReturn204WhenPlayerNotFound(Long playerId) throws Exception {
+        void given_invalid_player_id_when_deleting_player_then_return_204_no_content(Long playerId) throws Exception {
             // Given
             when(playerService.deletePlayer(playerId)).thenReturn(null);
 
@@ -382,7 +382,7 @@ class PlayerControllerTest {
         }
 
         @Test
-        void shouldReturn500WhenServiceFails() throws Exception {
+        void given_service_throws_exception_when_deleting_player_then_return_500_error() throws Exception {
             // Given
             when(playerService.deletePlayer(1L)).thenThrow(new RuntimeException("Chyba (např. databáze)"));
 

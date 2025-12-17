@@ -82,8 +82,8 @@ public class GlobalExceptionHandler {
     }
 
     // 500 Internal Server Error pro ostatní neočekávané chyby
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleUnexpectedError(Exception ex) {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, Object>> handleUnexpectedError(RuntimeException ex) {
         // Zalogujeme výjimku včetně stacktrace pro debugging
         logger.error("Neočekávaná chyba serveru", ex);
         
