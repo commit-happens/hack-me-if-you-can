@@ -5,11 +5,11 @@ import { getEnvConfigValue } from "../utils/envConfig";
 
 const defaultLocale: Locale = getEnvConfigValue(
   "VITE_API_LOCALE",
-  "csCZ",
+  "cs-CZ",
 ) as Locale;
 
 const translations: Partial<Record<Locale, Translation>> = {
-  csCZ,
+  "cs-CZ": csCZ,
 };
 
 const selectedTranslation = translations[defaultLocale] || csCZ;

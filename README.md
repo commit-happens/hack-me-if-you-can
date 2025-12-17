@@ -3,9 +3,9 @@
 **Hack me if you can** je interaktivní webová aplikace zaměřená na rozpoznávání phishingových e-mailů a školení kybernetické bezpečnosti. Hráči analyzují e-mailové zprávy, rozhodují, zda jsou legitimní nebo podvodné, přičemž špatné odpovědi snižují jejich skóre uložené v databázi. Aplikace kombinuje React 19 frontend s real-time hodnocením a Spring Boot backend s REST API pro správu hráčů a jejich výsledků.
 
 ## Tech stack
+
 - Frontend: React 19 + TypeScript, ESLint, Vite 7 (dev server, build, preview)
 - Backend: Java 21, Spring Boot, H2, Maven
-
 
 ## Struktura repozitáře
 
@@ -31,6 +31,7 @@ hack-me-if-you-can/
 ```
 
 ## Předpoklady
+
 - Frontend
   - Node.js 18+ (LTS doporučeno)
   - npm (součást Node.js)
@@ -45,20 +46,24 @@ hack-me-if-you-can/
 Nejrychlejší způsob, jak spustit celou aplikaci bez lokální instalace Node.js, Maven nebo JDK.
 
 ### Předpoklady
+
 - **Docker Desktop** (obsahuje Docker Engine a Docker Compose)
 
 ### Spuštění
+
 ```bash
 docker compose up --build
 ```
 
 Po úspěšném buildu a spuštění budou dostupné:
+
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:8080/api/hello
 - **Swagger API**: http://localhost:8080/swagger-ui.html
 - **H2 Console**: http://localhost:8080/h2-console
 
 ### Zastavení
+
 ```bash
 docker compose down
 ```
@@ -94,14 +99,17 @@ Zastavení serveru: Ctrl+C.
 
 ### Environment proměnné (frontend)
 
-- Soubor: `frontend/.env`
+- Soubor: `frontend/.env` (vytvořte zkopírováním z `frontend/.env.example`)
+- Pro lokální nastavení zkopírujte `.env.example` na `.env` a upravte hodnoty dle potřeby
 - Příklad:
 
   ```env
-  VITE_API_LOCALE=csCZ
+  VITE_API_LOCALE=cs-CZ
+  VITE_TIME_PER_QUESTION=60
+  VITE_GAME_QUESTIONS_LIMIT=20
   ```
 
-Vite načítá proměnné s prefixem `VITE_`. Hodnotu může aplikace použít např. pro výběr překladu.
+Vite načítá proměnné s prefixem `VITE_`. Hodnotu může aplikace použít např. pro výběr překladu nebo nastavení herních pravidel.
 
 ### Build a náhled produkce (frontend)
 
@@ -118,40 +126,42 @@ make fe-lint
 
 ### Troubleshooting
 
-- Port 5173 je obsazený: 
-    - Spusť frontend na jiném portu:
-        ```powershell
-        make fe-dev -- --port 5174
-        ```
-    - Nebo zjisti PID procesu, který port používá, a ukonči ho:
-        ```powershell
-        lsof -i :5173   # zjistí PID
-        kill <PID>      # např. kill 69588
-        ```
+- Port 5173 je obsazený:
+  - Spusť frontend na jiném portu:
+    ```powershell
+    make fe-dev -- --port 5174
+    ```
+  - Nebo zjisti PID procesu, který port používá, a ukonči ho:
+    ```powershell
+    lsof -i :5173   # zjistí PID
+    kill <PID>      # např. kill 69588
+    ```
 - Instalace závislostí selže: ověř, že používáš `npm ci` (existuje `package-lock.json`). Pokud je lock neaktuální, smaž `node_modules` a `package-lock.json` a spusť `npm install`.
 - Windows + `make` není nalezen: otevři nové okno terminálu po instalaci, případně přidej binární složku `make` do PATH nebo spouštěj targety přes `fe.ps1`.
 
 ---
 
 ## Rychlý start: backend
+
 - Technologie: Java 21, Spring Boot, Maven
 - Hlavní třída: `cz.hackmeifyoucan.backend.HackMeIfYouCanApplication`
 - Výchozí port: 8080 (konfigurovatelné v `application.properties`)
 
 ### Spuštění (lokálně)
-1) Klon repozitář:
+
+1. Klonování repozitáře:
 
 ```bash
 git clone https://github.com/commit-happens/hack-me-if-you-can.git
 ```
 
-2) Spuštění aplikace v režimu vývoje:
+2. Spuštění aplikace v režimu vývoje:
 
 ```bash
 make be-run
 ```
 
-3) Vytvoření spustitelného jar (production):
+3. Vytvoření spustitelného jar (production):
 
 ```bash
 make be-clean
@@ -159,27 +169,30 @@ make be-package
 java -jar target/*.jar
 ```
 
-4) Spuštění testů (důležité):
+4. Spuštění testů (důležité):
 
 ```bash
 mvn test
 ```
 
 ### Dostupné odkazy po spuštění backendu
+
 #### REST api
+
 1. Testovací Hello api: http://localhost:8080/api/hello
 2. Players api, vrátí json všech hráčů dostupných v databázi: http://localhost:8080/api/players
 
 #### Swagger API documentation
+
 URL: http://localhost:8080/swagger-ui.html
 
 #### H2 konzole (in-memory databáze)
+
 URL: http://localhost:8080/h2-console
 
 Projekt používá H2 databázi v paměťovém režimu (in-memory), ideální pro lokální vývoj a testování.
 
 Otevřeš ji v prohlížeči na následující adrese:
-
 
 Přihlašovací údaje (výchozí) najdeš v backend/src/main/resources/application.propertie
 
@@ -190,10 +203,11 @@ Tipy po přihlášení:
 - Zkontrolovat uložená data přímo během běhu aplikace
 
 Flyway
+
 ```
 cd backend && mvn flyway:repair -Dflyway.url=jdbc:postgresql://localhost:5432/hack_db -Dflyway.user=postgres -Dflyway.password=postgres@123
 ```
 
------
+---
 
 Ročníkový projekt XRPR1 by Commit Happens
