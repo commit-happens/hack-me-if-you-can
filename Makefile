@@ -56,6 +56,16 @@ be-flyway-repair:
 	@echo "Oprava Flyway migrací backendu..."
 	cd backend && mvn flyway:repair -Dflyway.url=jdbc:postgresql://localhost:5432/$(DB_NAME) -Dflyway.user=$(DB_USER) -Dflyway.password=$(DB_PASSWORD)
 
+be-flyway-clean:
+	@echo -n "⚠️ VAROVÁNÍ: Opravdu chcete smazat VŠECHNY lokální tabulky a data z databáze? [y/N]: " && \
+	read ans && [ "$$ans" = "y" ] || [ "$$ans" = "Y" ] || (echo "Operace zrušena."; exit 1)
+	@echo "Probíhá čištění databáze..."
+	cd backend && mvn flyway:clean \
+		-Dflyway.cleanDisabled=false \
+		-Dflyway.url=jdbc:postgresql://localhost:5432/$(DB_NAME) \
+		-Dflyway.user=$(DB_USER) \
+		-Dflyway.password=$(DB_PASSWORD)
+
 
 ## Databázové pomocné příkazy
 db-connect:
