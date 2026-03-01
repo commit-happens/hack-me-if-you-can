@@ -111,6 +111,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Spring Boot Actuator - monitoring a health check endpointy (Např. /actuator/health, /actuator/metrics) -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
     </dependencies>
 
 
