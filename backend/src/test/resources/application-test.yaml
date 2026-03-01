@@ -19,7 +19,3 @@ spring:
     validate-on-migrate: true
     clean-disabled: false
     locations: classpath:db/migration
-  sql:
-    init:
-      mode: always
-      data-locations: classpath:db/init.sql

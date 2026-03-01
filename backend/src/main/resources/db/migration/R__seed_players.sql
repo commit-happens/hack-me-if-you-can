@@ -91,3 +91,4 @@ INSERT INTO players (id, nickname, score) VALUES (90, '¯\_(ツ)_/¯', 33) ON CO
 
 -- Reset auto-increment sequence for next inserts
 ALTER TABLE players ALTER COLUMN id RESTART WITH 91;
+
