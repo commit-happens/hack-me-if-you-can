@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:8080/api";
+import { getEnvConfigValue } from "../utils/envConfig";
 
 export interface PlayerRequest {
   nickname: string;
@@ -10,6 +10,8 @@ export interface PlayerModel {
   nickname: string;
   score: number;
 }
+
+export const API_BASE_URL = getEnvConfigValue("VITE_API_URL", "");
 
 export const getPlayers = async (): Promise<PlayerModel[]> => {
   const response = await fetch(`${API_BASE_URL}/players`);
@@ -40,9 +42,7 @@ export const createPlayer = async (nickname: string): Promise<PlayerModel> => {
       throw new Error(error.fields.nickname);
     }
     throw new Error(
-      error.error ||
-        error.message ||
-        `Chyba při vytváření hráče: ${response.statusText}`,
+      error.error || error.message || `Chyba při vytváření hráče: ${response.statusText}`,
     );
   }
 
