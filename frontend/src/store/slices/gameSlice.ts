@@ -4,11 +4,8 @@ import type { RootState } from "../../store";
 import { updatePlayerScore } from "../../services/playerService";
 import { getEnvConfigValue } from "../../utils/envConfig";
 
-const gameQuestionsLimitDefault = getEnvConfigValue(
-  "VITE_GAME_QUESTIONS_LIMIT",
-  20,
-);
-const gameInitialScoreDefault = getEnvConfigValue("VITE_INITIAL_SCORE", 200);
+const gameQuestionsLimitDefault = getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20);
+const gameInitialScoreDefault = getEnvConfigValue("VITE_INITIAL_SCORE", 100);
 
 interface GameState {
   score: number;
@@ -30,10 +27,7 @@ const initialState: GameState = {
 // Server-authoritativní update skóre: nejprve PATCH na backend, pak teprve upravíme lokální stav.
 export const updateScore = createAsyncThunk(
   "game/updateScore",
-  async (
-    { playerId, scoreChange }: { playerId: number; scoreChange: number },
-    { getState },
-  ) => {
+  async ({ playerId, scoreChange }: { playerId: number; scoreChange: number }, { getState }) => {
     const state = getState() as RootState;
     const currentScore = state.game.score;
     const targetScore = currentScore + scoreChange;
@@ -75,21 +69,13 @@ const gameSlice = createSlice({
       state.score = action.payload;
     });
     builder.addCase(updateScore.rejected, (_state, action) => {
-      console.error(
-        "Nepodařilo se aktualizovat skóre na backendu:",
-        action.error,
-      );
+      console.error("Nepodařilo se aktualizovat skóre na backendu:", action.error);
     });
   },
 });
 
-export const {
-  startGame,
-  endGame,
-  setCurrentIndex,
-  increaseCorrectAnswers,
-  setTotalQuestions,
-} = gameSlice.actions;
+export const { startGame, endGame, setCurrentIndex, increaseCorrectAnswers, setTotalQuestions } =
+  gameSlice.actions;
 
 // Selektory
 export const selectScore = (state: RootState) => state.game.score;

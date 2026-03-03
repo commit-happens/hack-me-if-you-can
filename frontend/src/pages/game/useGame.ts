@@ -13,10 +13,7 @@ import {
 } from "../../store/slices/gameSlice";
 import { selectPlayerId } from "../../store/slices/playerSlice";
 import { getEnvConfigValue } from "../../utils/envConfig";
-import {
-  faAlarmClock,
-  type IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAlarmClock, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 export enum Answer {
   Phishing = "phishing",
@@ -25,13 +22,28 @@ export enum Answer {
 
 export type EmailModel = {
   id: number;
+  /* Odesílatel e-mailu */
   sender: string;
+
+  /* Předmět e-mailu */
   subject: string;
+
+  /* Obsah e-mailu */
   content: string;
+
+  /* Vysvětlení, proč je e-mail phishing nebo bezpečný */
   explanation: string;
-  penalty: number;
+
+  /* Odměna za správné určení, zda se jedná o phishing */
+  reward: number;
+
+  /* ID phishingové platformy */
   phishingPlatformID: number;
+
+  /* ID typů phishingu */
   phishingTypeIDs: number[];
+
+  /* Obtížnost */
   difficulty: number;
 };
 
@@ -92,17 +104,12 @@ export function useGame(props: UseGameProps) {
   /**
    * Náhodné promíchání e-mailů pro zajištění různorodosti kvízu.
    */
-  const randomizedEmails = useMemo(
-    () => allEmails.sort(() => Math.random() - 0.5),
-    [allEmails],
-  );
+  const randomizedEmails = useMemo(() => allEmails.sort(() => Math.random() - 0.5), [allEmails]);
 
   const currentIndex = useAppSelector((state) => state.game.currentIndex);
 
   /** Z konfigurace si načteme čas na zodpovězení jedné otázky. */
-  const timePerQuestion = Math.ceil(
-    getEnvConfigValue("VITE_TIME_PER_QUESTION", 60) / difficulty,
-  );
+  const timePerQuestion = Math.ceil(getEnvConfigValue("VITE_TIME_PER_QUESTION", 60) / difficulty);
 
   const { remainingTime, reset, stop } = useCountdown({
     start: timePerQuestion,
@@ -116,9 +123,7 @@ export function useGame(props: UseGameProps) {
 
   const emailsOfDifficulty = useMemo(() => {
     const filteredQuestions = randomizedEmails.filter(
-      (item) =>
-        item.difficulty === difficulty &&
-        item.phishingPlatformID === platformId,
+      (item) => item.difficulty === difficulty && item.phishingPlatformID === platformId,
     );
 
     if (questionsLimit > 0 && questionsLimit < filteredQuestions.length) {
@@ -164,32 +169,24 @@ export function useGame(props: UseGameProps) {
    */
   const isLastEmail = currentIndex === totalEmails - 1;
 
-  const continueButtonLabel = isLastEmail
-    ? texts.buttons.showResults
-    : texts.buttons.continue;
+  const continueButtonLabel = isLastEmail ? texts.buttons.showResults : texts.buttons.continue;
 
   /** Definice barev pro upozornění na zbývající čas pro zodpovězení otázky. */
 
   const timeoutWarningThresholds: TimeOutWarningThreshold[] = [
     {
-      secondsRemaining: Math.round(
-        timePerQuestion / criticalTimeThresholdDivisor,
-      ),
+      secondsRemaining: Math.round(timePerQuestion / criticalTimeThresholdDivisor),
       colorVariant: "danger",
     },
     {
-      secondsRemaining: Math.round(
-        timePerQuestion / warningTimeThresholdDivisor,
-      ),
+      secondsRemaining: Math.round(timePerQuestion / warningTimeThresholdDivisor),
       colorVariant: "warning",
     },
   ];
 
   /** Barva odpočítávadla času. */
   const { colorVariant } =
-    timeoutWarningThresholds.find(
-      (threshold) => threshold.secondsRemaining >= remainingTime,
-    ) || {};
+    timeoutWarningThresholds.find((threshold) => threshold.secondsRemaining >= remainingTime) || {};
 
   const timeoutBgColor = colorVariant ? `bg-${colorVariant}` : undefined;
   const timeoutProgressBarVariant = colorVariant;
@@ -219,11 +216,12 @@ export function useGame(props: UseGameProps) {
       stop();
 
       const correct = isCorrectAnswer(selected);
-      const scoreChange = correct ? 0 : -currentEmail.penalty;
+      // Pozitivní bodování: za správnou odpověď získáváme reward
+      const scoreChange = correct ? currentEmail.reward : 0;
 
-      // Pokud je skóre sníženo a máme playerId, aktualizujeme backend
+      // Pokud je skóre zvýšeno a máme playerId, aktualizujeme backend
       if (scoreChange && playerId) {
-        console.log(`Špatná odpověď, aktualizuji skóre: ${scoreChange}`);
+        console.log(`Správná odpověď, aktualizuji skóre: +${scoreChange}`);
         dispatch(updateScore({ playerId, scoreChange }));
       }
 
@@ -256,13 +254,7 @@ export function useGame(props: UseGameProps) {
     }
 
     dispatch(setCurrentIndex(currentIndex + 1));
-  }, [
-    currentIndex,
-    dispatch,
-    emailsOfDifficulty.length,
-    isLastEmail,
-    onFinish,
-  ]);
+  }, [currentIndex, dispatch, emailsOfDifficulty.length, isLastEmail, onFinish]);
 
   return {
     currentEmail,

@@ -31,12 +31,10 @@ describe("gameSlice reducers", () => {
 
     const s = store.getState().game;
     expect(s.isPlaying).toBe(true);
-    expect(s.score).toBe(getEnvConfigValue("VITE_INITIAL_SCORE", 200));
+    expect(s.score).toBe(getEnvConfigValue("VITE_INITIAL_SCORE", 100));
     expect(s.currentIndex).toBe(0);
     expect(s.correctAnswers).toBe(0);
-    expect(s.totalQuestions).toBe(
-      getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20),
-    );
+    expect(s.totalQuestions).toBe(getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20));
   });
 
   it("Akce increaseCorrectAnswers zvýší počet správných odpovědí", () => {
@@ -71,9 +69,9 @@ describe("gameSlice reducers", () => {
 describe("gameSlice updateScore thunk", () => {
   it("po úspěchu nastaví skóre na hodnotu ze serveru", async () => {
     const store = makeStore();
-    // Výchozí score 200; změníme o +25 -> očekáváme 225
+    // Výchozí score 100; správná odpověď přidá 25 bodů -> očekáváme 125
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await store.dispatch(updateScore({ playerId: 42, scoreChange: 25 }) as any);
-    expect(store.getState().game.score).toBe(225);
+    expect(store.getState().game.score).toBe(125);
   });
 });
