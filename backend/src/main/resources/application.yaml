@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/${DB_NAME:hmiyc}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/hmiyc}
     driver-class-name: org.postgresql.Driver
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:postgres@123}
