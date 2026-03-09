@@ -23,7 +23,7 @@ CREATE TABLE questions (
     content VARCHAR(1000) NOT NULL,
     metadata JSONB DEFAULT '{}'::jsonb,
     explanation VARCHAR(1000) NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Spojovací tabulka mezi otázkami a kategoriemi
@@ -33,8 +33,12 @@ CREATE TABLE question_to_categories (
     PRIMARY KEY (question_id, category_id)
 );
 
--- Indexy pro zrychlení dotazů
-CREATE INDEX idx_questions_platform_type_id ON questions(platform_type_id);
-CREATE INDEX idx_question_to_categories_question_id ON question_to_categories(question_id);
-CREATE INDEX idx_question_to_categories_category_id ON question_to_categories(category_id);
-CREATE INDEX idx_phishing_categories_tag ON phishing_categories(tag);
+--- INDEXES FOR PERFORMANCE AND INTEGRITY
+CREATE UNIQUE INDEX IF NOT EXISTS idx_questions_content_hash_per_platform
+    ON questions (platform_type_id, md5(content));
+CREATE INDEX IF NOT EXISTS idx_questions_platform_type_id
+    ON questions(platform_type_id);
+CREATE INDEX IF NOT EXISTS idx_question_to_categories_category_id
+    ON question_to_categories(category_id);
+CREATE INDEX IF NOT EXISTS idx_phishing_categories_tag
+    ON phishing_categories(tag);
