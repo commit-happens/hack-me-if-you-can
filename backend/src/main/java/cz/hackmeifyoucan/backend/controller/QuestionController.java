@@ -36,8 +36,7 @@ public class QuestionController {
             summary = "Získat náhodné otázky podle obtížnosti",
             description = "Vrátí seznam náhodných phishingových otázek filtrovaných podle obtížnosti. " +
                     "Limit je omezen na maximálně " + REQUEST_LIMIT + " otázek. " +
-                    "Pokud pro danou obtížnost neexistují otázky, vrátí se prázdný seznam.",
-            tags = {"Otázky"}
+                    "Pokud pro danou obtížnost neexistují otázky, vrátí se prázdný seznam."
     )
     @ApiResponses({
             @ApiResponse(
