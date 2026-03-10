@@ -2,6 +2,8 @@ package cz.hackmeifyoucan.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,13 +17,15 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "phishing_categories")
 public class PhishingCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @EqualsAndHashCode.Include
     private Long id;
 
     @Column(name = "tag", nullable = false, unique = true, length = 30)
@@ -30,7 +34,7 @@ public class PhishingCategory {
     @Column(name = "name", nullable = false, unique = true, length = 100)
     private String name;
 
-    @Column(name = "description", nullable = false, length = 100)
+    @Column(name = "description", nullable = false, length = 250)
     private String description;
 
     @JdbcTypeCode(SqlTypes.JSON)
