@@ -1,6 +1,6 @@
 /**
  * PlayerController - HTTP rozhraní pro práci s hráči (přijímá HTTP požadavky z frontendu a vrátí HTTP odpovědi).
- * Všechny endpointy začínají na /api/players
+ * Všechny endpointy začínají na /players
  */
 
 package cz.hackmeifyoucan.backend.controller;
@@ -33,7 +33,7 @@ import cz.hackmeifyoucan.backend.dto.Error404Response;
 import cz.hackmeifyoucan.backend.dto.Error409Response;
 
 @RestController
-@RequestMapping("/api/players")
+@RequestMapping("/players")
 @Tag(name = "player-controller", description = "Endpointy pro správu hráčů - vytváření, čtení, aktualizace a mazání")
 public class PlayerController {
 

@@ -33,7 +33,7 @@ import cz.hackmeifyoucan.backend.service.PlayerService;
 @WebMvcTest(PlayerController.class)
 class PlayerControllerTest {
 
-    private static final String PLAYERS_API = "/api/players";
+    private static final String PLAYERS_API = "/players";
     private static final String APPLICATION_JSON = "application/json";
 
     @Autowired
