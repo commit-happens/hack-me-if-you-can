@@ -6,3 +6,7 @@ CREATE TABLE IF NOT EXISTS players (
     nickname VARCHAR(50) NOT NULL UNIQUE,
     score INT NOT NULL DEFAULT 100
 );
+
+-- INDEXES FOR PERFORMANCE AND INTEGRITY
+CREATE UNIQUE INDEX IF NOT EXISTS idx_players_nickname
+    ON players(nickname);
