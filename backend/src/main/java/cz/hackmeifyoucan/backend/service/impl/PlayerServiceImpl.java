@@ -146,7 +146,7 @@ public class PlayerServiceImpl implements PlayerService {
     /* --------------------------------------------------------------------------------------------------- */
     private PlayerResponse convertToResponse(Player player) {
         return new PlayerResponse(
-            player.getPlayerId(),
+            player.getId(),
             player.getNickname(),
             player.getScore()
         );

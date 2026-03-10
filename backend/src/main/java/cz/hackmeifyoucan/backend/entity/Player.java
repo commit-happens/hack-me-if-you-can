@@ -8,22 +8,28 @@ package cz.hackmeifyoucan.backend.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "players")
 public class Player {
 
-    @Id // Primární klíč, generován automaticky databází
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long playerId;
-    
+    @EqualsAndHashCode.Include
+    private Long id;
+
     @Column(name = "nickname", nullable = false, unique = true, length = 50)
     private String nickname;
 
