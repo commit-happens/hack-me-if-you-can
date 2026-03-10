@@ -51,6 +51,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    // 400 Bad Request pro invalidní parametry otázek (difficulty, limit)
+    @ExceptionHandler(InvalidQuestionParameterException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidQuestionParameter(InvalidQuestionParameterException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put(STATUS, 400);
+        errorResponse.put(ERROR, ex.getMessage());
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
     // 400 Bad Request pro ostatní logické chyby
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleLogicError(IllegalArgumentException ex) {
