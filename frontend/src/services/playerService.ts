@@ -29,7 +29,7 @@ export const createPlayer = async (nickname: string): Promise<PlayerModel> => {
     },
     body: JSON.stringify({
       nickname,
-      score: 100, // Automatické skóre
+      score: 200, // Automatické skóre
     }),
   });
 

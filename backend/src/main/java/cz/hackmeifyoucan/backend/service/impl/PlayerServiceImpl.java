@@ -42,11 +42,11 @@ public class PlayerServiceImpl implements PlayerService {
         Player player = new Player();
         player.setNickname(playerRequest.nickname());
         
-        // Pokud frontend poslal skóre, použijeme ho, jinak nastavíme 100
+        // Pokud frontend poslal skóre, použijeme ho, jinak nastavíme 200
         if (playerRequest.score() != null) {
             player.setScore(playerRequest.score());
         } else {
-            player.setScore(100);  // Výchozí skóre
+            player.setScore(200);  // Výchozí skóre
         }
         
         // Uložíme hráče do databáze (databáze automaticky vygeneruje ID)
