@@ -34,11 +34,11 @@ CREATE TABLE question_to_categories (
 );
 
 --- INDEXES FOR PERFORMANCE AND INTEGRITY
-CREATE UNIQUE INDEX IF NOT EXISTS idx_questions_content_hash_per_platform
+CREATE UNIQUE INDEX idx_questions_content_hash_per_platform
     ON questions (platform_type_id, md5(content));
-CREATE INDEX IF NOT EXISTS idx_questions_platform_type_id
+CREATE INDEX idx_questions_platform_type_id
     ON questions(platform_type_id);
-CREATE INDEX IF NOT EXISTS idx_question_to_categories_category_id
+CREATE INDEX idx_question_to_categories_category_id
     ON question_to_categories(category_id);
-CREATE INDEX IF NOT EXISTS idx_phishing_categories_tag
+CREATE INDEX idx_phishing_categories_tag
     ON phishing_categories(tag);

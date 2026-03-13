@@ -48,14 +48,15 @@ public class Question {
     private boolean phishing;
 
     @Column(name = "difficulty", nullable = false)
-    private Integer difficulty;
+    private int difficulty;
 
     @Column(name = "penalty", nullable = false)
-    private Integer penalty;
+    private int penalty;
 
     @Column(name = "content", nullable = false, length = 1000)
     private String content;
 
+    @Builder.Default
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "metadata", columnDefinition = "jsonb")
     private Map<String, String> metadata = new HashMap<>();
