@@ -46,7 +46,7 @@ public class QuestionController {
                     content = @Content(
                             mediaType = "application/json",
                             schema = @Schema(
-                                    example = "[{\"id\": 35, \"platform\": \"email\", \"metadata\": {\"sender\": \"security@acme.com\", \"subject\": \"Urgent account verification\"}, \"content\": \"Please verify your account\", \"explanation\": \"Podvodný email tlací na rychlou akci\", \"isPhishing\": true, \"categoryIds\": [2, 5]}, {\"id\": 36, \"platform\": \"sms\", \"metadata\": {\"sender\": \"Bank\"}, \"content\": \"Confirm payment\", \"explanation\": \"SMS obsahuje podezřelý odkaz\", \"isPhishing\": true, \"categoryIds\": [1]}]"
+                                    example = "[{\"id\": 35, \"platform\": \"email\", \"metadata\": {\"sender\": \"security@acme.com\", \"subject\": \"Urgent account verification\"}, \"content\": \"Please verify your account\", \"explanation\": \"Podvodný email tlací na rychlou akci\"}, {\"id\": 36, \"platform\": \"sms\", \"metadata\": {\"sender\": \"Bank\"}, \"content\": \"Confirm payment\", \"explanation\": \"SMS obsahuje podezřelý odkaz\"}]"
                             )
                     )
             ),
