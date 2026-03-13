@@ -1,8 +1,3 @@
-/**
- * PlayerController - HTTP rozhraní pro práci s hráči (přijímá HTTP požadavky z frontendu a vrátí HTTP odpovědi).
- * Všechny endpointy začínají na /players
- */
-
 package cz.hackmeifyoucan.backend.controller;
 
 import java.util.List;
@@ -37,10 +32,8 @@ import cz.hackmeifyoucan.backend.dto.Error409Response;
 @Tag(name = "player-controller", description = "Endpointy pro správu hráčů - vytváření, čtení, aktualizace a mazání")
 public class PlayerController {
 
-    // Service vrstva - obsahuje abstraktní definice metod
     private final PlayerService playerService;
 
-    // Konstruktor - Spring automaticky předá PlayerService (dependency injection)
     public PlayerController(PlayerService playerService) {
         this.playerService = playerService;
     }

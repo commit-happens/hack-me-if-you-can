@@ -1,5 +1,15 @@
 package cz.hackmeifyoucan.backend.controller;
 
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import cz.hackmeifyoucan.backend.dto.Error400Response;
+import cz.hackmeifyoucan.backend.dto.Error500Response;
 import cz.hackmeifyoucan.backend.dto.QuestionResponse;
 import cz.hackmeifyoucan.backend.enums.Difficulty;
 import cz.hackmeifyoucan.backend.exception.InvalidQuestionParameterException;
@@ -11,13 +21,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.ResponseEntity;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/questions")
@@ -39,7 +42,7 @@ public class QuestionController {
                     "Limit je omezen na maximálně " + REQUEST_LIMIT + " otázek. " +
                     "Pokud pro danou obtížnost neexistují otázky, vrátí se prázdný seznam."
     )
-    @ApiResponses({
+    @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
                     description = "Úspěšně vráceny náhodné otázky",
@@ -55,9 +58,7 @@ public class QuestionController {
                     description = "Chybný požadavek - invalidní limit (limit <= 0 nebo limit > " + REQUEST_LIMIT + ")",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(
-                                    example = "{\"status\": 400, \"error\": \"Limit nesmí překročit 100\"}"
-                            )
+                            schema = @Schema(implementation = Error400Response.class)
                     )
             ),
             @ApiResponse(
@@ -65,9 +66,7 @@ public class QuestionController {
                     description = "Interní chyba serveru - selhání databáze nebo jiná neočekávaná chyba",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(
-                                    example = "{\"status\": 500, \"error\": \"Neočekávaná chyba serveru\"}"
-                            )
+                            schema = @Schema(implementation = Error500Response.class)
                     )
             )
     })

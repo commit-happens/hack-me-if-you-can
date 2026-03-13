@@ -1,5 +1,3 @@
-// Jednoduchý centrální handler chyb pro celé API
-
 package cz.hackmeifyoucan.backend.exception;
 
 import org.slf4j.Logger;
