@@ -35,16 +35,14 @@ class QuestionControllerTest {
     class GetRandomQuestionTests {
 
         @Test
-        void given_questions_exist_when_getting_random_questions_then_return_new_contract_fields() throws Exception {
+        void given_questions_exist_when_getting_random_questions_then_return_response_fields() throws Exception {
             // Given
             QuestionResponse first = new QuestionResponse(
                     35L,
                     "email",
                     Map.of("sender", "security@acme.com", "subject", "Urgent account verification"),
                     "Please verify your account immediately",
-                    "Podvodny email tlaci na rychlou akci.",
-                    true,
-                    List.of(2L, 5L)
+                    "Podvodny email tlaci na rychlou akci."
             );
 
             QuestionResponse second = new QuestionResponse(
@@ -52,12 +50,10 @@ class QuestionControllerTest {
                     "sms",
                     Map.of("sender", "Bank", "subject", "Payment pending"),
                     "Confirm payment at this link",
-                    "SMS obsahuje podezrely odkaz.",
-                    true,
-                    List.of(1L)
+                    "SMS obsahuje podezrely odkaz."
             );
 
-            when(questionService.getRandomQuestionByDifficulty(1, 2)).thenReturn(List.of(first, second));
+            when(questionService.getRandomQuestionsByDifficulty(1, 2)).thenReturn(List.of(first, second));
 
             // When & Then
             mockMvc.perform(get(QUESTIONS_API)
@@ -71,16 +67,13 @@ class QuestionControllerTest {
                     .andExpect(jsonPath("$[0].metadata.sender").value("security@acme.com"))
                     .andExpect(jsonPath("$[0].metadata.subject").value("Urgent account verification"))
                     .andExpect(jsonPath("$[0].content").value("Please verify your account immediately"))
-                    .andExpect(jsonPath("$[0].explanation").value("Podvodny email tlaci na rychlou akci."))
-                    .andExpect(jsonPath("$[0].isPhishing").value(true))
-                    .andExpect(jsonPath("$[0].categoryIds[0]").value(2))
-                    .andExpect(jsonPath("$[0].categoryIds[1]").value(5));
+                    .andExpect(jsonPath("$[0].explanation").value("Podvodny email tlaci na rychlou akci."));
         }
 
         @Test
         void given_no_questions_when_getting_random_questions_then_return_empty_list() throws Exception {
             // Given
-            when(questionService.getRandomQuestionByDifficulty(1, 3)).thenReturn(List.of());
+            when(questionService.getRandomQuestionsByDifficulty(1, 3)).thenReturn(List.of());
 
             // When & Then
             mockMvc.perform(get(QUESTIONS_API)
@@ -94,7 +87,7 @@ class QuestionControllerTest {
         @Test
         void given_service_throws_exception_when_getting_random_questions_then_return_500_error() throws Exception {
             // Given
-            when(questionService.getRandomQuestionByDifficulty(1, 1))
+            when(questionService.getRandomQuestionsByDifficulty(1, 1))
                     .thenThrow(new RuntimeException("Chyba (napr. databaze)"));
 
             // When & Then
@@ -142,7 +135,7 @@ class QuestionControllerTest {
         @Test
         void given_limit_at_maximum_when_getting_random_questions_then_service_is_called() throws Exception {
             // Given
-            when(questionService.getRandomQuestionByDifficulty(1, 100)).thenReturn(List.of());
+            when(questionService.getRandomQuestionsByDifficulty(1, 100)).thenReturn(List.of());
 
             // When & Then
             mockMvc.perform(get(QUESTIONS_API)
@@ -155,9 +148,9 @@ class QuestionControllerTest {
         @Test
         void given_all_difficulty_levels_when_getting_random_questions_then_service_is_called() throws Exception {
             // Given
-            when(questionService.getRandomQuestionByDifficulty(1, 5)).thenReturn(List.of());
-            when(questionService.getRandomQuestionByDifficulty(2, 5)).thenReturn(List.of());
-            when(questionService.getRandomQuestionByDifficulty(3, 5)).thenReturn(List.of());
+            when(questionService.getRandomQuestionsByDifficulty(1, 5)).thenReturn(List.of());
+            when(questionService.getRandomQuestionsByDifficulty(2, 5)).thenReturn(List.of());
+            when(questionService.getRandomQuestionsByDifficulty(3, 5)).thenReturn(List.of());
 
             // When & Then - test all difficulty enum values (EASY, MEDIUM, HARD)
             for (Difficulty difficulty : Difficulty.values()) {
@@ -167,6 +160,17 @@ class QuestionControllerTest {
                         .andExpect(status().isOk())
                         .andExpect(jsonPath("$.size()").value(0));
             }
+        }
+
+        @Test
+        void given_invalid_difficulty_when_getting_random_questions_then_return_400_error() throws Exception {
+            // When & Then
+            mockMvc.perform(get(QUESTIONS_API)
+                            .param("difficulty", "INVALID")
+                            .param("limit", "5"))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.status").value(400))
+                    .andExpect(jsonPath("$.error").value("Neplatná hodnota parametru: difficulty"));
         }
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -70,7 +71,7 @@ public class QuestionController {
                     )
             )
     })
-    public List<QuestionResponse> getRandomQuestionByDifficulty(
+    public ResponseEntity<List<QuestionResponse>> getRandomQuestionsByDifficulty(
             @Parameter(
                     name = "difficulty",
                     description = "Úroveň obtížnosti otázek. Validní hodnoty: EASY, MEDIUM, HARD. Pokud obtížnost neexistuje, vrátí se prázdný seznam.",
@@ -86,7 +87,7 @@ public class QuestionController {
             @RequestParam int limit
     ) {
         validateLimit(limit);
-        return questionService.getRandomQuestionByDifficulty(difficulty.getLevel(), limit);
+        return ResponseEntity.ok(questionService.getRandomQuestionsByDifficulty(difficulty.getLevel(), limit));
     }
 
 

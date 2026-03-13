@@ -8,6 +8,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.validation.FieldError;
@@ -57,6 +58,15 @@ public class GlobalExceptionHandler {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put(STATUS, 400);
         errorResponse.put(ERROR, ex.getMessage());
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    // 400 Bad Request pro chybný typ parametru (např. neplatná enum hodnota difficulty)
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, Object>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put(STATUS, 400);
+        errorResponse.put(ERROR, "Neplatná hodnota parametru: " + ex.getName());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
