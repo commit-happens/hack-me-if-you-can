@@ -7,6 +7,4 @@ CREATE TABLE IF NOT EXISTS players (
     score INT NOT NULL DEFAULT 100
 );
 
--- INDEXES FOR PERFORMANCE AND INTEGRITY
-CREATE UNIQUE INDEX IF NOT EXISTS idx_players_nickname
-    ON players(nickname);
+-- NOTE: nickname already has a UNIQUE constraint which creates a backing index
