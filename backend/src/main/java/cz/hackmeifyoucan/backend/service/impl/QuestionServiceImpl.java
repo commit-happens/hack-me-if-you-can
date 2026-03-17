@@ -3,7 +3,6 @@ package cz.hackmeifyoucan.backend.service.impl;
 import cz.hackmeifyoucan.backend.dto.QuestionResponse;
 import cz.hackmeifyoucan.backend.repository.QuestionRepository;
 import cz.hackmeifyoucan.backend.service.QuestionService;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +20,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional(readOnly = true)
     public List<QuestionResponse> getRandomQuestionsByDifficulty(int difficulty, int limit) {
-        return questionRepository.getRandomQuestionsByDifficulty(difficulty, PageRequest.of(0, limit))
+        return questionRepository.getRandomQuestionsByDifficulty(difficulty, limit)
                 .stream()
                 .map(question -> new QuestionResponse(
                         question.getId(),
