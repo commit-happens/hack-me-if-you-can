@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import cz.hackmeifyoucan.backend.dto.PlayerRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerUpdateRequest;
@@ -25,6 +26,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    @Transactional
     public PlayerResponse addPlayer(PlayerRequest playerRequest) {
         if (playerRepository.existsByNickname(playerRequest.nickname())) {
             throw new DuplicateNicknameException(playerRequest.nickname());
@@ -77,6 +79,7 @@ public class PlayerServiceImpl implements PlayerService {
     /* --------------------------------------------------------------------------------------------------- */
     @Override
     @SuppressWarnings("null")
+    @Transactional
     public PlayerResponse updatePlayer(Long playerId, PlayerUpdateRequest request) {
         Optional<Player> optionalPlayer = playerRepository.findById(playerId);
         
@@ -107,7 +110,7 @@ public class PlayerServiceImpl implements PlayerService {
         Optional<Player> optionalPlayer = playerRepository.findById(playerId);
         
         if (optionalPlayer.isEmpty()) {
-            return null;
+            throw new PlayerNotFoundException(playerId);
         }
 
         Player player = optionalPlayer.get();

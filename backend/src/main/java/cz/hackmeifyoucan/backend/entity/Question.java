@@ -1,5 +1,7 @@
 package cz.hackmeifyoucan.backend.entity;
 
+import cz.hackmeifyoucan.backend.converter.DifficultyConverter;
+import cz.hackmeifyoucan.backend.enums.Difficulty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,7 +52,8 @@ public class Question {
     private boolean phishing;
 
     @Column(name = "difficulty", nullable = false)
-    private int difficulty;
+    @Convert(converter = DifficultyConverter.class)
+    private Difficulty difficulty;
 
     @Column(name = "penalty", nullable = false)
     private int penalty;

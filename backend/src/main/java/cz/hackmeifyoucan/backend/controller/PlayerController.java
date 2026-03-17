@@ -100,21 +100,16 @@ public class PlayerController {
     }
 
     /* --------------------------------------------------------------------------------------------------- */
-    @Operation(summary = "Smazat hráče", description = "Odstraní hráče z databáze. Operace je idempotentí - opakované volání nevyvolá chybu.")
+    @Operation(summary = "Smazat hráče", description = "Odstraní hráče z databáze a vrátí data smazaného hráče.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Hráč úspěšně smazán, vrácena data smazaného hráče",
                      content = @Content(schema = @Schema(implementation = PlayerResponse.class))),
-        @ApiResponse(responseCode = "204", description = "Hráč neexistuje (již smazán nebo nikdy nebyl vytvořen)", 
-                     content = @Content())
+        @ApiResponse(responseCode = "404", description = "Nenalezeno - hráč s tímto ID neexistuje",
+                     content = @Content(schema = @Schema(implementation = Error404Response.class)))
     })
     @DeleteMapping("/{playerId}")
     public ResponseEntity<PlayerResponse> deletePlayer(@PathVariable Long playerId) {
         PlayerResponse response = playerService.deletePlayer(playerId);
-        
-        if (response == null) {
-            return ResponseEntity.noContent().build();
-        }
-        
         return ResponseEntity.ok(response);
     }
 }

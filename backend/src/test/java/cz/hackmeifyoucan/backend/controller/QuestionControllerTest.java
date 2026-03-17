@@ -53,7 +53,7 @@ class QuestionControllerTest {
                     "SMS obsahuje podezrely odkaz."
             );
 
-            when(questionService.getRandomQuestionsByDifficulty(1, 2)).thenReturn(List.of(first, second));
+            when(questionService.getRandomQuestionsByDifficulty(Difficulty.EASY, 2)).thenReturn(List.of(first, second));
 
             // When & Then
             mockMvc.perform(get(QUESTIONS_API)
@@ -73,7 +73,7 @@ class QuestionControllerTest {
         @Test
         void given_no_questions_when_getting_random_questions_then_return_empty_list() throws Exception {
             // Given
-            when(questionService.getRandomQuestionsByDifficulty(1, 3)).thenReturn(List.of());
+            when(questionService.getRandomQuestionsByDifficulty(Difficulty.EASY, 3)).thenReturn(List.of());
 
             // When & Then
             mockMvc.perform(get(QUESTIONS_API)
@@ -87,7 +87,7 @@ class QuestionControllerTest {
         @Test
         void given_service_throws_exception_when_getting_random_questions_then_return_500_error() throws Exception {
             // Given
-            when(questionService.getRandomQuestionsByDifficulty(1, 1))
+            when(questionService.getRandomQuestionsByDifficulty(Difficulty.EASY, 1))
                     .thenThrow(new RuntimeException("Chyba (napr. databaze)"));
 
             // When & Then
@@ -135,7 +135,7 @@ class QuestionControllerTest {
         @Test
         void given_limit_at_maximum_when_getting_random_questions_then_service_is_called() throws Exception {
             // Given
-            when(questionService.getRandomQuestionsByDifficulty(1, 100)).thenReturn(List.of());
+            when(questionService.getRandomQuestionsByDifficulty(Difficulty.EASY, 100)).thenReturn(List.of());
 
             // When & Then
             mockMvc.perform(get(QUESTIONS_API)
@@ -148,9 +148,9 @@ class QuestionControllerTest {
         @Test
         void given_all_difficulty_levels_when_getting_random_questions_then_service_is_called() throws Exception {
             // Given
-            when(questionService.getRandomQuestionsByDifficulty(1, 5)).thenReturn(List.of());
-            when(questionService.getRandomQuestionsByDifficulty(2, 5)).thenReturn(List.of());
-            when(questionService.getRandomQuestionsByDifficulty(3, 5)).thenReturn(List.of());
+            when(questionService.getRandomQuestionsByDifficulty(Difficulty.EASY, 5)).thenReturn(List.of());
+            when(questionService.getRandomQuestionsByDifficulty(Difficulty.MEDIUM, 5)).thenReturn(List.of());
+            when(questionService.getRandomQuestionsByDifficulty(Difficulty.HARD, 5)).thenReturn(List.of());
 
             // When & Then - test all difficulty enum values (EASY, MEDIUM, HARD)
             for (Difficulty difficulty : Difficulty.values()) {

@@ -16,4 +16,13 @@ public enum Difficulty {
         this.level = level;
     }
 
+    public static Difficulty fromLevel(int level) {
+        for (Difficulty difficulty : values()) {
+            if (difficulty.level == level) {
+                return difficulty;
+            }
+        }
+        throw new IllegalArgumentException("Unsupported difficulty level: " + level);
+    }
+
 }

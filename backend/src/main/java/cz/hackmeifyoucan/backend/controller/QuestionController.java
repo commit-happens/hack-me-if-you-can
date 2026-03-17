@@ -86,7 +86,7 @@ public class QuestionController {
             @RequestParam int limit
     ) {
         validateLimit(limit);
-        return ResponseEntity.ok(questionService.getRandomQuestionsByDifficulty(difficulty.getLevel(), limit));
+        return ResponseEntity.ok(questionService.getRandomQuestionsByDifficulty(difficulty, limit));
     }
 
 
