@@ -1,5 +1,3 @@
-/* Rozhraní služby popisující business logiku mezi controllery (API) a repository (databází) */
-
 package cz.hackmeifyoucan.backend.service;
 
 import java.util.List;

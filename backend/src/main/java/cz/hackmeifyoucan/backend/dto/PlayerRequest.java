@@ -19,7 +19,7 @@ public record PlayerRequest(
     String nickname,
 
     @Min(value = 0, message = "Skóre nemůže být záporné")
-    @Schema(description = "Počáteční skóre (volitelné, výchozí je 100)", example = "100")
+    @Schema(description = "Počáteční skóre (volitelné, výchozí je 200)", example = "200")
     Integer score
 ) {
 

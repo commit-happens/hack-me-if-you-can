@@ -99,8 +99,8 @@ print-hosts:
 	@echo "--- Uživatelské a vývojářské odkazy ---"
 	@echo "Frontend (local) server: http://localhost:5173"
 	@echo "Frontend (docker) preview: http://localhost:3000"
-	@echo "Hello API: http://localhost:8080/api/hello"
-	@echo "Players API: http://localhost:8080/api/players"
+	@echo "Hello API: http://localhost:8080/hello"
+	@echo "Players API: http://localhost:8080/players"
 	@echo "Swagger API documentation: http://localhost:8080/swagger-ui.html"
 
 
