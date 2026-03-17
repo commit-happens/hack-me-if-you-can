@@ -13,6 +13,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,13 +37,14 @@ public class Question {
     @JoinColumn(name = "platform_type_id", nullable = false)
     private PlatformType platformType;
 
+    @Builder.Default
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "question_to_categories",
         joinColumns = @JoinColumn(name = "question_id"),
         inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private Set<PhishingCategory> categories;
+    private Set<PhishingCategory> categories = new HashSet<>();
 
     @Column(name = "is_phishing", nullable = false)
     private boolean phishing;
