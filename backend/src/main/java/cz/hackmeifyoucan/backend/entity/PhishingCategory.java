@@ -11,6 +11,7 @@ import lombok.ToString;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -37,8 +38,8 @@ public class PhishingCategory {
     @Column(name = "description", nullable = false, length = 250)
     private String description;
 
+    @Builder.Default
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "security_hints", columnDefinition = "jsonb")
-    private List<String> securityHints;
+    private List<String> securityHints = new ArrayList<>();
 }
-
