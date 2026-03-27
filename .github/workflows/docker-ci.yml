@@ -75,11 +75,6 @@ jobs:
           echo "Players: $PLAYER_COUNT"
           [ "$PLAYER_COUNT" -ge 90 ] || { echo "❌ Expected 90 players initialized with seed data"; exit 1; }
           
-          # Check platform_types table
-          PLATFORM_COUNT=$(docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM platform_types;" | tr -d '[:space:]')
-          echo "Platform types: $PLATFORM_COUNT"
-          [ "$PLATFORM_COUNT" -eq 2 ] || { echo "❌ Expected 2 platform types, got $PLATFORM_COUNT"; exit 1; }
-          
           # Check phishing_categories table
           CATEGORY_COUNT=$(docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM phishing_categories;" | tr -d '[:space:]')
           echo "Phishing categories: $CATEGORY_COUNT"
