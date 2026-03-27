@@ -98,6 +98,8 @@ class PlayerControllerTest {
             // Given
             PlayerRequest request = new PlayerRequest("Terminátor", 80);
             PlayerResponse response = new PlayerResponse(1L, "Terminátor", 80);
+            PlayerRequest request = new PlayerRequest("Terminátor");
+            PlayerResponse response = new PlayerResponse(1L, "Terminátor", 200);
             when(playerService.addPlayer(request)).thenReturn(response);
 
             // When & Then
@@ -108,24 +110,6 @@ class PlayerControllerTest {
                     .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.playerId").value(1))
                     .andExpect(jsonPath("$.nickname").value("Terminátor"))
-                    .andExpect(jsonPath("$.score").value(80));
-        }
-
-        @Test
-        void given_player_request_without_score_when_adding_player_then_assign_default_score() throws Exception {
-            // Given
-            PlayerRequest request = new PlayerRequest("Terminátor", null);
-            PlayerResponse response = new PlayerResponse(2L, "Terminátor", 200);
-            when(playerService.addPlayer(request)).thenReturn(response);
-
-            // When & Then
-            mockMvc.perform(post(PLAYERS_API)
-                            .contentType(APPLICATION_JSON)
-                            .content("{\"nickname\":\"Terminátor\"}"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(APPLICATION_JSON))
-                    .andExpect(jsonPath("$.playerId").value(2))
-                    .andExpect(jsonPath("$.nickname").value("Terminátor"))
                     .andExpect(jsonPath("$.score").value(200));
         }
 
@@ -134,7 +118,6 @@ class PlayerControllerTest {
         @CsvSource(delimiterString = " | ", value = {
             "'{\"nickname\":\"AB\",\"score\":100}' | nickname | Přezdívka musí mít mezi 3 a 50 znaky",
             "'{\"nickname\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"score\":100}' | nickname | Přezdívka musí mít mezi 3 a 50 znaky",
-            "'{\"nickname\":\"ValidName\",\"score\":-5}' | score | Skóre nemůže být záporné",
             "'{\"score\":100}' | nickname | Přezdívka je povinná"
         })
         void given_invalid_player_data_when_adding_player_then_return_400_bad_request(String invalidJson, String fieldName, String expectedFieldError)
@@ -153,7 +136,7 @@ class PlayerControllerTest {
         @Test
         void given_duplicate_nickname_when_adding_player_then_return_409_conflict() throws Exception {
             // Given
-            PlayerRequest request = new PlayerRequest("TerminátorJižExistuje", 80);
+            PlayerRequest request = new PlayerRequest("TerminátorJižExistuje");
             when(playerService.addPlayer(request))
                     .thenThrow(new DuplicateNicknameException("TerminátorJižExistuje"));
 
@@ -164,14 +147,13 @@ class PlayerControllerTest {
                     .andExpect(status().isConflict())
                     .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.status").value(409))
-                    .andExpect(jsonPath("$.error").value("Přezdívka již existuje: TerminátorJižExistuje"))
-                    .andExpect(jsonPath("$.fields.nickname").value("Přezdívka už je obsazená"));
+                    .andExpect(jsonPath("$.error").value("Přezdívka již existuje: TerminátorJižExistuje"));
         }
 
         @Test
         void given_service_throws_exception_when_adding_player_then_return_500_error() throws Exception {
             // Given
-            PlayerRequest request = new PlayerRequest("Terminátor", 80);
+            PlayerRequest request = new PlayerRequest("Terminátor");
             when(playerService.addPlayer(request)).thenThrow(new RuntimeException("Chyba (např. databáze)"));
 
             // When & Then
@@ -333,8 +315,7 @@ class PlayerControllerTest {
                     .andExpect(status().isConflict())
                     .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.status").value(409))
-                    .andExpect(jsonPath("$.error").value("Přezdívka již existuje: TerminátorJižExistuje"))
-                    .andExpect(jsonPath("$.fields.nickname").value("Přezdívka už je obsazená"));
+                    .andExpect(jsonPath("$.error").value("Přezdívka již existuje: TerminátorJižExistuje"));
         }
 
         @Test

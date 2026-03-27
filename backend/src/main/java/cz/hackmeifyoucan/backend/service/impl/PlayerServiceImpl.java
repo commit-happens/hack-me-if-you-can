@@ -31,64 +31,34 @@ public class PlayerServiceImpl implements PlayerService {
         if (playerRepository.existsByNickname(playerRequest.nickname())) {
             throw new DuplicateNicknameException(playerRequest.nickname());
         }
-
         Player player = new Player();
         player.setNickname(playerRequest.nickname());
-
-        if (playerRequest.score() != null) {
-            player.setScore(playerRequest.score());
-        } else {
-            player.setScore(200);
-        }
-        
+        player.setScore(INITIAL_SCORE);
         Player savedPlayer = playerRepository.save(player);
-        
         return convertToResponse(savedPlayer);
     }
 
-    /* --------------------------------------------------------------------------------------------------- */
     @Override
-    @SuppressWarnings("null")
     public PlayerResponse getPlayerById(Long playerId) {
-        Optional<Player> optionalPlayer = playerRepository.findById(playerId);
-        
-        if (optionalPlayer.isEmpty()) {
-            throw new PlayerNotFoundException(playerId);
-        }
-        
-        Player player = optionalPlayer.get();
+        Player player = findPlayerOrThrow(playerId);
         return convertToResponse(player);
     }
 
-
-    /* --------------------------------------------------------------------------------------------------- */
     @Override
     public List<PlayerResponse> getPlayers() {
         List<PlayerResponse> responseList = new ArrayList<>();
-        
         Iterable<Player> allPlayers = playerRepository.findAll();
-        
         for (Player player : allPlayers) {
             PlayerResponse response = convertToResponse(player);
             responseList.add(response);
         }
-        
         return responseList;
     }
 
-    /* --------------------------------------------------------------------------------------------------- */
     @Override
-    @SuppressWarnings("null")
     @Transactional
     public PlayerResponse updatePlayer(Long playerId, PlayerUpdateRequest request) {
-        Optional<Player> optionalPlayer = playerRepository.findById(playerId);
-        
-        if (optionalPlayer.isEmpty()) {
-            throw new PlayerNotFoundException(playerId);
-        }
-        
-        Player player = optionalPlayer.get();
-        
+        Player player = findPlayerOrThrow(playerId);
         if (request.nickname() != null && !request.nickname().isBlank()) {
             if (!request.nickname().equals(player.getNickname()) && playerRepository.existsByNickname(request.nickname())) {
                 throw new DuplicateNicknameException(request.nickname());
@@ -98,7 +68,6 @@ public class PlayerServiceImpl implements PlayerService {
         if (request.score() != null) {
             player.setScore(request.score());
         }
-        
         Player updatedPlayer = playerRepository.save(player);
         return convertToResponse(updatedPlayer);
     }
@@ -113,13 +82,11 @@ public class PlayerServiceImpl implements PlayerService {
             throw new PlayerNotFoundException(playerId);
         }
 
-        Player player = optionalPlayer.get();
-        playerRepository.deleteById(playerId);
-        
-        return convertToResponse(player);
+    private Player findPlayerOrThrow(Long playerId) {
+        return playerRepository.findById(playerId)
+                .orElseThrow(() -> new PlayerNotFoundException(playerId));
     }
-    
-    /* --------------------------------------------------------------------------------------------------- */
+
     private PlayerResponse convertToResponse(Player player) {
         return new PlayerResponse(
             player.getId(),

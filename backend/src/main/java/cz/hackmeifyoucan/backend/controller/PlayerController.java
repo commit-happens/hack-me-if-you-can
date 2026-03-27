@@ -29,7 +29,7 @@ import cz.hackmeifyoucan.backend.dto.Error409Response;
 
 @RestController
 @RequestMapping("/players")
-@Tag(name = "player-controller", description = "Endpointy pro správu hráčů - vytváření, čtení, aktualizace a mazání")
+@Tag(name = "player-controller", description = "Endpointy pro správu hráčů - vytváření, načtení, aktualizace a mazání")
 public class PlayerController {
 
     private final PlayerService playerService;
@@ -41,11 +41,13 @@ public class PlayerController {
     @Operation(
         summary = "Vytvořit nového hráče",
         description = "Vytvoří nového hráče s přezdívkou a volitelným skóre. Pokud skóre není zadáno, nastaví se výchozí hodnota. Vrací pouze tělo odpovědi."
+        summary = "Vytvořit záznam nového hráče",
+        description = "Vytvoří nového hráče s přezdívkou. Počáteční skóre nastavuje backend na výchozí hodnotu."
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Hráč úspěšně vytvořen",
                      content = @Content(schema = @Schema(implementation = PlayerResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Validační chyba - neplatná data (např. krátká přezdívka, záporné skóre)",
+        @ApiResponse(responseCode = "400", description = "Validační chyba - neplatná data (např. krátká přezdívka)",
                      content = @Content(schema = @Schema(implementation = Error400Response.class))),
         @ApiResponse(responseCode = "409", description = "Konflikt - přezdívka již existuje",
                      content = @Content(schema = @Schema(implementation = Error409Response.class)))
@@ -56,7 +58,6 @@ public class PlayerController {
         return ResponseEntity.ok(playerResponse);
     }
 
-    /* --------------------------------------------------------------------------------------------------- */
     @Operation(summary = "Získat hráče podle ID", description = "Vrací údaje o jednom hráči na základě jeho unikátního ID.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Hráč nalezen",
