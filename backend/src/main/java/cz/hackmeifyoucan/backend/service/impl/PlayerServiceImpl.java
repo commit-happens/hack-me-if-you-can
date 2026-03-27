@@ -2,27 +2,33 @@ package cz.hackmeifyoucan.backend.service.impl;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import cz.hackmeifyoucan.backend.dto.PlayerRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerUpdateRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerResponse;
+import cz.hackmeifyoucan.backend.dto.PlayerSummaryResponse;
 import cz.hackmeifyoucan.backend.entity.Player;
 import cz.hackmeifyoucan.backend.exception.PlayerNotFoundException;
 import cz.hackmeifyoucan.backend.exception.DuplicateNicknameException;
+import cz.hackmeifyoucan.backend.repository.AnswerRepository;
 import cz.hackmeifyoucan.backend.repository.PlayerRepository;
 import cz.hackmeifyoucan.backend.service.PlayerService;
 
 @Service
 public class PlayerServiceImpl implements PlayerService {
 
-    private final PlayerRepository playerRepository;
+    private static final int INITIAL_SCORE = 200;
 
-    public PlayerServiceImpl(PlayerRepository playerRepository) {
+    private final PlayerRepository playerRepository;
+    private final AnswerRepository answerRepository;
+
+    public PlayerServiceImpl(PlayerRepository playerRepository, AnswerRepository answerRepository) {
         this.playerRepository = playerRepository;
+        this.answerRepository = answerRepository;
     }
 
     @Override
@@ -72,15 +78,17 @@ public class PlayerServiceImpl implements PlayerService {
         return convertToResponse(updatedPlayer);
     }
 
-    /* --------------------------------------------------------------------------------------------------- */
     @Override
-    @SuppressWarnings("null")
-    public PlayerResponse deletePlayer(Long playerId) {
-        Optional<Player> optionalPlayer = playerRepository.findById(playerId);
-        
-        if (optionalPlayer.isEmpty()) {
-            throw new PlayerNotFoundException(playerId);
+    @Transactional(readOnly = true)
+    public PlayerSummaryResponse getPlayerSummary(Long playerId, String sessionId) {
+        findPlayerOrThrow(playerId);
+        if (!StringUtils.hasText(sessionId)) {
+            return new PlayerSummaryResponse(playerId, null, INITIAL_SCORE, INITIAL_SCORE);
         }
+        int score = INITIAL_SCORE + answerRepository.sumEarnedPointsByPlayerAndSession(playerId, sessionId);
+        int potentialMissingPoints = answerRepository.sumPotentialPointsForLatestWrongAnswersInSession(playerId, sessionId);
+        return new PlayerSummaryResponse(playerId, sessionId, score, score + potentialMissingPoints);
+    }
 
     private Player findPlayerOrThrow(Long playerId) {
         return playerRepository.findById(playerId)

@@ -22,7 +22,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional(readOnly = true)
     public List<QuestionResponse> getRandomQuestionsByDifficulty(Difficulty difficulty, int limit) {
-        return questionRepository.getRandomQuestionsByDifficulty(difficulty, PageRequest.of(0, limit))
+        return questionRepository.getRandomQuestionsByDifficulty(difficulty.getLevel(), PageRequest.of(0, limit))
                 .stream()
                 .map(question -> new QuestionResponse(
                         question.getId(),
