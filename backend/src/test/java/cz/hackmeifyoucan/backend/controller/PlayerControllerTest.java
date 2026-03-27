@@ -3,7 +3,6 @@
 package cz.hackmeifyoucan.backend.controller;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -96,8 +95,6 @@ class PlayerControllerTest {
         @Test
         void given_valid_player_request_when_adding_player_then_return_created_player() throws Exception {
             // Given
-            PlayerRequest request = new PlayerRequest("Terminátor", 80);
-            PlayerResponse response = new PlayerResponse(1L, "Terminátor", 80);
             PlayerRequest request = new PlayerRequest("Terminátor");
             PlayerResponse response = new PlayerResponse(1L, "Terminátor", 200);
             when(playerService.addPlayer(request)).thenReturn(response);
@@ -334,44 +331,34 @@ class PlayerControllerTest {
     }
 
     @Nested
-    class DeletePlayerTests {
+    class GetPlayerSummaryTests {
 
         @Test
-        void given_valid_player_id_when_deleting_player_then_return_deleted_player() throws Exception {
+        void given_valid_player_id_when_getting_player_summary_then_return_summary() throws Exception {
             // Given
-            PlayerResponse response = new PlayerResponse(1L, "Terminátor", 100);
-            when(playerService.deletePlayer(1L)).thenReturn(response);
+            cz.hackmeifyoucan.backend.dto.PlayerSummaryResponse response =
+                    new cz.hackmeifyoucan.backend.dto.PlayerSummaryResponse(1L, "session-1", 2560, 3200);
+            when(playerService.getPlayerSummary(1L, null)).thenReturn(response);
 
             // When & Then
-            mockMvc.perform(delete(PLAYERS_API + "/1"))
+            mockMvc.perform(get(PLAYERS_API + "/{playerId}/summary", 1L))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(APPLICATION_JSON))
-                    .andExpect(jsonPath("$.playerId").value(1))
-                    .andExpect(jsonPath("$.nickname").value("Terminátor"))
-                    .andExpect(jsonPath("$.score").value(100));
-        }
-
-        @ParameterizedTest
-        @CsvSource({"9999999999", "0", "-1"})
-        void given_invalid_player_id_when_deleting_player_then_return_404_not_found(Long playerId) throws Exception {
-            // Given
-            when(playerService.deletePlayer(playerId)).thenThrow(new PlayerNotFoundException(playerId));
-
-            // When & Then
-            mockMvc.perform(delete(PLAYERS_API + "/{playerId}", playerId))
-                    .andExpect(status().isNotFound())
-                    .andExpect(jsonPath("$.error").value("Hráč nenalezen pro ID: " + playerId));
+                    .andExpect(jsonPath("$.player_id").value(1))
+                    .andExpect(jsonPath("$.session_id").value("session-1"))
+                    .andExpect(jsonPath("$.score").value(2560))
+                    .andExpect(jsonPath("$.potential_score").value(3200));
         }
 
         @Test
-        void given_service_throws_exception_when_deleting_player_then_return_500_error() throws Exception {
+        void given_invalid_player_id_when_getting_player_summary_then_return_404_not_found() throws Exception {
             // Given
-            when(playerService.deletePlayer(1L)).thenThrow(new RuntimeException("Chyba (např. databáze)"));
+            when(playerService.getPlayerSummary(999L, null)).thenThrow(new PlayerNotFoundException(999L));
 
             // When & Then
-            mockMvc.perform(delete(PLAYERS_API + "/1"))
-                    .andExpect(status().isInternalServerError())
-                    .andExpect(jsonPath("$.error").value("Neočekávaná chyba serveru"));
+            mockMvc.perform(get(PLAYERS_API + "/{playerId}/summary", 999L))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.error").value("Hráč nenalezen pro ID: 999"));
         }
     }
 }
