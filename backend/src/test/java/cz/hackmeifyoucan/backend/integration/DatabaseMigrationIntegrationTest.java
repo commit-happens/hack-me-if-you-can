@@ -41,18 +41,18 @@ class DatabaseMigrationIntegrationTest {
     }
 
     @Test
-    void given_flyway_migrations_when_applied_then_platform_types_table_should_have_data() {
-        // When: Dotazujeme se na počet platform typů
-        Integer platformCount = jdbcTemplate.queryForObject(
-            "SELECT COUNT(*) FROM platform_types",
+    void given_flyway_migrations_when_applied_then_questions_should_use_only_supported_platform_type_ids() {
+        // When: Dotazujeme se na otázky s nepodporovaným platform_type_id
+        Integer invalidPlatformTypeIds = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM questions WHERE platform_type_id NOT IN (1, 2)",
             Integer.class
         );
 
-        // Then: Měly by existovat 2 platformy (email, sms)
-        assertThat(platformCount)
-            .as("Platform types table should contain at least email and sms")
+        // Then: Platform type musí odpovídat enum hodnotám EMAIL=1 a SMS=2
+        assertThat(invalidPlatformTypeIds)
+            .as("Questions should use only enum platform type ids (1=email, 2=sms)")
             .isNotNull()
-            .isEqualTo(2);
+            .isEqualTo(0);
     }
 
     @Test
@@ -101,26 +101,6 @@ class DatabaseMigrationIntegrationTest {
             .isGreaterThanOrEqualTo(70); // Minimálně 70, protože každá otázka má alespoň 1 kategorii
     }
 
-    @Test
-    void given_flyway_migrations_when_applied_then_questions_should_reference_valid_platform_types() {
-        // When: Dotazujeme se, zda existují otázky s neexistujícím platform_type_id
-        Integer invalidReferences = jdbcTemplate.queryForObject(
-            """
-            SELECT COUNT(*)
-            FROM questions q
-            WHERE NOT EXISTS (
-                SELECT 1 FROM platform_types pt WHERE pt.id = q.platform_type_id
-            )
-            """,
-            Integer.class
-        );
-
-        // Then: Všechny otázky by měly mít validní referenci na platform_types
-        assertThat(invalidReferences)
-            .as("All questions should reference existing platform types")
-            .isNotNull()
-            .isEqualTo(0);
-    }
 
     @Test
     void given_flyway_migrations_when_applied_then_questions_should_have_required_fields() {

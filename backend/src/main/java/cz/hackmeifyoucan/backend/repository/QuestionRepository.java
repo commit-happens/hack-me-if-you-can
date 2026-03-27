@@ -16,9 +16,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query(
             value = """
-                    SELECT DISTINCT q
+                    SELECT q
                     FROM Question q
-                    JOIN FETCH q.platformType
                     WHERE q.difficulty = :difficulty
                     ORDER BY function('RANDOM')
                     """

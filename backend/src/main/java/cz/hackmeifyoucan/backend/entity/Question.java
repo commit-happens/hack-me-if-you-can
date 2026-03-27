@@ -1,7 +1,9 @@
 package cz.hackmeifyoucan.backend.entity;
 
 import cz.hackmeifyoucan.backend.converter.DifficultyConverter;
+import cz.hackmeifyoucan.backend.converter.PlatformTypeConverter;
 import cz.hackmeifyoucan.backend.enums.Difficulty;
+import cz.hackmeifyoucan.backend.enums.PlatformType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,8 +37,8 @@ public class Question {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "platform_type_id", nullable = false)
+    @Column(name = "platform_type_id", nullable = false)
+    @Convert(converter = PlatformTypeConverter.class)
     private PlatformType platformType;
 
     @Builder.Default

@@ -93,12 +93,6 @@ VALUES
     ('¯\_(ツ)_/¯', 33)
 ON CONFLICT (nickname) DO NOTHING;
 
--- Init Platform Types table
-INSERT INTO platform_types (name) VALUES
-    ('email'),
-    ('sms')
-ON CONFLICT (name) DO NOTHING;
-
 -- Init Phishing Categories table
 INSERT INTO phishing_categories (tag, name, description, security_hints) VALUES
     ('LEGIT',
@@ -184,7 +178,7 @@ ON CONFLICT (tag) DO NOTHING;
 INSERT INTO questions (platform_type_id, is_phishing, difficulty, penalty, content, metadata, explanation)
 VALUES
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     10,
@@ -193,7 +187,7 @@ VALUES
     'Adresa odesílatele a URL neodpovídají oficiální doméně banky (obsahují navíc ''- support'' a podivnou doménu). E-mail vyvolává umělý tlak časovým limitem (urgentní akce).'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -202,7 +196,7 @@ VALUES
     'Tento e-mail je pravý: odesílatel i předmět vypadají standardně, žádný odkaz nevyžaduje akci, v textu není žádná žádost o citlivé údaje. (Přílohu doporučujeme otevírat pouze pokud očekáváte platbu/objednávku.)'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     8,
@@ -211,7 +205,7 @@ VALUES
     'E-mail žádá o okamžitou platbu a obsahuje odkaz s nejasnou doménou. Pokud nejste očekávaný příjemce této faktury, ověřte informace přímo u známého kontaktu dodavatele. (Příloha a odkaz mohou být škodlivé.)'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     3,
@@ -220,7 +214,7 @@ VALUES
     'URL obsahuje správnou doménu, ale odesílatel ''notifications@sluzby.example.org'' je obecný a v textu chybí personalizace. Před kliknutím ověřte, zda jste skutečně registrovaným uživatelem a zda adresa odpovídá oficiální adrese služby.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     9,
@@ -229,7 +223,7 @@ VALUES
     'Adresa odkazu obsahuje ''reset-password'' na podezřelé doméně, která není oficiální firemní doménou. Také chybí další informace pro ověření požadavku. To jsou typické znaky podvrženého požadavku na přihlášení.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -238,7 +232,7 @@ VALUES
     'Typický newsletter - neobsahuje naléhavé požadavky, odkazy vedou na články (pokud klikáte, ověřte cílové URL).'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     7,
@@ -247,7 +241,7 @@ VALUES
     'I když odkaz vypadá jako ''billing.dodavatel.example'', parametr token v URL a žádost o potvrzení platebních údajů může znamenat pokus o získání přihlašovacích nebo platebních dat. Ověřte změnu přímo u známeho kontaktu dodavatele, ne přes vložený odkaz.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -256,7 +250,7 @@ VALUES
     'Legitimní komunikace školy - žádost o jednoduchou odpověď bez odkazů či příloh. Pokud by bylo v textu něco neočekávaného (např. žádost o platbu), ověřte telefonicky u školy.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     4,
@@ -265,7 +259,7 @@ VALUES
     'Tento typ zpráv používá naléhavost a podezřelé ''příliš dobré'' tvrzení. Nabídka s extrémně nízkou cenou je častým trikem pro přilákání kliknutí. Před rezervací ověřte důvěryhodnost prodejce a platební formuláře.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     10,
@@ -274,7 +268,7 @@ VALUES
     'Odkaz a doména neodpovídají oficiální doméně PayPal (obsahují dodatečné části a podezřelou doménu). Žádost o okamžité přihlášení a ověření je typický trik pro získání přihlašovacích údajů (fake login).'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     8,
@@ -283,7 +277,7 @@ VALUES
     'Doména neodpovídá skutečné službě Steam (použita podvodná doména). Tlačí na rychlou akci.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -292,7 +286,7 @@ VALUES
     'Běžný informační newsletter. Odkaz vede na oficiální doménu e-shopu.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     9,
@@ -301,7 +295,7 @@ VALUES
     'Vyžaduje zadání platebních údajů přes nedůvěryhodnou URL. Neexistující nebo podezřelá doména.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     2,
@@ -310,7 +304,7 @@ VALUES
     'Standardní notifikace z e-shopu, odkazy směřují na oficiální doménu.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     10,
@@ -319,7 +313,7 @@ VALUES
     'Použita generická a nedůvěryhodná doména, nátlak na okamžité ověření účtu.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -328,7 +322,7 @@ VALUES
     'Legitimní newsletter s odkazem na oficiální doménu.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     8,
@@ -337,7 +331,7 @@ VALUES
     'Podvodná URL a vyžadování přihlášení mimo skutečný e-shop.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     2,
@@ -346,7 +340,7 @@ VALUES
     'Běžný marketingový e-mail s odkazem na oficiální doménu firmy.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     7,
@@ -355,7 +349,7 @@ VALUES
     'Nátlak na aktualizaci účtu přes podezřelý odkaz a nedůvěryhodná doména.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -364,7 +358,7 @@ VALUES
     'Legitimní potvrzení registrace, odkaz vede na oficiální doménu.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -373,7 +367,7 @@ VALUES
     'Standardní interní komunikace. Odesílatel je z interní domény, e-mail nevyžaduje žádnou akci, neobsahuje podezřelé odkazy ani přílohy.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     6,
@@ -382,7 +376,7 @@ VALUES
     'Klasický smishing/phishing zaměřený na doručovací služby. Doména ''dhl-track-package.xyz'' není oficiální web DHL. Částka je záměrně malá, aby ji lidé zaplatili bez přemýšlení, ale cílem je získat údaje z karty.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -391,7 +385,7 @@ VALUES
     'Legitimní e-mail od operátora. Odesílatel odpovídá oficiální doméně. Odkaz na samoobsluhu chybí (což je bezpečnější), nebo by vedl na oficiální web. Informace o inkasu naznačuje, že není nutná okamžitá manuální akce.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     8,
@@ -400,7 +394,7 @@ VALUES
     'CEO Fraud (ředitelský podvod). Útočník se vydává za nadřízeného, ale píše z freemailu (gmail.com), nikoliv z firemní adresy. Vytváří tlak a žádá o nestandardní finanční transakci (nákup dárkových karet).'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -409,7 +403,7 @@ VALUES
     'Legitimní bezpečnostní notifikace. E-mail neobsahuje tlačítka ''Klikněte zde pro zrušení'', která jsou typická pro phishing. Doména odesílatele je správná. Vyzývá k opatrnosti, ne k panice.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     10,
@@ -418,7 +412,7 @@ VALUES
     'Sofistikovaný útok na přihlašovací údaje (Credential Harvesting). Odkaz vede na podvodnou stránku imitující přihlášení do Microsoft 365/SharePointu. Doména odkazu je zcela cizí (''auth-secure.net'').'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -427,7 +421,7 @@ VALUES
     'Běžný marketingový e-mail. Obsahuje odkaz na odhlášení (unsubscribe), což je zákonná povinnost. Nežádá žádné citlivé údaje.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     10,
@@ -436,7 +430,7 @@ VALUES
     'Velmi nebezpečný e-mail. Nabádá ke stažení spustitelného souboru (.exe) nebo aplikace z neoficiálního zdroje, což téměř jistě povede k instalaci malwaru/viru. Banky nikdy neposílají aktualizace e-mailem jako soubor.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -445,7 +439,7 @@ VALUES
     'Legitimní potvrzení služby. Obsahuje konkrétní, ale nezávadné údaje. Kontaktní údaje směřují na telefon, nikoliv na podvodný formulář.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     9,
@@ -454,7 +448,7 @@ VALUES
     'Klasický trik s expirací hesla. Odkaz vypadá na první pohled důvěryhodně (''it-support-portal.com''), ale ve skutečnosti je to jen subdoména na ''shady-link.net''. Vytváří stres hrozbou zablokování.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     10,
@@ -463,7 +457,7 @@ VALUES
     'Zdravotnictví nikdy nevyžaduje prodlužování eReceptu přes externí odkazy. Doména není oficiální. Kombinace falešné URL a urgentní hrozby.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     10,
@@ -472,7 +466,7 @@ VALUES
     'Útočníci často napodobují datové schránky. Doména nemá nic společného s gov.cz. Sběr přihlašovacích údajů + urgence.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     9,
@@ -481,7 +475,7 @@ VALUES
     'Falešná faktura z pojišťovny – doména je neexistující, pojišťovny neposílají platební odkazy e-mailem.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     8,
@@ -490,7 +484,7 @@ VALUES
     'Nízko částkové doplatky jsou pověstné mezi seniorskými podvody. Nejde o oficiální dopravce. Falešná URL + urgentní akce.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     8,
@@ -499,7 +493,7 @@ VALUES
     'Podvodníci využívají strach ze ztráty TV signálu. Doména je falešná, vyžaduje přihlášení – sběr přihlašovacích údajů.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     10,
@@ -508,7 +502,7 @@ VALUES
     'Personalizovaný útok typu ''vnuk volá o pomoc''. Emoční manipulace, falešná doména, urgentní sociální inženýrství.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     9,
@@ -517,7 +511,7 @@ VALUES
     'Obecní úřady nemají generické .com domény. Jde o falešnou fakturu + urgentní výhružku.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -526,7 +520,7 @@ VALUES
     'Legitimně působící zpráva bez odkazů a bez urgentního tlaku. Žádost o jednoduchou odpověď je obvykle bezpečná.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     10,
@@ -535,7 +529,7 @@ VALUES
     'Kombinace falešného loginu, získávání citlivých údajů a urgence. Banky nikdy neposílají ověřovací odkazy tímto způsobem.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     9,
@@ -544,7 +538,7 @@ VALUES
     'Podvod využívající strach o bezpečí domácnosti. Falešná URL, psychologický nátlak, neexistující služba.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     10,
@@ -553,7 +547,7 @@ VALUES
     'Podezřelá doména, výzva k okamžitému ověření a hrozba uzamčení účtu. Typické znaky phishingu.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     8,
@@ -562,7 +556,7 @@ VALUES
     'Odkaz vede na neznámou doménu a e-mail vytváří nepřirozený tlak. Žádná legitimní služba nevyžaduje platbu přes neověřený odkaz.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     9,
@@ -571,7 +565,7 @@ VALUES
     'Falešná doména (m1crosoft), žádost o rychlou akci a odkaz na podezřelou URL.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     6,
@@ -580,7 +574,7 @@ VALUES
     'Typický phishing: falešná doména, malá částka, tlak na rychlou akci.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     7,
@@ -589,7 +583,7 @@ VALUES
     'Extrémně lákavá nabídka, agresivní časový limit a podezřelá doména jsou klasické rysy podvodu.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -598,7 +592,7 @@ VALUES
     'Oficiální firemní doména, žádné požadavky na přihlašovací údaje nebo platby.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -607,7 +601,7 @@ VALUES
     'Standardní potvrzení objednávky z důvěryhodné domény. Žádné podezřelé požadavky.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -616,7 +610,7 @@ VALUES
     'Běžné interní oznámení bez odkazů a bez nátlaku.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -625,7 +619,7 @@ VALUES
     'Typická komunikace školy, bez podezřelých odkazů a bez požadavků na platby.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -634,7 +628,7 @@ VALUES
     'Legitimní servisní oznámení. Odkaz vede na oficiální doménu poskytovatele.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     9,
@@ -643,7 +637,7 @@ VALUES
     'Falešná faktura s nátlakem na okamžitou platbu. Doména odkazu je podezřelá a neodpovídá žádnému známému dodavateli. Vždy ověřte faktury přímo u dodavatele.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     8,
@@ -652,7 +646,7 @@ VALUES
     'Klasický loterijní podvod. Uživatel se žádné loterie neúčastnil. Cílem je získat osobní údaje nebo platbu za ''poplatky'' spojené s výhrou.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     9,
@@ -661,7 +655,7 @@ VALUES
     'Personalizovaný útok vydávající se za kolegu v nouzi. E-mail přichází z podezřelé domény (firma-ext.com místo firemní domény). Vždy ověřte identitu jiným kanálem.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     8,
@@ -670,7 +664,7 @@ VALUES
     'Falešná faktura s hrozbou penále pro vytvoření tlaku. Podezřelá doména a obecný text bez konkrétních údajů o společnosti.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     9,
@@ -679,7 +673,7 @@ VALUES
     'Soutěžní podvod vyžadující platbu za ''manipulační poplatek''. Legitimní soutěže nikdy nevyžadují platbu od výherce. Kombinace urgence a lákavé nabídky.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -688,7 +682,7 @@ VALUES
     'Legitimní potvrzení termínu ze svatebního salonu. Žádné podezřelé odkazy, kontakt pouze přes telefon.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -697,7 +691,7 @@ VALUES
     'Běžný newsletter z kavárny. Odkaz vede na oficiální doménu, žádné podezřelé požadavky.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -706,7 +700,7 @@ VALUES
     'Legitimní připomínka kurzu z lezeckého centra. Osobní tón, konkrétní informace, kontakt přes telefon.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -715,7 +709,7 @@ VALUES
     'Legitimní pozvánka na turnaj od pinballového klubu. Odkaz vede na oficiální web, žádné podezřelé požadavky.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -724,7 +718,7 @@ VALUES
     'Běžný informační e-mail z kina. Odkaz vede na oficiální doménu, standardní marketingová komunikace.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     true,
     1,
     9,
@@ -733,7 +727,7 @@ VALUES
     'Podvodný e-mail vydávající se za operátora O2. Doména neodpovídá oficiální doméně O2, vyžaduje platbu za ''poštovné'' a vytváří umělou urgenci. Legitimní soutěže nikdy nevyžadují platbu od výherce.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -742,7 +736,7 @@ VALUES
     'Legitimní komunikace od svatebního koordinátora. Osobní tón, konkrétní datum, kontakt přes telefon, žádné podezřelé odkazy.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -751,7 +745,7 @@ VALUES
     'Standardní informační e-mail z lezecké stěny. Žádné odkazy ani požadavky na akci, pouze informace o novinkách.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -760,7 +754,7 @@ VALUES
     'Legitimní newsletter z kina. Odkaz vede na oficiální doménu, standardní marketingová komunikace bez nátlaku.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -769,7 +763,7 @@ VALUES
     'Legitimní oznámení od instruktora fitness centra. Konkrétní informace o změně, osobní tón, žádné podezřelé požadavky.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -778,7 +772,7 @@ VALUES
     'Legitimní pozvánka na seminář od BJJ akademie. Konkrétní informace, standardní způsob registrace, žádné podezřelé odkazy.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -787,7 +781,7 @@ VALUES
     'Legitimní potvrzení odeslání objednávky. Konkrétní číslo objednávky, odkaz na sledování zásilky u známého dopravce.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -796,7 +790,7 @@ VALUES
     'Legitimní marketingový e-mail od známého e-shopu se suplementy. Odkaz vede na oficiální doménu, slevový kód je běžná praxe.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
@@ -805,7 +799,7 @@ VALUES
     'Legitimní e-mail od lektora angličtiny. Osobní tón, konkrétní úkol, žádné podezřelé odkazy ani požadavky.'
     ),
     (
-    (SELECT id FROM platform_types WHERE name = 'email'),
+    1,
     false,
     1,
     1,
