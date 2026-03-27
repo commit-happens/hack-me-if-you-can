@@ -147,5 +147,31 @@ class DatabaseMigrationIntegrationTest {
             .isNotNull()
             .isEqualTo(0);
     }
+
+    @Test
+    void given_flyway_migrations_when_applied_then_phishing_categories_should_have_reward_points() {
+        Integer missingRewardPoints = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM phishing_categories WHERE reward_points IS NULL OR reward_points <= 0",
+            Integer.class
+        );
+
+        assertThat(missingRewardPoints)
+            .as("All phishing categories should have positive reward_points")
+            .isNotNull()
+            .isEqualTo(0);
+    }
+    @Test
+    void given_player_insert_without_score_when_inserting_then_default_score_should_be_200() {
+        jdbcTemplate.update("DELETE FROM players WHERE nickname = ?", TEMP_PLAYER_NICK);
+        Integer createdScore = jdbcTemplate.queryForObject(
+            "INSERT INTO players (nickname) VALUES (?) RETURNING score",
+            Integer.class,
+            TEMP_PLAYER_NICK
+        );
+
+        assertThat(createdScore)
+            .as("Players default score should be 200")
+            .isEqualTo(200);
+    }
 }
 
