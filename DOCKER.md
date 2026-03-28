@@ -41,8 +41,8 @@ Po úspěšném spuštění budou dostupné:
 | Služba | URL |
 |--------|-----|
 | **Frontend** | [http://localhost:3000](http://localhost:3000) |
-| **Backend API** | [http://localhost:8080/api/hello](http://localhost:8080/api/hello) |
-| **Players API** | [http://localhost:8080/api/players](http://localhost:8080/api/players) |
+| **Backend API** | [http://localhost:8080/hello](http://localhost:8080/hello) |
+| **Players API** | [http://localhost:8080/players](http://localhost:8080/players) |
 | **Swagger API** | [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html) |
 | **PostgreSQL** | `localhost:5432` |
 

@@ -33,7 +33,7 @@ import cz.hackmeifyoucan.backend.service.PlayerService;
 @WebMvcTest(PlayerController.class)
 class PlayerControllerTest {
 
-    private static final String PLAYERS_API = "/api/players";
+    private static final String PLAYERS_API = "/players";
     private static final String APPLICATION_JSON = "application/json";
 
     @Autowired
@@ -115,7 +115,7 @@ class PlayerControllerTest {
         void given_player_request_without_score_when_adding_player_then_assign_default_score() throws Exception {
             // Given
             PlayerRequest request = new PlayerRequest("Terminátor", null);
-            PlayerResponse response = new PlayerResponse(2L, "Terminátor", 100);
+            PlayerResponse response = new PlayerResponse(2L, "Terminátor", 200);
             when(playerService.addPlayer(request)).thenReturn(response);
 
             // When & Then
@@ -126,7 +126,7 @@ class PlayerControllerTest {
                     .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.playerId").value(2))
                     .andExpect(jsonPath("$.nickname").value("Terminátor"))
-                    .andExpect(jsonPath("$.score").value(100));
+                    .andExpect(jsonPath("$.score").value(200));
         }
 
         @SuppressWarnings("null")
@@ -372,13 +372,14 @@ class PlayerControllerTest {
 
         @ParameterizedTest
         @CsvSource({"9999999999", "0", "-1"})
-        void given_invalid_player_id_when_deleting_player_then_return_204_no_content(Long playerId) throws Exception {
+        void given_invalid_player_id_when_deleting_player_then_return_404_not_found(Long playerId) throws Exception {
             // Given
-            when(playerService.deletePlayer(playerId)).thenReturn(null);
+            when(playerService.deletePlayer(playerId)).thenThrow(new PlayerNotFoundException(playerId));
 
             // When & Then
             mockMvc.perform(delete(PLAYERS_API + "/{playerId}", playerId))
-                    .andExpect(status().isNoContent());
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.error").value("Hráč nenalezen pro ID: " + playerId));
         }
 
         @Test
