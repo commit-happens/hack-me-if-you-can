@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import cz.hackmeifyoucan.backend.common.ScoringConstants;
 import cz.hackmeifyoucan.backend.dto.PlayerRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerUpdateRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerResponse;
@@ -20,8 +21,6 @@ import cz.hackmeifyoucan.backend.service.PlayerService;
 
 @Service
 public class PlayerServiceImpl implements PlayerService {
-
-    private static final int INITIAL_SCORE = 200;
 
     private final PlayerRepository playerRepository;
     private final AnswerRepository answerRepository;
@@ -39,7 +38,7 @@ public class PlayerServiceImpl implements PlayerService {
         }
         Player player = new Player();
         player.setNickname(playerRequest.nickname());
-        player.setScore(INITIAL_SCORE);
+        player.setScore(ScoringConstants.INITIAL_SCORE);
         Player savedPlayer = playerRepository.save(player);
         return convertToResponse(savedPlayer);
     }
@@ -81,12 +80,13 @@ public class PlayerServiceImpl implements PlayerService {
     @Override
     @Transactional(readOnly = true)
     public PlayerSummaryResponse getPlayerSummary(Long playerId, String sessionId) {
-        findPlayerOrThrow(playerId);
+        Player player = findPlayerOrThrow(playerId);
         if (!StringUtils.hasText(sessionId)) {
-            return new PlayerSummaryResponse(playerId, null, INITIAL_SCORE, INITIAL_SCORE);
+            int currentScore = player.getScore();
+            return new PlayerSummaryResponse(playerId, null, currentScore, currentScore);
         }
-        int score = INITIAL_SCORE + answerRepository.sumEarnedPointsByPlayerAndSession(playerId, sessionId);
-        int potentialMissingPoints = answerRepository.sumPotentialPointsForLatestWrongAnswersInSession(playerId, sessionId);
+        int score = ScoringConstants.INITIAL_SCORE + answerRepository.sumEarnedPointsByPlayerAndSession(playerId, sessionId);
+        int potentialMissingPoints = answerRepository.sumPotentialPointsForWrongAnswersInSession(playerId, sessionId);
         return new PlayerSummaryResponse(playerId, sessionId, score, score + potentialMissingPoints);
     }
 

@@ -2,7 +2,6 @@ package cz.hackmeifyoucan.backend.service.impl;
 
 import cz.hackmeifyoucan.backend.dto.AnswerRequest;
 import cz.hackmeifyoucan.backend.dto.AnswerResponse;
-import cz.hackmeifyoucan.backend.entity.AnswerId;
 import cz.hackmeifyoucan.backend.entity.PhishingCategory;
 import cz.hackmeifyoucan.backend.entity.Player;
 import cz.hackmeifyoucan.backend.entity.Question;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
 import java.util.Set;
@@ -59,7 +59,6 @@ class AnswerServiceImplTest {
 
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
         when(questionRepository.findWithCategoriesById(3L)).thenReturn(Optional.of(question));
-        when(answerRepository.existsById(new AnswerId(1L, 3L, "session-1"))).thenReturn(false);
         when(playerRepository.incrementScoreAtomically(1L, 200, 1300)).thenReturn(1);
         when(playerRepository.findScoreById(1L)).thenReturn(1500);
 
@@ -67,7 +66,7 @@ class AnswerServiceImplTest {
 
         assertThat(response.answerCorrect()).isTrue();
         assertThat(response.score()).isEqualTo(1500);
-        verify(answerRepository).save(any());
+        verify(answerRepository).saveAndFlush(any());
         verify(playerRepository).incrementScoreAtomically(1L, 200, 1300);
     }
 
@@ -86,7 +85,6 @@ class AnswerServiceImplTest {
 
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
         when(questionRepository.findWithCategoriesById(3L)).thenReturn(Optional.of(question));
-        when(answerRepository.existsById(new AnswerId(1L, 3L, "session-1"))).thenReturn(false);
         when(playerRepository.incrementScoreAtomically(1L, 200, 0)).thenReturn(1);
         when(playerRepository.findScoreById(1L)).thenReturn(200);
 
@@ -94,12 +92,12 @@ class AnswerServiceImplTest {
 
         assertThat(response.answerCorrect()).isFalse();
         assertThat(response.score()).isEqualTo(200);
-        verify(answerRepository).save(any());
+        verify(answerRepository).saveAndFlush(any());
         verify(playerRepository).incrementScoreAtomically(1L, 200, 0);
     }
 
     @Test
-    void given_existing_answer_when_submitting_then_should_throw_conflict_exception() {
+    void given_unique_constraint_violation_when_submitting_then_should_throw_duplicate_answer_exception() {
         Player player = Player.builder().id(1L).nickname("tester").score(200).build();
         Question question = Question.builder()
                 .id(3L)
@@ -111,14 +109,11 @@ class AnswerServiceImplTest {
 
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
         when(questionRepository.findWithCategoriesById(3L)).thenReturn(Optional.of(question));
-        when(answerRepository.existsById(new AnswerId(1L, 3L, "session-1"))).thenReturn(true);
+        when(answerRepository.saveAndFlush(any())).thenThrow(new DataIntegrityViolationException("duplicate key value violates unique constraint"));
 
         assertThatThrownBy(() -> answerService.submitAnswer(request))
-                .isInstanceOf(DuplicateAnswerException.class);
-        verify(answerRepository, never()).save(any());
+                .isInstanceOf(DuplicateAnswerException.class)
+                .hasMessage("Odpověď již existuje pro player_id=1, question_id=3 a session_id=session-1");
         verify(playerRepository, never()).incrementScoreAtomically(any(), anyInt(), anyInt());
     }
 }
-
-
-

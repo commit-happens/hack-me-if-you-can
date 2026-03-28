@@ -1,11 +1,9 @@
 package cz.hackmeifyoucan.backend.service.impl;
 
+import cz.hackmeifyoucan.backend.common.ScoringConstants;
 import cz.hackmeifyoucan.backend.dto.AnswerRequest;
 import cz.hackmeifyoucan.backend.dto.AnswerResponse;
-import cz.hackmeifyoucan.backend.entity.Answer;
-import cz.hackmeifyoucan.backend.entity.AnswerId;
-import cz.hackmeifyoucan.backend.entity.Player;
-import cz.hackmeifyoucan.backend.entity.Question;
+import cz.hackmeifyoucan.backend.entity.*;
 import cz.hackmeifyoucan.backend.enums.Difficulty;
 import cz.hackmeifyoucan.backend.exception.DuplicateAnswerException;
 import cz.hackmeifyoucan.backend.exception.PlayerNotFoundException;
@@ -14,13 +12,13 @@ import cz.hackmeifyoucan.backend.repository.AnswerRepository;
 import cz.hackmeifyoucan.backend.repository.PlayerRepository;
 import cz.hackmeifyoucan.backend.repository.QuestionRepository;
 import cz.hackmeifyoucan.backend.service.AnswerService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AnswerServiceImpl implements AnswerService {
 
-    private static final int INITIAL_SCORE = 200;
     private static final int SPEED_MULTIPLIER = 10;
 
     private final AnswerRepository answerRepository;
@@ -47,13 +45,10 @@ public class AnswerServiceImpl implements AnswerService {
                 .orElseThrow(() -> new QuestionNotFoundException(request.questionId()));
 
         AnswerId answerId = new AnswerId(request.playerId(), request.questionId(), request.sessionId());
-        if (answerRepository.existsById(answerId)) {
-            throw new DuplicateAnswerException(request.playerId(), request.questionId(), request.sessionId());
-        }
 
         int difficultyPoints = toDifficultyPoints(question.getDifficulty());
         int categoriesPoints = question.getCategories().stream()
-                .mapToInt(category -> category.getRewardPoints())
+                .mapToInt(PhishingCategory::getRewardPoints)
                 .sum();
         int speedBonus = request.remainTime() * SPEED_MULTIPLIER;
 
@@ -70,9 +65,13 @@ public class AnswerServiceImpl implements AnswerService {
                 .categoriesPoints(categoriesPoints)
                 .speedBonus(answerCorrect ? speedBonus : 0)
                 .build();
-        answerRepository.save(answer);
+        try {
+            answerRepository.saveAndFlush(answer);
+        } catch (DataIntegrityViolationException ex) {
+            throw new DuplicateAnswerException(request.playerId(), request.questionId(), request.sessionId());
+        }
 
-        playerRepository.incrementScoreAtomically(player.getId(), INITIAL_SCORE, earnedPoints);
+        playerRepository.incrementScoreAtomically(player.getId(), ScoringConstants.INITIAL_SCORE, earnedPoints);
         Integer updatedScore = playerRepository.findScoreById(player.getId());
         if (updatedScore == null) {
             throw new PlayerNotFoundException(player.getId());
@@ -89,5 +88,3 @@ public class AnswerServiceImpl implements AnswerService {
         };
     }
 }
-
-

@@ -25,7 +25,5 @@ public interface AnswerRepository extends JpaRepository<Answer, AnswerId> {
             WHERE player_id = :playerId
               AND session_id = :sessionId
             """, nativeQuery = true)
-    int sumPotentialPointsForLatestWrongAnswersInSession(@Param("playerId") Long playerId, @Param("sessionId") String sessionId);
+    int sumPotentialPointsForWrongAnswersInSession(@Param("playerId") Long playerId, @Param("sessionId") String sessionId);
 }
-
-
