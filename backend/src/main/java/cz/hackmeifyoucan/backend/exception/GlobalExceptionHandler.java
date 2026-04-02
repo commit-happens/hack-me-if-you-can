@@ -18,15 +18,12 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Logger pro logování chyb
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // Klíče v JSON odpovědích (aby se neopakovaly literály)
     private static final String ERROR = "error";
     private static final String STATUS = "status";
     private static final String FIELDS = "fields";
 
-    // 400 Bad Request pro validační chyby (@Valid)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationError(MethodArgumentNotValidException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
@@ -41,7 +38,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    // 404 Not Found pokud hráč neexistuje
     @ExceptionHandler(PlayerNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handlePlayerNotFound(PlayerNotFoundException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
@@ -50,7 +46,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    // 400 Bad Request pro invalidní parametry otázek (difficulty, limit)
+    @ExceptionHandler(QuestionNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleQuestionNotFound(QuestionNotFoundException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put(STATUS, 404);
+        errorResponse.put(ERROR, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
     @ExceptionHandler(InvalidQuestionParameterException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidQuestionParameter(InvalidQuestionParameterException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
@@ -59,7 +62,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    // 400 Bad Request pro chybný typ parametru (např. neplatná enum hodnota difficulty)
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Map<String, Object>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
@@ -68,7 +70,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    // 400 Bad Request pro ostatní logické chyby
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Map<String, Object>> handleLogicError(IllegalArgumentException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
@@ -77,19 +78,22 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    // 409 Conflict pro již existující přezdívku (aplikační logika)
     @ExceptionHandler(DuplicateNicknameException.class)
     public ResponseEntity<Map<String, Object>> handleDuplicateNickname(DuplicateNicknameException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put(STATUS, 409);
         errorResponse.put(ERROR, ex.getMessage());
-        Map<String, String> fieldErrors = new HashMap<>();
-        fieldErrors.put("nickname", "Přezdívka už je obsazená");
-        errorResponse.put(FIELDS, fieldErrors);
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
-    // 409 Conflict pro porušení databázových omezení (fallback)
+    @ExceptionHandler(DuplicateAnswerException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicateAnswer(DuplicateAnswerException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put(STATUS, 409);
+        errorResponse.put(ERROR, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDatabaseConstraintError(DataIntegrityViolationException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
@@ -98,12 +102,9 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 
-    // 500 Internal Server Error pro ostatní neočekávané chyby
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleUnexpectedError(RuntimeException ex) {
-        // Zalogujeme výjimku včetně stacktrace pro debugging
         logger.error("Neočekávaná chyba serveru", ex);
-        
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put(STATUS, 500);
         errorResponse.put(ERROR, "Neočekávaná chyba serveru");

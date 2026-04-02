@@ -38,6 +38,9 @@ public class PhishingCategory {
     @Column(name = "description", nullable = false, length = 250)
     private String description;
 
+    @Column(name = "reward_points", nullable = false)
+    private int rewardPoints;
+
     @Builder.Default
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "security_hints", columnDefinition = "jsonb")

@@ -2,17 +2,20 @@ package cz.hackmeifyoucan.backend.service.impl;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import cz.hackmeifyoucan.backend.common.ScoringConstants;
 import cz.hackmeifyoucan.backend.dto.PlayerRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerUpdateRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerResponse;
+import cz.hackmeifyoucan.backend.dto.PlayerSummaryResponse;
 import cz.hackmeifyoucan.backend.entity.Player;
 import cz.hackmeifyoucan.backend.exception.PlayerNotFoundException;
 import cz.hackmeifyoucan.backend.exception.DuplicateNicknameException;
+import cz.hackmeifyoucan.backend.repository.AnswerRepository;
 import cz.hackmeifyoucan.backend.repository.PlayerRepository;
 import cz.hackmeifyoucan.backend.service.PlayerService;
 
@@ -20,9 +23,11 @@ import cz.hackmeifyoucan.backend.service.PlayerService;
 public class PlayerServiceImpl implements PlayerService {
 
     private final PlayerRepository playerRepository;
+    private final AnswerRepository answerRepository;
 
-    public PlayerServiceImpl(PlayerRepository playerRepository) {
+    public PlayerServiceImpl(PlayerRepository playerRepository, AnswerRepository answerRepository) {
         this.playerRepository = playerRepository;
+        this.answerRepository = answerRepository;
     }
 
     @Override
@@ -31,64 +36,34 @@ public class PlayerServiceImpl implements PlayerService {
         if (playerRepository.existsByNickname(playerRequest.nickname())) {
             throw new DuplicateNicknameException(playerRequest.nickname());
         }
-
         Player player = new Player();
         player.setNickname(playerRequest.nickname());
-
-        if (playerRequest.score() != null) {
-            player.setScore(playerRequest.score());
-        } else {
-            player.setScore(200);
-        }
-        
+        player.setScore(ScoringConstants.INITIAL_SCORE);
         Player savedPlayer = playerRepository.save(player);
-        
         return convertToResponse(savedPlayer);
     }
 
-    /* --------------------------------------------------------------------------------------------------- */
     @Override
-    @SuppressWarnings("null")
     public PlayerResponse getPlayerById(Long playerId) {
-        Optional<Player> optionalPlayer = playerRepository.findById(playerId);
-        
-        if (optionalPlayer.isEmpty()) {
-            throw new PlayerNotFoundException(playerId);
-        }
-        
-        Player player = optionalPlayer.get();
+        Player player = findPlayerOrThrow(playerId);
         return convertToResponse(player);
     }
 
-
-    /* --------------------------------------------------------------------------------------------------- */
     @Override
     public List<PlayerResponse> getPlayers() {
         List<PlayerResponse> responseList = new ArrayList<>();
-        
         Iterable<Player> allPlayers = playerRepository.findAll();
-        
         for (Player player : allPlayers) {
             PlayerResponse response = convertToResponse(player);
             responseList.add(response);
         }
-        
         return responseList;
     }
 
-    /* --------------------------------------------------------------------------------------------------- */
     @Override
-    @SuppressWarnings("null")
     @Transactional
     public PlayerResponse updatePlayer(Long playerId, PlayerUpdateRequest request) {
-        Optional<Player> optionalPlayer = playerRepository.findById(playerId);
-        
-        if (optionalPlayer.isEmpty()) {
-            throw new PlayerNotFoundException(playerId);
-        }
-        
-        Player player = optionalPlayer.get();
-        
+        Player player = findPlayerOrThrow(playerId);
         if (request.nickname() != null && !request.nickname().isBlank()) {
             if (!request.nickname().equals(player.getNickname()) && playerRepository.existsByNickname(request.nickname())) {
                 throw new DuplicateNicknameException(request.nickname());
@@ -98,28 +73,28 @@ public class PlayerServiceImpl implements PlayerService {
         if (request.score() != null) {
             player.setScore(request.score());
         }
-        
         Player updatedPlayer = playerRepository.save(player);
         return convertToResponse(updatedPlayer);
     }
 
-    /* --------------------------------------------------------------------------------------------------- */
     @Override
-    @SuppressWarnings("null")
-    public PlayerResponse deletePlayer(Long playerId) {
-        Optional<Player> optionalPlayer = playerRepository.findById(playerId);
-        
-        if (optionalPlayer.isEmpty()) {
-            throw new PlayerNotFoundException(playerId);
+    @Transactional(readOnly = true)
+    public PlayerSummaryResponse getPlayerSummary(Long playerId, String sessionId) {
+        Player player = findPlayerOrThrow(playerId);
+        if (!StringUtils.hasText(sessionId)) {
+            int currentScore = player.getScore();
+            return new PlayerSummaryResponse(playerId, null, currentScore, currentScore);
         }
-
-        Player player = optionalPlayer.get();
-        playerRepository.deleteById(playerId);
-        
-        return convertToResponse(player);
+        int score = ScoringConstants.INITIAL_SCORE + answerRepository.sumEarnedPointsByPlayerAndSession(playerId, sessionId);
+        int potentialMissingPoints = answerRepository.sumPotentialPointsForWrongAnswersInSession(playerId, sessionId);
+        return new PlayerSummaryResponse(playerId, sessionId, score, score + potentialMissingPoints);
     }
-    
-    /* --------------------------------------------------------------------------------------------------- */
+
+    private Player findPlayerOrThrow(Long playerId) {
+        return playerRepository.findById(playerId)
+                .orElseThrow(() -> new PlayerNotFoundException(playerId));
+    }
+
     private PlayerResponse convertToResponse(Player player) {
         return new PlayerResponse(
             player.getId(),

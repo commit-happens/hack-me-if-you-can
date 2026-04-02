@@ -1,10 +1,5 @@
 const API_BASE_URL = "http://localhost:8080";
 
-export interface PlayerRequest {
-  nickname: string;
-  score: number;
-}
-
 export interface PlayerModel {
   playerId: number;
   nickname: string;
@@ -29,7 +24,6 @@ export const createPlayer = async (nickname: string): Promise<PlayerModel> => {
     },
     body: JSON.stringify({
       nickname,
-      score: 200, // Automatické skóre
     }),
   });
 

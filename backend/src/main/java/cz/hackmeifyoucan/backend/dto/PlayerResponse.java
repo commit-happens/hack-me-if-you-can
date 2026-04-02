@@ -9,7 +9,7 @@ public record PlayerResponse (
     @Schema(description = "Hráčova unikátní přezdívka", example = "Player123")
     String nickname,
 
-    @Schema(description = "Hráčovo aktuální skóre", example = "100")
+    @Schema(description = "Hráčovo aktuální skóre", example = "1523")
     Integer score
 ){
 }
