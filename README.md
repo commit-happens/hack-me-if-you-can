@@ -4,7 +4,7 @@
 
 ## Tech stack
 
-- Frontend: React 19 + TypeScript, ESLint, Vite 7 (dev server, build, preview)
+- Frontend: React 19 + TypeScript, Redux Toolkit, TanStack Query, Zod, Orval (OpenAPI codegen), ky, ESLint, Vite 7 (dev server, build, preview)
 - Backend: Java 21, Spring Boot, H2, Maven
 
 ## Struktura repozitáře
@@ -107,9 +107,34 @@ Zastavení serveru: Ctrl+C.
   VITE_API_LOCALE=cs-CZ
   VITE_TIME_PER_QUESTION=60
   VITE_GAME_QUESTIONS_LIMIT=20
+  VITE_API_BASE_URL=http://localhost:8080
+  VITE_API_SWAGGER_JSON_PATH=/v3/api-docs
   ```
 
 Vite načítá proměnné s prefixem `VITE_`. Hodnotu může aplikace použít např. pro výběr překladu nebo nastavení herních pravidel.
+
+Pozn.: Pro generování klienta se používají `VITE_API_BASE_URL` a `VITE_API_SWAGGER_JSON_PATH`.
+
+### API klient (OpenAPI + TanStack Query)
+
+Frontend používá **TanStack Query** a klient se generuje z **OpenAPI** pomocí **orval**. Zod schémata pro request payloady jsou také generovaná.
+
+1. Nastav cestu na Swagger/OpenAPI JSON v `.env`:
+
+```env
+VITE_API_SWAGGER_JSON_PATH=/v3/api-docs
+VITE_API_BASE_URL=http://localhost:8080
+```
+
+`VITE_API_SWAGGER_JSON_PATH` musí být cesta (typicky s úvodním `/`), která se spojí s `VITE_API_BASE_URL`.
+
+2. Vygeneruj klienta a Zod schémata:
+
+```powershell
+npm run api:generate
+```
+
+Pozn.: Po změně OpenAPI specifikace nebo `VITE_API_BASE_URL` je potřeba generování spustit znovu.
 
 ### Build a náhled produkce (frontend)
 
