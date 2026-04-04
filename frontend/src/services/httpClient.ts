@@ -25,8 +25,45 @@ type ApiError = {
   };
 };
 
+/** Vrátí true, pokud je odpověď JSON podle Content-Type hlavičky. */
+const isJsonResponse = (response: Response): boolean => {
+  const contentType = response.headers.get("content-type")?.toLowerCase() ?? "";
+  return contentType.includes("application/json") || contentType.includes("+json");
+};
+
+/** Načte tělo odpovědi s podporou JSON, textu i prázdných odpovědí. */
+const parseResponseBody = async (response: Response): Promise<unknown> => {
+  if (response.status === 204 || response.status === 205 || response.status === 304) {
+    return undefined;
+  }
+
+  if (response.headers.get("content-length") === "0") {
+    return undefined;
+  }
+
+  const rawBody = await response.text();
+  if (!rawBody.trim()) {
+    return undefined;
+  }
+
+  if (isJsonResponse(response)) {
+    try {
+      return JSON.parse(rawBody);
+    } catch {
+      return undefined;
+    }
+  }
+
+  return rawBody;
+};
+
+/** Type guard pro očekávaný tvar API chyby. */
+const isApiError = (value: unknown): value is ApiError => {
+  return value !== null && typeof value === "object";
+};
+
 /**
- * Odešle HTTP požadavek přes ky a vrátí JSON odpověď v požadovaném typu.
+ * Odešle HTTP požadavek přes ky a vrátí odpověď v požadovaném typu.
  *
  * Query parametry převádí na `URLSearchParams`; `null` serializuje jako řetězec "null"
  * a `undefined` parametry vynechá.
@@ -34,10 +71,10 @@ type ApiError = {
  * Při neúspěšné odpovědi skládá chybovou zprávu v pořadí: `fields.nickname`, `error`,
  * `message`, jinak použije fallback s HTTP statusem.
  *
- * @template TData Typ JSON odpovědi, který volající očekává.
+ * @template TData Typ odpovědi, který volající očekává (JSON, text, nebo prázdné tělo).
  * @param config Konfigurace požadavku (URL, metoda, hlavičky, query parametry, payload).
  * @param options Volitelné přepsání signalu pro zrušení konkrétního požadavku.
- * @returns Deserializovaná JSON odpověď typu `TData`.
+ * @returns Deserializovaná odpověď typu `TData`.
  */
 export const httpClient = async <TData>(
   config: HttpClientConfig,
@@ -69,15 +106,18 @@ export const httpClient = async <TData>(
   });
 
   if (!response.ok) {
-    const errorBody = (await response.json().catch(() => null)) as ApiError | null;
+    const parsedErrorBody = await parseResponseBody(response);
+    const errorBody = isApiError(parsedErrorBody) ? parsedErrorBody : null;
+    const stringError = typeof parsedErrorBody === "string" ? parsedErrorBody : undefined;
     const message =
       errorBody?.fields?.nickname ||
       errorBody?.error ||
       errorBody?.message ||
+      stringError ||
       `Chyba požadavku: ${response.status}`;
 
     throw new Error(message);
   }
 
-  return response.json<TData>();
+  return (await parseResponseBody(response)) as TData;
 };

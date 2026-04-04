@@ -219,7 +219,7 @@ Projekt používá H2 databázi v paměťovém režimu (in-memory), ideální pr
 
 Otevřeš ji v prohlížeči na následující adrese:
 
-Přihlašovací údaje (výchozí) najdeš v backend/src/main/resources/application.propertie
+Přihlašovací údaje (výchozí) najdeš v backend/src/main/resources/application.properties
 
 Tipy po přihlášení:
 
