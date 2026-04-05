@@ -1,14 +1,14 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/${DB_NAME:hmiyc}
+    url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:${DB_NAME:hmiyc}}
     driver-class-name: org.postgresql.Driver
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:postgres@123}
+    username: ${PGUSER:${DB_USER:postgres}}
+    password: ${PGPASSWORD:${DB_PASSWORD:postgres@123}}
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
+    show-sql: ${SHOW_SQL:false}
     generate-ddl: false
     hibernate:
       ddl-auto: validate

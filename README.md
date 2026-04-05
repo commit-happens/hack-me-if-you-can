@@ -58,7 +58,7 @@ docker compose up --build
 Po úspěšném buildu a spuštění budou dostupné:
 
 - **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8080/api/hello
+- **Backend API**: http://localhost:8080/hello
 - **Swagger API**: http://localhost:8080/swagger-ui.html
 - **H2 Console**: http://localhost:8080/h2-console
 
@@ -179,8 +179,8 @@ mvn test
 
 #### REST api
 
-1. Testovací Hello api: http://localhost:8080/api/hello
-2. Players api, vrátí json všech hráčů dostupných v databázi: http://localhost:8080/api/players
+1. Testovací Hello api: http://localhost:8080/hello
+2. Players api, vrátí json všech hráčů dostupných v databázi: http://localhost:8080/players
 
 #### Swagger API documentation
 

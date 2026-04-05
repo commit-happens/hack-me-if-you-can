@@ -3,7 +3,6 @@
 package cz.hackmeifyoucan.backend.controller;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -33,7 +32,7 @@ import cz.hackmeifyoucan.backend.service.PlayerService;
 @WebMvcTest(PlayerController.class)
 class PlayerControllerTest {
 
-    private static final String PLAYERS_API = "/api/players";
+    private static final String PLAYERS_API = "/players";
     private static final String APPLICATION_JSON = "application/json";
 
     @Autowired
@@ -96,8 +95,8 @@ class PlayerControllerTest {
         @Test
         void given_valid_player_request_when_adding_player_then_return_created_player() throws Exception {
             // Given
-            PlayerRequest request = new PlayerRequest("Terminátor", 80);
-            PlayerResponse response = new PlayerResponse(1L, "Terminátor", 80);
+            PlayerRequest request = new PlayerRequest("Terminátor");
+            PlayerResponse response = new PlayerResponse(1L, "Terminátor", 200);
             when(playerService.addPlayer(request)).thenReturn(response);
 
             // When & Then
@@ -108,25 +107,7 @@ class PlayerControllerTest {
                     .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.playerId").value(1))
                     .andExpect(jsonPath("$.nickname").value("Terminátor"))
-                    .andExpect(jsonPath("$.score").value(80));
-        }
-
-        @Test
-        void given_player_request_without_score_when_adding_player_then_assign_default_score() throws Exception {
-            // Given
-            PlayerRequest request = new PlayerRequest("Terminátor", null);
-            PlayerResponse response = new PlayerResponse(2L, "Terminátor", 100);
-            when(playerService.addPlayer(request)).thenReturn(response);
-
-            // When & Then
-            mockMvc.perform(post(PLAYERS_API)
-                            .contentType(APPLICATION_JSON)
-                            .content("{\"nickname\":\"Terminátor\"}"))
-                    .andExpect(status().isOk())
-                    .andExpect(content().contentType(APPLICATION_JSON))
-                    .andExpect(jsonPath("$.playerId").value(2))
-                    .andExpect(jsonPath("$.nickname").value("Terminátor"))
-                    .andExpect(jsonPath("$.score").value(100));
+                    .andExpect(jsonPath("$.score").value(200));
         }
 
         @SuppressWarnings("null")
@@ -134,7 +115,6 @@ class PlayerControllerTest {
         @CsvSource(delimiterString = " | ", value = {
             "'{\"nickname\":\"AB\",\"score\":100}' | nickname | Přezdívka musí mít mezi 3 a 50 znaky",
             "'{\"nickname\":\"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\",\"score\":100}' | nickname | Přezdívka musí mít mezi 3 a 50 znaky",
-            "'{\"nickname\":\"ValidName\",\"score\":-5}' | score | Skóre nemůže být záporné",
             "'{\"score\":100}' | nickname | Přezdívka je povinná"
         })
         void given_invalid_player_data_when_adding_player_then_return_400_bad_request(String invalidJson, String fieldName, String expectedFieldError)
@@ -153,7 +133,7 @@ class PlayerControllerTest {
         @Test
         void given_duplicate_nickname_when_adding_player_then_return_409_conflict() throws Exception {
             // Given
-            PlayerRequest request = new PlayerRequest("TerminátorJižExistuje", 80);
+            PlayerRequest request = new PlayerRequest("TerminátorJižExistuje");
             when(playerService.addPlayer(request))
                     .thenThrow(new DuplicateNicknameException("TerminátorJižExistuje"));
 
@@ -164,14 +144,13 @@ class PlayerControllerTest {
                     .andExpect(status().isConflict())
                     .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.status").value(409))
-                    .andExpect(jsonPath("$.error").value("Přezdívka již existuje: TerminátorJižExistuje"))
-                    .andExpect(jsonPath("$.fields.nickname").value("Přezdívka už je obsazená"));
+                    .andExpect(jsonPath("$.error").value("Přezdívka již existuje: TerminátorJižExistuje"));
         }
 
         @Test
         void given_service_throws_exception_when_adding_player_then_return_500_error() throws Exception {
             // Given
-            PlayerRequest request = new PlayerRequest("Terminátor", 80);
+            PlayerRequest request = new PlayerRequest("Terminátor");
             when(playerService.addPlayer(request)).thenThrow(new RuntimeException("Chyba (např. databáze)"));
 
             // When & Then
@@ -333,8 +312,7 @@ class PlayerControllerTest {
                     .andExpect(status().isConflict())
                     .andExpect(content().contentType(APPLICATION_JSON))
                     .andExpect(jsonPath("$.status").value(409))
-                    .andExpect(jsonPath("$.error").value("Přezdívka již existuje: TerminátorJižExistuje"))
-                    .andExpect(jsonPath("$.fields.nickname").value("Přezdívka už je obsazená"));
+                    .andExpect(jsonPath("$.error").value("Přezdívka již existuje: TerminátorJižExistuje"));
         }
 
         @Test
@@ -353,43 +331,34 @@ class PlayerControllerTest {
     }
 
     @Nested
-    class DeletePlayerTests {
+    class GetPlayerSummaryTests {
 
         @Test
-        void given_valid_player_id_when_deleting_player_then_return_deleted_player() throws Exception {
+        void given_valid_player_id_when_getting_player_summary_then_return_summary() throws Exception {
             // Given
-            PlayerResponse response = new PlayerResponse(1L, "Terminátor", 100);
-            when(playerService.deletePlayer(1L)).thenReturn(response);
+            cz.hackmeifyoucan.backend.dto.PlayerSummaryResponse response =
+                    new cz.hackmeifyoucan.backend.dto.PlayerSummaryResponse(1L, "session-1", 2560, 3200);
+            when(playerService.getPlayerSummary(1L, null)).thenReturn(response);
 
             // When & Then
-            mockMvc.perform(delete(PLAYERS_API + "/1"))
+            mockMvc.perform(get(PLAYERS_API + "/{playerId}/summary", 1L))
                     .andExpect(status().isOk())
                     .andExpect(content().contentType(APPLICATION_JSON))
-                    .andExpect(jsonPath("$.playerId").value(1))
-                    .andExpect(jsonPath("$.nickname").value("Terminátor"))
-                    .andExpect(jsonPath("$.score").value(100));
-        }
-
-        @ParameterizedTest
-        @CsvSource({"9999999999", "0", "-1"})
-        void given_invalid_player_id_when_deleting_player_then_return_204_no_content(Long playerId) throws Exception {
-            // Given
-            when(playerService.deletePlayer(playerId)).thenReturn(null);
-
-            // When & Then
-            mockMvc.perform(delete(PLAYERS_API + "/{playerId}", playerId))
-                    .andExpect(status().isNoContent());
+                    .andExpect(jsonPath("$.player_id").value(1))
+                    .andExpect(jsonPath("$.session_id").value("session-1"))
+                    .andExpect(jsonPath("$.score").value(2560))
+                    .andExpect(jsonPath("$.potential_score").value(3200));
         }
 
         @Test
-        void given_service_throws_exception_when_deleting_player_then_return_500_error() throws Exception {
+        void given_invalid_player_id_when_getting_player_summary_then_return_404_not_found() throws Exception {
             // Given
-            when(playerService.deletePlayer(1L)).thenThrow(new RuntimeException("Chyba (např. databáze)"));
+            when(playerService.getPlayerSummary(999L, null)).thenThrow(new PlayerNotFoundException(999L));
 
             // When & Then
-            mockMvc.perform(delete(PLAYERS_API + "/1"))
-                    .andExpect(status().isInternalServerError())
-                    .andExpect(jsonPath("$.error").value("Neočekávaná chyba serveru"));
+            mockMvc.perform(get(PLAYERS_API + "/{playerId}/summary", 999L))
+                    .andExpect(status().isNotFound())
+                    .andExpect(jsonPath("$.error").value("Hráč nenalezen pro ID: 999"));
         }
     }
 }
