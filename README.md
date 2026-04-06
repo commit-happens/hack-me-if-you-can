@@ -136,6 +136,24 @@ npm run api:generate
 
 Pozn.: Po změně OpenAPI specifikace nebo `VITE_API_BASE_URL` je potřeba generování spustit znovu.
 
+### Contract testy (frontend API klient)
+
+Po vygenerování klienta je vhodné ověřit, že generované typy a Zod schémata odpovídají očekávanému kontraktu API.
+
+- Spuštění pouze contract testů:
+
+```powershell
+npm run test:api-contract
+```
+
+- Spuštění kompletní validace kontraktu (nejdřív regenerace, potom contract testy):
+
+```powershell
+npm run api:verify
+```
+
+V CI nebo před vytvořením PR doporučujeme používat `npm run api:verify`, aby se zachytily rozdíly mezi OpenAPI specifikací a frontend kontrakty co nejdříve.
+
 ### Build a náhled produkce (frontend)
 
 ```powershell

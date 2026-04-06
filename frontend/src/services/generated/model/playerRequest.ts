@@ -12,9 +12,4 @@ export interface PlayerRequest {
    * @maxLength 50
    */
   nickname: string;
-  /**
-   * Počáteční skóre (volitelné, výchozí je 200)
-   * @minimum 0
-   */
-  score?: number;
 }

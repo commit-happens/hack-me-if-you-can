@@ -9,18 +9,16 @@ import {
 } from 'zod'
 
 /**
- * Vytvoří nového hráče s přezdívkou a volitelným skóre. Pokud skóre není zadáno, nastaví se výchozí hodnota. Vrací pouze tělo odpovědi.
- * @summary Vytvořit nového hráče
+ * Vytvoří nového hráče s přezdívkou. Počáteční skóre nastavuje backend na výchozí hodnotu.
+ * @summary Vytvořit záznam nového hráče
  */
 export const addPlayerBodyNicknameMin = 3;
 
 export const addPlayerBodyNicknameMax = 50;
-export const addPlayerBodyScoreMin = 0;
 
 
 export const addPlayerBody = zod.object({
-  "nickname": zod.string().min(addPlayerBodyNicknameMin).max(addPlayerBodyNicknameMax),
-  "score": zod.number().min(addPlayerBodyScoreMin).optional()
+  "nickname": zod.string().min(addPlayerBodyNicknameMin).max(addPlayerBodyNicknameMax)
 })
 
 /**
@@ -28,14 +26,6 @@ export const addPlayerBody = zod.object({
  * @summary Získat hráče podle ID
  */
 export const getPlayerParams = zod.object({
-  "playerId": zod.number()
-})
-
-/**
- * Odstraní hráče z databáze a vrátí data smazaného hráče.
- * @summary Smazat hráče
- */
-export const deletePlayerParams = zod.object({
   "playerId": zod.number()
 })
 
@@ -56,5 +46,17 @@ export const updatePlayerBodyScoreMin = 0;
 export const updatePlayerBody = zod.object({
   "nickname": zod.string().min(updatePlayerBodyNicknameMin).max(updatePlayerBodyNicknameMax).optional(),
   "score": zod.number().min(updatePlayerBodyScoreMin).optional()
+})
+
+/**
+ * Vrací score a potential_score pro session_id z requestu. Pokud session_id chybí, vrátí se výchozí hodnoty bez výpočtu session statistik.
+ * @summary Získat souhrn skóre hráče
+ */
+export const getPlayerSummaryParams = zod.object({
+  "playerId": zod.number()
+})
+
+export const getPlayerSummaryQueryParams = zod.object({
+  "session_id": zod.string().optional()
 })
 

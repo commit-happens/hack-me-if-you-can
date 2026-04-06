@@ -5,13 +5,17 @@
  * OpenAPI spec version: v0
  */
 
+export * from './answerRequest';
+export * from './answerResponse';
 export * from './error400Response';
 export * from './error400ResponseFields';
 export * from './error404Response';
 export * from './error409Response';
 export * from './error500Response';
+export * from './getPlayerSummaryParams';
 export * from './getRandomQuestionsByDifficultyDifficulty';
 export * from './getRandomQuestionsByDifficultyParams';
 export * from './playerRequest';
 export * from './playerResponse';
+export * from './playerSummaryResponse';
 export * from './playerUpdateRequest';

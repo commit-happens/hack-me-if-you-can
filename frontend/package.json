@@ -9,6 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "api:generate": "orval --config orval.config.cjs",
+    "test:api-contract": "vitest run src/services/contracts/generated-api-contract.test.ts src/services/contracts/generated-zod-contract.test.ts",
+    "api:verify": "npm run api:generate && npm run test:api-contract",
     "test": "vitest",
     "test:watch": "vitest --ui",
     "test:coverage": "vitest --coverage"

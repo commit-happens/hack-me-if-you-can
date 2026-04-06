@@ -63,7 +63,7 @@ const isApiError = (value: unknown): value is ApiError => {
 };
 
 /**
- * Odešle HTTP požadavek přes ky a vrátí odpověď v požadovaném typu.
+ * Odešle HTTP požadavek přes `ky` a vrátí odpověď v požadovaném typu.
  *
  * Query parametry převádí na `URLSearchParams`; `null` serializuje jako řetězec "null"
  * a `undefined` parametry vynechá.

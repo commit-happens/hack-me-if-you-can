@@ -21,8 +21,10 @@ import type {
   Error400Response,
   Error404Response,
   Error409Response,
+  GetPlayerSummaryParams,
   PlayerRequest,
   PlayerResponse,
+  PlayerSummaryResponse,
   PlayerUpdateRequest
 } from '.././model'
 import { httpClient } from '../../httpClient';
@@ -94,8 +96,8 @@ export const useGetPlayers = <TData = Awaited<ReturnType<typeof getPlayers>>, TE
 
 
 /**
- * Vytvoří nového hráče s přezdívkou a volitelným skóre. Pokud skóre není zadáno, nastaví se výchozí hodnota. Vrací pouze tělo odpovědi.
- * @summary Vytvořit nového hráče
+ * Vytvoří nového hráče s přezdívkou. Počáteční skóre nastavuje backend na výchozí hodnotu.
+ * @summary Vytvořit záznam nového hráče
  */
 export const addPlayer = (
     playerRequest: PlayerRequest,
@@ -136,7 +138,7 @@ const {mutation: mutationOptions, request: requestOptions} = options ?? {};
     export type AddPlayerMutationError = Error400Response | Error409Response
 
     /**
- * @summary Vytvořit nového hráče
+ * @summary Vytvořit záznam nového hráče
  */
 export const useAddPlayer = <TError = Error400Response | Error409Response,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addPlayer>>, TError,{data: PlayerRequest}, TContext>, request?: SecondParameter<typeof httpClient>}
@@ -214,62 +216,6 @@ export const useGetPlayer = <TData = Awaited<ReturnType<typeof getPlayer>>, TErr
 
 
 /**
- * Odstraní hráče z databáze a vrátí data smazaného hráče.
- * @summary Smazat hráče
- */
-export const deletePlayer = (
-    playerId: number,
- options?: SecondParameter<typeof httpClient>,) => {
-      
-      
-      return httpClient<PlayerResponse>(
-      {url: `/players/${playerId}`, method: 'DELETE'
-    },
-      options);
-    }
-  
-
-
-export const getDeletePlayerMutationOptions = <TError = Error404Response,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deletePlayer>>, TError,{playerId: number}, TContext>, request?: SecondParameter<typeof httpClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof deletePlayer>>, TError,{playerId: number}, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deletePlayer>>, {playerId: number}> = (props) => {
-          const {playerId} = props ?? {};
-
-          return  deletePlayer(playerId,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeletePlayerMutationResult = NonNullable<Awaited<ReturnType<typeof deletePlayer>>>
-    
-    export type DeletePlayerMutationError = Error404Response
-
-    /**
- * @summary Smazat hráče
- */
-export const useDeletePlayer = <TError = Error404Response,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deletePlayer>>, TError,{playerId: number}, TContext>, request?: SecondParameter<typeof httpClient>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof deletePlayer>>,
-        TError,
-        {playerId: number},
-        TContext
-      > => {
-
-      const mutationOptions = getDeletePlayerMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    /**
  * Částečně aktualizuje údaje hráče. Můžete poslat pouze pole, která chcete změnit (např. jen přezdívku nebo jen skóre).
  * @summary Aktualizovat hráče
  */
@@ -328,4 +274,70 @@ export const useUpdatePlayer = <TError = Error400Response | Error404Response | E
 
       return useMutation(mutationOptions);
     }
+    /**
+ * Vrací score a potential_score pro session_id z requestu. Pokud session_id chybí, vrátí se výchozí hodnoty bez výpočtu session statistik.
+ * @summary Získat souhrn skóre hráče
+ */
+export const getPlayerSummary = (
+    playerId: number,
+    params?: GetPlayerSummaryParams,
+ options?: SecondParameter<typeof httpClient>,signal?: AbortSignal
+) => {
+      
+      
+      return httpClient<PlayerSummaryResponse>(
+      {url: `/players/${playerId}/summary`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
+
+export const getGetPlayerSummaryQueryKey = (playerId: number,
+    params?: GetPlayerSummaryParams,) => {
+    return [`/players/${playerId}/summary`, ...(params ? [params]: [])] as const;
+    }
+
     
+export const getGetPlayerSummaryQueryOptions = <TData = Awaited<ReturnType<typeof getPlayerSummary>>, TError = Error404Response>(playerId: number,
+    params?: GetPlayerSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlayerSummary>>, TError, TData>>, request?: SecondParameter<typeof httpClient>}
+) => {
+
+const {query: queryOptions, request: requestOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPlayerSummaryQueryKey(playerId,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPlayerSummary>>> = ({ signal }) => getPlayerSummary(playerId,params, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(playerId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPlayerSummary>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPlayerSummaryQueryResult = NonNullable<Awaited<ReturnType<typeof getPlayerSummary>>>
+export type GetPlayerSummaryQueryError = Error404Response
+
+/**
+ * @summary Získat souhrn skóre hráče
+ */
+export const useGetPlayerSummary = <TData = Awaited<ReturnType<typeof getPlayerSummary>>, TError = Error404Response>(
+ playerId: number,
+    params?: GetPlayerSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlayerSummary>>, TError, TData>>, request?: SecondParameter<typeof httpClient>}
+
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
+
+  const queryOptions = getGetPlayerSummaryQueryOptions(playerId,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
