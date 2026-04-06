@@ -17,5 +17,12 @@ export const getRandomQuestionsByDifficultyQueryParams = zod.object({
   "limit": zod.number()
 })
 
-export const getRandomQuestionsByDifficultyResponse = zod.string()
+export const getRandomQuestionsByDifficultyResponseItem = zod.object({
+  "id": zod.number().optional(),
+  "platform": zod.string().optional(),
+  "metadata": zod.record(zod.string(), zod.string()).optional(),
+  "content": zod.string().optional(),
+  "explanation": zod.string().optional()
+})
+export const getRandomQuestionsByDifficultyResponse = zod.array(getRandomQuestionsByDifficultyResponseItem)
 

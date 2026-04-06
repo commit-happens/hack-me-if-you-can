@@ -16,7 +16,8 @@ import type {
 import type {
   Error400Response,
   Error500Response,
-  GetRandomQuestionsByDifficultyParams
+  GetRandomQuestionsByDifficultyParams,
+  QuestionResponse
 } from '.././model'
 import { httpClient } from '../../httpClient';
 
@@ -34,7 +35,7 @@ export const getRandomQuestionsByDifficulty = (
 ) => {
       
       
-      return httpClient<string>(
+      return httpClient<QuestionResponse[]>(
       {url: `/questions/random`, method: 'GET',
         params, signal
     },

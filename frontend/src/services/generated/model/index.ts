@@ -19,3 +19,5 @@ export * from './playerRequest';
 export * from './playerResponse';
 export * from './playerSummaryResponse';
 export * from './playerUpdateRequest';
+export * from './questionResponse';
+export * from './questionResponseMetadata';
