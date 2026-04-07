@@ -16,6 +16,7 @@ import cz.hackmeifyoucan.backend.exception.InvalidQuestionParameterException;
 import cz.hackmeifyoucan.backend.service.QuestionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -48,9 +49,7 @@ public class QuestionController {
                     description = "Úspěšně vráceny náhodné otázky",
                     content = @Content(
                             mediaType = "application/json",
-                            schema = @Schema(
-                                    example = "[{\"id\": 35, \"platform\": \"email\", \"metadata\": {\"sender\": \"security@acme.com\", \"subject\": \"Urgent account verification\"}, \"content\": \"Please verify your account\", \"explanation\": \"Podvodný email tlací na rychlou akci\"}, {\"id\": 36, \"platform\": \"sms\", \"metadata\": {\"sender\": \"Bank\"}, \"content\": \"Confirm payment\", \"explanation\": \"SMS obsahuje podezřelý odkaz\"}]"
-                            )
+                            array = @ArraySchema(schema = @Schema(implementation = QuestionResponse.class))
                     )
             ),
             @ApiResponse(

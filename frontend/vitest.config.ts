@@ -6,5 +6,10 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "./src/tests/setup.ts",
     include: ["src/**/*.test.ts?(x)"],
+    api: {
+      host: "127.0.0.1",
+      port: 51304,
+      strictPort: true,
+    },
   },
 });
