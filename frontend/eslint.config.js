@@ -23,4 +23,10 @@ export default defineConfig([
       "react-hooks/exhaustive-deps": "off",
     },
   },
+  {
+    files: ["src/services/generated/**/*.ts", "src/services/generated-zod/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
 ]);
