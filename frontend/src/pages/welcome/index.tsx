@@ -6,6 +6,10 @@ import Image from "react-bootstrap/Image";
 import Row from "react-bootstrap/Row";
 import logo from "../../assets/logo-hmiyc.png";
 import useTranslation from "../../hooks/useTranslation";
+import {
+  addPlayerBodyNicknameMax,
+  addPlayerBodyNicknameMin,
+} from "../../services/generated-zod/player-controller/player-controller";
 import { useWelcome } from "./useWelcome";
 
 function Welcome() {
@@ -47,16 +51,25 @@ function Welcome() {
                   id="nickname"
                   name="nickname"
                   value={nickname}
+                  maxLength={addPlayerBodyNicknameMax}
                   required
                   className="d-inline-block text-center username-field"
                   onChange={handleChange}
                   onKeyDown={handleKeyDown}
                 />
               </p>
+              <p>
+                {error && nickname.trim().length > 0 && (
+                  <Form.Text className="text-danger">
+                    {`Přezdívka musí mít ${addPlayerBodyNicknameMin} až ${addPlayerBodyNicknameMax} znaků.`}
+                  </Form.Text>
+                )}
+              </p>
               <Button
                 variant="primary"
                 size="lg"
                 disabled={error || isLoading}
+                title="fdafa"
                 onClick={() => handleStart()}
               >
                 {isLoading ? "Ukládání..." : welcomeTexts.startButton}
