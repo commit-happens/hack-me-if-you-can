@@ -1,5 +1,9 @@
 server:
   port: ${PORT:8080}
+  forward-headers-strategy: framework
+springdoc:
+  swagger-ui:
+    use-root-path: true
 spring:
   datasource:
     url: jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:${DB_NAME:hmiyc}}
