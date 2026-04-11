@@ -70,16 +70,21 @@ class DatabaseMigrationIntegrationTest {
     }
 
     @Test
-    void given_flyway_migrations_when_applied_then_question_to_categories_junction_table_should_have_mappings() {
-        Integer mappingCount = jdbcTemplate.queryForObject(
-            "SELECT COUNT(*) FROM question_to_categories",
+    void given_flyway_migrations_when_applied_then_questions_should_reference_existing_category_id() {
+        Integer invalidCategoryRefs = jdbcTemplate.queryForObject(
+            """
+            SELECT COUNT(*)
+            FROM questions q
+            LEFT JOIN phishing_categories c ON c.id = q.category_id
+            WHERE q.category_id IS NULL OR c.id IS NULL
+            """,
             Integer.class
         );
 
-        assertThat(mappingCount)
-            .as("Question to categories junction table should have mappings for all questions")
+        assertThat(invalidCategoryRefs)
+            .as("Every question should reference one valid category_id")
             .isNotNull()
-            .isGreaterThanOrEqualTo(70);
+            .isEqualTo(0);
     }
 
 

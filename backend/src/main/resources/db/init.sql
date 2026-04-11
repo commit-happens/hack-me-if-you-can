@@ -182,11 +182,12 @@ INSERT INTO phishing_categories (tag, name, description, reward_points, security
 ON CONFLICT (tag) DO NOTHING;
 
 -- Init Questions table
-INSERT INTO questions (platform_type_id, is_phishing, difficulty, penalty, content, metadata, explanation)
+INSERT INTO questions (platform_type_id, is_phishing, category_id, difficulty, penalty, content, metadata, explanation)
 VALUES
     (
     1,
     true,
+    5,
     1,
     10,
     'Vážený zákazníku, zaznamenali jsme neobvyklou aktivitu na vašem účtu. Klikněte prosím na tento odkaz a ověřte své údaje: [Ověřit účet](http://mybank-support.verify-login.example/confirm). Pokud neověříte do 24 hodin, dojde k omezení přístupu.',
@@ -198,6 +199,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Dobrý den,  Vaše objednávka byla přijata a bude odeslána do 2 pracovních dnů. Vaše objednávky si můžete prohlédnout ve vašem [uživatelském účtu](https://www.eshop-novinky.cz/user-47/orders). V příloze naleznete potvrzení objednávky.  S pozdravem, Tým e-shopu',
     jsonb_build_object('sender', 'info@eshop-novinky.cz', 'subject', 'Děkujeme za objednávku č. 23567'),
     'Tento e-mail je pravý: odesílatel i předmět vypadají standardně, žádný odkaz nevyžaduje akci, v textu není žádná žádost o citlivé údaje. (Přílohu doporučujeme otevírat pouze pokud očekáváte platbu/objednávku.)'
@@ -205,6 +207,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     8,
     'Dobrý den,  v příloze zasíláme fakturu k okamžité úhradě. [Zaplaťte pohodlně online](http://pay-now.example/payment?id=78945). Pokud nebyla faktura očekávána, kontaktujte nás na +420 123 456 789.',
@@ -214,6 +217,7 @@ VALUES
     (
     1,
     true,
+    2,
     1,
     3,
     'Vážený uživateli,  aktualizovali jsme podmínky používání služby. [Přihlaste se a potvrďte změny](https://example.org/update).',
@@ -223,6 +227,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     9,
     'Ahoj, administrátor požádal o reset vašeho hesla. Prosím [ověřte svou identitu](http://firma-corp.reset-password.example). Pokud jste o požadavek nežádali, ignorujte tento e-mail.',
@@ -234,6 +239,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Dobrý den,  v tomto týdnu pro vás máme výběr nejzajímavějších [článků a tipů](https://technews.example/articles). Přejeme příjemné čtení. Žádné akce nejsou vyžadovány.',
     jsonb_build_object('sender', 'newsletter@technews.example', 'subject', 'Týdenní přehled: Novinky v technologiích'),
     'Typický newsletter - neobsahuje naléhavé požadavky, odkazy vedou na články (pokud klikáte, ověřte cílové URL).'
@@ -241,6 +247,7 @@ VALUES
     (
     1,
     true,
+    6,
     1,
     7,
     'Dobrý den,  žádáme o potvrzení nových platebních údajů. Pro ověření klikněte [zde](https://billing.dodavatel.example/verify?token=XYZ). Pokud si tuto změnu nepamatujete, ihned kontaktujte support.',
@@ -252,6 +259,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Vážení rodiče,  zveme Vás na rodičovské setkání ve čtvrtek v 17:00 ve školní jídelně. Prosíme o potvrzení účasti odpovědí na tento e-mail.',
     jsonb_build_object('sender', 'kontakt@skola-obec.cz', 'subject', 'Informace o plánovaném rodičovském setkání'),
     'Legitimní komunikace školy - žádost o jednoduchou odpověď bez odkazů či příloh. Pokud by bylo v textu něco neočekávaného (např. žádost o platbu), ověřte telefonicky u školy.'
@@ -259,6 +267,7 @@ VALUES
     (
     1,
     true,
+    2,
     1,
     4,
     'Skvělá nabídka! Klikněte na [Získat letenku nyní](http://letenky-super.example/deal) a získejte letenku za bezkonkurenční akční cenu. Nabídka končí už za 2 hodiny.',
@@ -268,6 +277,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     10,
     'Vážený uživateli,  zaznamenali jsme podezřelou platbu z vašeho účtu PayPal. Pro zablokování transakce a obnovení přístupu klikněte prosím na následující odkaz a ověřte svou identitu: [https://www.paypal.com/signin](http://paypal-secure.verify-example.com/login). Pokud jste tuto transakci neprovedli, jedná se o podvod a musíte jednat okamžitě.  Děkujeme, PayPal Security Team',
@@ -277,6 +287,7 @@ VALUES
     (
     1,
     true,
+    7,
     1,
     8,
     'Ahoj,  na váš Steam účet vám byly přiděleny **bonusové kredity**. Pro jejich aktivaci klikněte zde: [Aktivovat kredity](http://steam-rewards-confirmation.com/bonus).  Děkujeme, Steam Team',
@@ -288,6 +299,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Zdravíme hráče!  Připravili jsme pro vás přehled nových titulů pro únor. Také jsme aktualizovali sekci předobjednávek: [Prozkoumat novinky](https://www.xzone.cz/novinky).  Xzone tým',
     jsonb_build_object('sender', 'newsletter@xzone.cz', 'subject', 'Novinky ze světa her – únorová edice'),
     'Běžný informační newsletter. Odkaz vede na oficiální doménu e-shopu.'
@@ -295,6 +307,7 @@ VALUES
     (
     1,
     true,
+    4,
     1,
     9,
     'Dobrý den,  objednávka z vašeho účtu byla **pozastavena** kvůli chybě v platbě. Pro pokračování prosím potvrďte údaje: [Potvrdit platbu](http://eshop-verify-payment.info/confirm).  Tým podpory',
@@ -305,6 +318,7 @@ VALUES
     1,
     false,
     1,
+    1,
     2,
     'Dobrý den,  u vaší objednávky došlo k aktualizaci doručovacího času. Detaily naleznete zde: [Stav objednávky](https://www.alza.cz/mojeobjednavky).  Děkujeme za nákup!',
     jsonb_build_object('sender', 'info@alza.cz', 'subject', 'Doručení zboží – aktualizace termínu'),
@@ -313,6 +327,7 @@ VALUES
     (
     1,
     true,
+    5,
     1,
     10,
     'Dobrý den,  tento e-mail vyžaduje ověření vašeho účtu, jinak budete odstraněni z klubu. K ověření použijte tento odkaz: [Ověřit účet](http://rcmodel-verification.net/secure).  RC Model Club',
@@ -324,6 +339,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Ahoj modeláři,  naskladnili jsme nové modely letadel a příslušenství. Podívej se na ně zde: [Novinky](https://www.modelplac.cz/novinky).  S pozdravem, ModelPlác',
     jsonb_build_object('sender', 'info@modelplac.cz', 'subject', 'Nové modely letadel – skladem!'),
     'Legitimní newsletter s odkazem na oficiální doménu.'
@@ -331,6 +347,7 @@ VALUES
     (
     1,
     true,
+    6,
     1,
     8,
     'Dobrý den,  ve vaší poslední objednávce jsme zaznamenali problém. Klikněte sem a přihlaste se, abyste chybu odstranili: [Vyřešit problém](http://garden-fix-account.org/login).  Děkujeme.',
@@ -341,6 +358,7 @@ VALUES
     1,
     false,
     1,
+    1,
     2,
     'Dobrý den,  připravili jsme pro vás slevu na zahradní nářadí. Více zde: [Zobrazit nabídku](https://www.zahradnictvi-zelena.cz/akce).  Přejeme krásný den!',
     jsonb_build_object('sender', 'info@zahradnictvi-zelena.cz', 'subject', 'Sleva na zahradní nářadí – jen tento týden'),
@@ -349,6 +367,7 @@ VALUES
     (
     1,
     true,
+    5,
     1,
     7,
     'Dobrý den,  z bezpečnostních důvodů bylo vaše členství dočasně pozastaveno. Pro pokračování prosím aktualizujte údaje: [Aktualizovat účet](http://fitness-members-update.info/login).  Děkujeme.',
@@ -360,6 +379,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Ahoj sportovče,  dokončili jste registraci na náš běžecký závod. Přikládáme doplnění k trati a mapu: [Informace o závodu](https://www.decathlon.cz/zavod-info).  Těšíme se na vás!',
     jsonb_build_object('sender', 'info@decathlon.cz', 'subject', 'Potvrzení registrace do závodu – doplňující informace'),
     'Legitimní potvrzení registrace, odkaz vede na oficiální doménu.'
@@ -369,6 +389,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Ahoj všem,  zveme vás na společnou firemní snídani, která se uskuteční tento pátek od 9:00 v kuchyňce. Těšit se můžete na čerstvé pečivo a kávu.  Budeme se těšit, HR oddělení',
     jsonb_build_object('sender', 'hr@nase-firma.cz', 'subject', 'Pozvánka na firemní snídaně'),
     'Standardní interní komunikace. Odesílatel je z interní domény, e-mail nevyžaduje žádnou akci, neobsahuje podezřelé odkazy ani přílohy.'
@@ -376,6 +397,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     6,
     'Vážený zákazníku,  kurýr se pokusil doručit vaši zásilku, ale nebyl úspěšný z důvodu nezaplaceného cla (35 Kč). Pro opětovné doručení prosím [uhradte poplatek zde](http://dhl-payment-gateway.xyz/pay). Pokud neuhradíte do 24 hodin, balík bude vrácen odesílateli.',
@@ -387,6 +409,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Vážený zákazníku,  vaše vyúčtování za minulý měsíc je připraveno. Částka k úhradě činí 599 Kč a bude automaticky stržena inkasem dne 15.11. Podrobný výpis najdete ve své samoobsluze nebo v přiloženém PDF (zaheslováno vaším rodným číslem).',
     jsonb_build_object('sender', 'fakturace@telefonni-operator.cz', 'subject', 'Vyúčtování služeb za období 10/2024'),
     'Legitimní e-mail od operátora. Odesílatel odpovídá oficiální doméně. Odkaz na samoobsluhu chybí (což je bezpečnější), nebo by vedl na oficiální web. Informace o inkasu naznačuje, že není nutná okamžitá manuální akce.'
@@ -394,6 +417,7 @@ VALUES
     (
     1,
     true,
+    6,
     1,
     8,
     'Ahoj, jsem momentálně na schůzce s klienty a nemůžu telefonovat. Potřebuji, abys pro mě rychle zařídil nákup dárkových karet Apple v hodnotě 5000 Kč pro partnery. Pošli mi kódy obratem, peníze ti proplatím hned zítra. Je to důležité.  Jan Novák CEO',
@@ -405,6 +429,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Zaznamenali jsme nové přihlášení k vašemu účtu ''uzivatel@firma.cz'' ze zařízení ''Windows PC'' v lokalitě Brno. Pokud jste to byli vy, můžete tento e-mail ignorovat. Pokud ne, zkontrolujte svou aktivitu na account.microsoft.com.',
     jsonb_build_object('sender', 'no-reply@microsoft.com', 'subject', 'Bezpečnostní upozornění k účtu Microsoft'),
     'Legitimní bezpečnostní notifikace. E-mail neobsahuje tlačítka ''Klikněte zde pro zrušení'', která jsou typická pro phishing. Doména odesílatele je správná. Vyzývá k opatrnosti, ne k panice.'
@@ -412,6 +437,7 @@ VALUES
     (
     1,
     true,
+    4,
     1,
     10,
     'Dobrý den,  uživatel HR (hr@nase-firma.cz) s vámi sdílí zabezpečený dokument na OneDrive.  [Otevřít dokument](http://sharepoint-login.auth-secure.net/login)  K zobrazení souboru je nutné se přihlásit vaším pracovním e-mailem.',
@@ -423,6 +449,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Ahoj filmoví fanoušci,  přinášíme přehled filmů na tento víkend. Nenechte si ujít premiéru nového akčního trháku. Vstupenky zakoupíte online na našem webu nebo na pokladně.  Pokud už nechcete dostávat tyto zprávy, můžete se odhlásit.',
     jsonb_build_object('sender', 'newsletter@kino-svet.cz', 'subject', 'Program na tento víkend: Premiéry!'),
     'Běžný marketingový e-mail. Obsahuje odkaz na odhlášení (unsubscribe), což je zákonná povinnost. Nežádá žádné citlivé údaje.'
@@ -430,6 +457,7 @@ VALUES
     (
     1,
     true,
+    5,
     1,
     10,
     'Vážený kliente,  z důvodu přechodu na nový bezpečnostní standard přestane vaše aplikace zítra fungovat. Pro zachování přístupu k účtu je nutné [aktivovat nový klíč](http://mojebanka.aktualizace-app.eu/activator.exe) a nainstalovat aktualizaci do PC nebo mobilu.',
@@ -441,6 +469,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Dobrý den,  děkujeme za vaši rezervaci. Těšíme se na vás 12.12. v 18:00. Pokud potřebujete rezervaci upravit, volejte na recepci +420 222 333 444.  S pozdravem, Recepce',
     jsonb_build_object('sender', 'rezervace@hotel-praha.cz', 'subject', 'Potvrzení vaší rezervace - 12.12.2024'),
     'Legitimní potvrzení služby. Obsahuje konkrétní, ale nezávadné údaje. Kontaktní údaje směřují na telefon, nikoliv na podvodný formulář.'
@@ -448,6 +477,7 @@ VALUES
     (
     1,
     true,
+    5,
     1,
     9,
     'Upozornění systému: Vaše heslo vypršelo před 3 dny. Váš účet bude zablokován, pokud heslo neobnovíte okamžitě. Ponechte si stejné heslo nebo zadejte nové zde: [Obnovit heslo](http://it-support-portal.com.shady-link.net/reset).',
@@ -457,6 +487,7 @@ VALUES
     (
     1,
     true,
+    5,
     1,
     10,
     'Dobrý den,  upozorňujeme vás, že platnost eReceptu na váš lék brzy vyprší. Pro prodloužení klikněte zde: [Prodloužit eRecept](http://erecept-prodlouzeni.example/verify).  Pokud recept neprodloužíte, nebude možné lék vydat.',
@@ -466,6 +497,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     10,
     'Vážený uživateli,  obdrželi jste novou datovou zprávu. Pro přihlášení použijte bezpečný přístup: [Přihlásit se do datové schránky](http://datovka-login.example/auth).  Zpráva bude automaticky smazána po 48 hodinách.',
@@ -475,6 +507,7 @@ VALUES
     (
     1,
     true,
+    2,
     1,
     9,
     'Dobrý den,  v systému evidujeme doplatek 125 Kč. Uhradit ho můžete zde: [Zaplatit doplatek](http://pojistovna-doplatek.example/payment).  Děkujeme.',
@@ -484,6 +517,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     8,
     'Dobrý den,  k doručení vaší zásilky je potřeba doplatit 19 Kč. Zaplaťte zde: [Uhradit doplatek](http://moje-zasilka.example/pay).  Bez úhrady nebude možné zásilku vydat.',
@@ -493,6 +527,7 @@ VALUES
     (
     1,
     true,
+    2,
     1,
     8,
     'Dobrý den,  v systému nevidíme platnou autorizaci vaší satelitní karty. Pokračujte zde pro ověření: [Aktivovat kartu](http://tv-karta.example/activate).  Jinak může dojít k přerušení příjmu.',
@@ -502,6 +537,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     10,
     'Babi, prosím, stala se mi nepříjemnost a potřebuju půjčit trochu peněz. Tady můžeš poslat částku: [Poslat peníze](http://rychla-pomoc.example/send).  Ozvu se hned, jak budu moct.',
@@ -511,6 +547,7 @@ VALUES
     (
     1,
     true,
+    2,
     1,
     9,
     'Dobrý den,  poplatek za komunální odpad je nutné uhradit ještě dnes. Úhradu proveďte: [Zaplatit poplatek](http://obec-poplatek.example/pay).  Děkujeme.',
@@ -522,6 +559,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Vážený pane / paní,  rádi vás pozveme na seminář o bezpečnosti seniorů. Prosíme o potvrzení účasti odpovědí na tento e-mail.  Těšíme se na vás.',
     jsonb_build_object('sender', 'info@seniorpomoc.cz', 'subject', 'Pozvánka na bezplatný seminář'),
     'Legitimně působící zpráva bez odkazů a bez urgentního tlaku. Žádost o jednoduchou odpověď je obvykle bezpečná.'
@@ -529,6 +567,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     10,
     'Vážený klient,  kvůli podezřelé aktivitě musíme ověřit vaši platební kartu. Proveďte prosím bezpečné ověření zde: [Ověřit kartu](http://bezpecna-karta.example/verify).  Jinak bude karta dočasně blokována.',
@@ -538,6 +577,7 @@ VALUES
     (
     1,
     true,
+    2,
     1,
     9,
     'Dobrý den,  automaticky jsme detekovali potenciální přetížení vaší elektrické sítě. Doporučujeme provést online kontrolu: [Zkontrolovat síť](http://elektricka-kontrola.example/check).  Prevence chrání před požárem.',
@@ -547,6 +587,7 @@ VALUES
     (
     1,
     true,
+    5,
     1,
     10,
     'Vážený zákazníku,   zaznamenali jsme podezřelé přihlášení k vašemu účtu. Pro obnovení přístupu prosím ověřte svou totožnost zde: [Ověřit účet](http://moje-banka-verify.com/login). Pokud akci neprovedete do 24 hodin, bude účet uzamčen.',
@@ -556,6 +597,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     8,
     'Dobrý den,  dokument k faktuře naleznete zde: [Zobrazit fakturu](http://secure-faktura-pay.com/doc). Pokud nebude uhrazena do dnešního konce dne, dojde k omezení služeb.',
@@ -565,6 +607,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     9,
     'Vážený uživateli,  z důvodu nových bezpečnostních opatření je nutné resetovat vaše heslo. Pro pokračování klikněte zde: [Resetovat heslo](http://microsoft-security-reset.example/verify).',
@@ -574,6 +617,7 @@ VALUES
     (
     1,
     true,
+    6,
     1,
     6,
     'Vážený zákazníku,  pro doručení zásilky uhraďte doplatek 49 Kč zde: [Uhradit doplatek](http://posta-doruceni-cz.net/pay). Pokud nebude doplatek uhrazen do 48 hodin, zásilka bude vrácena odesílateli.',
@@ -583,6 +627,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     7,
     'Dobrý den,  tento unikátní poukaz lze aktivovat pouze dnes. Potvrďte prosím své údaje zde: [Aktivovat poukaz](http://reward-claim-win.com/activate).',
@@ -594,6 +639,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Dobrý den,  srdečně vás zveme na interní školení v úterý v 10:00. Přihlásit se můžete [zde](https://intranet.firma.cz/skoleni).',
     jsonb_build_object('sender', 'hr@firma.cz', 'subject', 'Pozvánka na školení kybernetické bezpečnosti'),
     'Oficiální firemní doména, žádné požadavky na přihlašovací údaje nebo platby.'
@@ -601,6 +647,7 @@ VALUES
     (
     1,
     false,
+    1,
     1,
     1,
     'Dobrý den,  potvrzujeme přijetí vaší objednávky. Stav objednávky můžete sledovat [ve svém účtu](https://www.elektro-shop.cz/muj-ucet).',
@@ -612,6 +659,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Ahoj všichni,  zítra proběhne plánovaná odstávka VPN. Během této doby nebude možné se připojit. Nevyžaduje se žádná akce.',
     jsonb_build_object('sender', 'it-support@firma.cz', 'subject', 'Plánovaná odstávka VPN – středa 19:00–20:00'),
     'Běžné interní oznámení bez odkazů a bez nátlaku.'
@@ -619,6 +667,7 @@ VALUES
     (
     1,
     false,
+    1,
     1,
     1,
     'Vážení rodiče,  třídní schůzky proběhnou příští čtvrtek v 17:00. Prosíme o potvrzení účasti odpovědí na tento e-mail.',
@@ -630,6 +679,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Vážený uživateli,  dne 23. 3. proběhne údržba služby CloudDrive mezi 01:00 a 03:00. Informace o stavu najdete [na stránce stavu služby](https://status.clouddrive.com).',
     jsonb_build_object('sender', 'noreply@clouddrive.com', 'subject', 'Údržba služby CloudDrive – 23. 3.'),
     'Legitimní servisní oznámení. Odkaz vede na oficiální doménu poskytovatele.'
@@ -637,6 +687,7 @@ VALUES
     (
     1,
     true,
+    2,
     1,
     9,
     'Dobrý den,  v příloze zasíláme fakturu č. 2025-0892 za dodané kancelářské potřeby. Částka 4 850 Kč je splatná ještě dnes. Pro rychlou úhradu použijte tento odkaz: [Zaplatit fakturu](http://faktura-platba-rychle.example/pay).  Děkujeme za spolupráci.',
@@ -646,6 +697,7 @@ VALUES
     (
     1,
     true,
+    2,
     1,
     8,
     'Gratulujeme!  Vaše e-mailová adresa byla náhodně vylosována v naší mezinárodní loterii. Vyhráli jste 50 000 Kč! Pro převzetí výhry prosím vyplňte formulář: [Nárokovat výhru](http://loterie-vyzvedni.example/claim).  Výhra propadá za 48 hodin.',
@@ -655,6 +707,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     9,
     'Ahoj,  omlouvám se, že tě ruším, ale mám problém. Jsem na služební cestě a ztratil jsem peněženku. Potřeboval bych, abys mi poslal/a 3000 Kč přes tento odkaz: [Poslat peníze](http://pomoc-kolegovi.example/send). Vrátím ti to hned v pondělí.  Díky moc, Martin',
@@ -664,6 +717,7 @@ VALUES
     (
     1,
     true,
+    2,
     1,
     8,
     'Vážený zákazníku,  evidujeme u vás nezaplacenou fakturu č. FA-2025-445 ve výši 2 340 Kč. Pokud nebude uhrazena do konce dne, bude účtováno penále. Fakturu a platební údaje naleznete zde: [Zobrazit fakturu](http://faktury-splatnost.example/doc).  S pozdravem, Účtárna',
@@ -673,6 +727,7 @@ VALUES
     (
     1,
     true,
+    4,
     1,
     9,
     'Dobrý den,  byli jste vybráni jako výherce naší soutěže o iPhone 15 Pro! Pro dokončení registrace a odeslání výhry prosím uhraďte manipulační poplatek 299 Kč: [Dokončit registraci](http://iphone-vyhra-claim.example/pay).  Nabídka platí pouze 24 hodin.',
@@ -684,6 +739,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Dobrý den,  potvrzujeme Váš termín zkoušky svatebních šatů na sobotu 18. ledna v 10:00. V případě potřeby změny termínu nás prosím kontaktujte na telefonu +420 777 123 456.  Těšíme se na Vás, Svatební salon Elegant',
     jsonb_build_object('sender', 'info@svatebni-salon-elegant.cz', 'subject', 'Potvrzení termínu zkoušky šatů'),
     'Legitimní potvrzení termínu ze svatebního salonu. Žádné podezřelé odkazy, kontakt pouze přes telefon.'
@@ -691,6 +747,7 @@ VALUES
     (
     1,
     false,
+    1,
     1,
     1,
     'Milí kávomilci,  do naší nabídky jsme zařadili limitovanou edici etiopské kávy z oblasti Yirgacheffe. Přijďte ochutnat do naší kavárny nebo objednejte online na [našem e-shopu](https://www.kavarna-zrnko.cz/eshop).  Těšíme se na vás!',
@@ -702,6 +759,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Ahoj,  připomínáme ti, že zítra v 18:00 začíná tvůj kurz lezení pro začátečníky. Nezapomeň si vzít pohodlné oblečení a přezůvky. Lezečky ti zapůjčíme na místě.  V případě dotazů volej na +420 602 345 678.  Tým Boulder Centra',
     jsonb_build_object('sender', 'rezervace@lezecke-centrum-boulder.cz', 'subject', 'Připomínka kurzu lezení pro začátečníky'),
     'Legitimní připomínka kurzu z lezeckého centra. Osobní tón, konkrétní informace, kontakt přes telefon.'
@@ -709,6 +767,7 @@ VALUES
     (
     1,
     false,
+    1,
     1,
     1,
     'Ahoj pinballisté!  Zveme vás na první letošní turnaj v našem klubu. Startujeme 25. ledna od 14:00. Registrace probíhá na místě, startovné je 150 Kč. Více info na [našem webu](https://www.pinball-klub-praha.cz/turnaje).  Těšíme se!',
@@ -720,6 +779,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Dobrý den,  v rámci našeho filmového klubu promítáme tento čtvrtek kultní film Pulp Fiction (1994). Začínáme ve 20:00, vstupenky zakoupíte na pokladně nebo [online zde](https://www.kino-lucerna.cz/vstupenky).  Přejeme příjemný filmový zážitek!',
     jsonb_build_object('sender', 'program@kino-lucerna.cz', 'subject', 'Filmový klub – tento čtvrtek: Pulp Fiction'),
     'Běžný informační e-mail z kina. Odkaz vede na oficiální doménu, standardní marketingová komunikace.'
@@ -727,6 +787,7 @@ VALUES
     (
     1,
     true,
+    3,
     1,
     9,
     'Dobrý den,  byli jste vybráni jako výherce naší soutěže O2 o Samsung Galaxy S24! Pro dokončení převzetí výhry prosím ověřte svou identitu a uhraďte poštovné 149 Kč: [Převzít výhru](http://o2-soutez-vyhra.example/claim).  Výhra bude rezervována pouze 24 hodin.',
@@ -738,6 +799,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Milí snoubenci,  v příloze zasílám finální harmonogram vaší svatby na 15. června. Prosím o kontrolu časů a potvrzení, že je vše v pořádku. V případě jakýchkoli změn mě kontaktujte na telefonu +420 603 456 789.  S láskou, Petra – Vaše svatební koordinátorka',
     jsonb_build_object('sender', 'koordinator@svatby-na-klic.cz', 'subject', 'Harmonogram vaší svatby – finální verze'),
     'Legitimní komunikace od svatebního koordinátora. Osobní tón, konkrétní datum, kontakt přes telefon, žádné podezřelé odkazy.'
@@ -745,6 +807,7 @@ VALUES
     (
     1,
     false,
+    1,
     1,
     1,
     'Ahoj lezci!  V tomto týdnu jsme přestavěli žlutý a oranžový sektor. Přijďte si vyzkoušet 15 nových boulder problémů od 4a do 7b. Otevírací doba zůstává beze změn.  Těšíme se na vás, Tým Smíchoff',
@@ -756,6 +819,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Dobrý den,  tento týden se v Kině Aero koná přehlídka českého filmu 90. let. Program a vstupenky najdete [na našem webu](https://www.kinoaero.cz/program).  Přejeme příjemné filmové zážitky!',
     jsonb_build_object('sender', 'program@kinoaero.cz', 'subject', 'Tento týden v Aeru: Přehlídka českého filmu'),
     'Legitimní newsletter z kina. Odkaz vede na oficiální doménu, standardní marketingová komunikace bez nátlaku.'
@@ -763,6 +827,7 @@ VALUES
     (
     1,
     false,
+    1,
     1,
     1,
     'Ahoj,  jen rychlá informace – páteční lekce kruhového tréninku se posouvá z 18:00 na 18:30 kvůli údržbě sálu. Omlouváme se za komplikace.  Uvidíme se v pátek! Tomáš',
@@ -774,6 +839,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Ahoj borci!  V sobotu 8. února pořádáme seminář s dvojnásobným mistrem světa v BJJ. Kapacita je omezená na 30 míst. Registrace na recepci nebo odpovědí na tento e-mail.  Cena: 800 Kč pro členy, 1200 Kč pro nečleny.  Roman, BJJ Akademie Praha',
     jsonb_build_object('sender', 'akademie@bjj-praha.cz', 'subject', 'Pozvánka na seminář s mistrem světa'),
     'Legitimní pozvánka na seminář od BJJ akademie. Konkrétní informace, standardní způsob registrace, žádné podezřelé odkazy.'
@@ -781,6 +847,7 @@ VALUES
     (
     1,
     false,
+    1,
     1,
     1,
     'Dobrý den,  vaše objednávka č. 2025-1847 (Etiopie Sidamo 500g, Brazílie Santos 250g) byla dnes odeslána. Zásilku můžete [sledovat zde](https://tracking.ppl.cz/123456).  Děkujeme za nákup! Pražírna u Karla',
@@ -792,6 +859,7 @@ VALUES
     false,
     1,
     1,
+    1,
     'Dobrý den,  rádi vám oznamujeme, že Whey Protein Isolate čokoláda je opět skladem. Jako stálý zákazník máte nárok na 10% slevu s kódem LOYAL10.  Nakupujte [na našem e-shopu](https://www.fitness007.cz).  Váš Fitness007 tým',
     jsonb_build_object('sender', 'info@fitness007.cz', 'subject', 'Vaše oblíbené proteiny opět skladem!'),
     'Legitimní marketingový e-mail od známého e-shopu se suplementy. Odkaz vede na oficiální doménu, slevový kód je běžná praxe.'
@@ -799,6 +867,7 @@ VALUES
     (
     1,
     false,
+    1,
     1,
     1,
     'Ahoj,  na příští hodinu si prosím připravte popis svého oblíbeného filmu v angličtině (5-10 vět). Budeme procvičovat minulý čas a slovní zásobu.  Těším se v úterý! Mark',
@@ -810,135 +879,10 @@ VALUES
     false,
     1,
     1,
+    1,
     'Dobrý den,  potvrzujeme vaši registraci do kurzu Business English – úroveň B2. Kurz začíná 3. února v 18:00. Přístupové údaje do online učebny obdržíte den před zahájením.  S pozdravem, Jazyková škola Online',
     jsonb_build_object('sender', 'registrace@anglictina-online.cz', 'subject', 'Potvrzení registrace do kurzu Business English'),
     'Legitimní potvrzení registrace do jazykového kurzu. Konkrétní informace o kurzu, standardní komunikace bez podezřelých prvků.'
     )
 ON CONFLICT (platform_type_id, md5(content)) DO NOTHING;
 
--- Init Question to Category relationships table
-INSERT INTO question_to_categories (question_id, category_id) VALUES
-    (1, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (1, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (1, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (2, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (3, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_DOC')),
-    (3, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (4, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (5, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (5, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (5, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (6, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (7, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (7, (SELECT id FROM phishing_categories WHERE tag = 'SPEAR_PHISH')),
-    (8, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (9, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (9, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (10, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (10, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (10, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (11, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (11, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (11, (SELECT id FROM phishing_categories WHERE tag = 'LOTTERY')),
-    (12, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (13, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (13, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_DOC')),
-    (14, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (15, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (15, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (16, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (17, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (17, (SELECT id FROM phishing_categories WHERE tag = 'SPEAR_PHISH')),
-    (18, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (19, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (19, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (20, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (21, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (22, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (22, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (23, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (24, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (24, (SELECT id FROM phishing_categories WHERE tag = 'SPEAR_PHISH')),
-    (25, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (26, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (26, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (26, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_DOC')),
-    (27, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (28, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (28, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (28, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (29, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (30, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (30, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (31, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (31, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (31, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (32, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (32, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (32, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (33, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_DOC')),
-    (33, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (34, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_DOC')),
-    (34, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (34, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (35, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (35, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (36, (SELECT id FROM phishing_categories WHERE tag = 'SPEAR_PHISH')),
-    (36, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (37, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_DOC')),
-    (37, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (37, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (38, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (39, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (39, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (39, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (40, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (40, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (41, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (41, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (41, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (42, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_DOC')),
-    (42, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (43, (SELECT id FROM phishing_categories WHERE tag = 'CRED_THEFT')),
-    (43, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (43, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (44, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (44, (SELECT id FROM phishing_categories WHERE tag = 'SPEAR_PHISH')),
-    (45, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (46, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (47, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (48, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (49, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (50, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (51, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_DOC')),
-    (51, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (51, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (52, (SELECT id FROM phishing_categories WHERE tag = 'LOTTERY')),
-    (52, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (52, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (53, (SELECT id FROM phishing_categories WHERE tag = 'SPEAR_PHISH')),
-    (53, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (54, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_DOC')),
-    (54, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (54, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_URL')),
-    (55, (SELECT id FROM phishing_categories WHERE tag = 'LOTTERY')),
-    (55, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (55, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_DOC')),
-    (56, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (57, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (58, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (59, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (60, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (61, (SELECT id FROM phishing_categories WHERE tag = 'LOTTERY')),
-    (61, (SELECT id FROM phishing_categories WHERE tag = 'FAKE_DOC')),
-    (61, (SELECT id FROM phishing_categories WHERE tag = 'URGENT')),
-    (62, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (63, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (64, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (65, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (66, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (67, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (68, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (69, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT')),
-    (70, (SELECT id FROM phishing_categories WHERE tag = 'LEGIT'))
-ON CONFLICT (question_id, category_id) DO NOTHING;

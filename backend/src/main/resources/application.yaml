@@ -15,6 +15,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  ai:
+    google:
+      genai:
+        api-key: ${GOOGLE_GENAI_API_KEY}
   flyway:
     enabled: true
     baseline-on-migrate: true
@@ -24,3 +28,6 @@ spring:
     init:
       mode: always
       data-locations: classpath:db/init.sql
+app:
+  internal-api-key: ${INTERNAL_API_KEY:${LOCAL_INTERNAL_API_KEY:change-me}}
+  category-tags-refresh-ms: ${CATEGORY_TAGS_REFRESH_MS:300000}

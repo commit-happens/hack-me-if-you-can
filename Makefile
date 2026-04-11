@@ -93,6 +93,38 @@ db-reset:
 	PGPASSWORD=$(DB_PASSWORD) psql -U $(DB_USER) -d $(DB_NAME) -h localhost -c "DROP TABLE IF EXISTS flyway_schema_history, players CASCADE;"
 	@echo "Databáze resetována. Spusť 'make be-run' pro novou migraci."
 
+## Scripty pro generování a upload otázek
+generate-questions-local:
+	@echo "📱 Interaktivní generování otázky (LOCAL)..."
+	@./scripts/generate-questions.sh questions_draft.json local
+
+generate-questions-docker:
+	@echo "📱 Interaktivní generování otázky (DOCKER)..."
+	@./scripts/generate-questions.sh questions_draft.json docker
+
+generate-questions-dev:
+	@echo "📱 Interaktivní generování otázky (DEV)..."
+	@./scripts/generate-questions.sh questions_draft.json dev
+
+generate-questions-prod:
+	@echo "⚠️ POZOR: Interaktivní generování otázky (PROD)..."
+	@./scripts/generate-questions.sh questions_draft.json prod
+
+upload-questions-local:
+	@echo "📤 Upload otázky do LOCAL databáze..."
+	@./scripts/upload-questions.sh questions_draft.json local
+
+upload-questions-docker:
+	@echo "📤 Upload otázky do DOCKER databáze..."
+	@./scripts/upload-questions.sh questions_draft.json docker
+
+upload-questions-dev:
+	@echo "📤 Upload otázky do DEV databáze..."
+	@./scripts/upload-questions.sh questions_draft.json dev
+
+upload-questions-prod:
+	@echo "⚠️ POZOR: Upload otázky do PROD databáze..."
+	@./scripts/upload-questions.sh questions_draft.json prod
 
 ## Další pomocné příkazy
 print-hosts:

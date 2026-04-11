@@ -3,7 +3,10 @@ package cz.hackmeifyoucan.backend.service.impl;
 import cz.hackmeifyoucan.backend.common.ScoringConstants;
 import cz.hackmeifyoucan.backend.dto.AnswerRequest;
 import cz.hackmeifyoucan.backend.dto.AnswerResponse;
-import cz.hackmeifyoucan.backend.entity.*;
+import cz.hackmeifyoucan.backend.entity.Answer;
+import cz.hackmeifyoucan.backend.entity.AnswerId;
+import cz.hackmeifyoucan.backend.entity.Player;
+import cz.hackmeifyoucan.backend.entity.Question;
 import cz.hackmeifyoucan.backend.enums.Difficulty;
 import cz.hackmeifyoucan.backend.exception.DuplicateAnswerException;
 import cz.hackmeifyoucan.backend.exception.PlayerNotFoundException;
@@ -15,6 +18,7 @@ import cz.hackmeifyoucan.backend.service.AnswerService;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Objects;
 
 @Service
 public class AnswerServiceImpl implements AnswerService {
@@ -41,15 +45,14 @@ public class AnswerServiceImpl implements AnswerService {
         Player player = playerRepository.findById(request.playerId())
                 .orElseThrow(() -> new PlayerNotFoundException(request.playerId()));
 
-        Question question = questionRepository.findWithCategoriesById(request.questionId())
+        Question question = questionRepository.findWithCategoryById(request.questionId())
                 .orElseThrow(() -> new QuestionNotFoundException(request.questionId()));
 
         AnswerId answerId = new AnswerId(request.playerId(), request.questionId(), request.sessionId());
 
         int difficultyPoints = toDifficultyPoints(question.getDifficulty());
-        int categoriesPoints = question.getCategories().stream()
-                .mapToInt(PhishingCategory::getRewardPoints)
-                .sum();
+        int categoriesPoints = Objects.requireNonNull(question.getCategory(), "Question category_id nesmí být null")
+                .getRewardPoints();
         int speedBonus = request.remainTime() * SPEED_MULTIPLIER;
 
         boolean answerCorrect = request.phishing().equals(question.isPhishing());

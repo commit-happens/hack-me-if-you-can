@@ -41,6 +41,9 @@ services:
       SPRING_FLYWAY_BASELINE_ON_MIGRATE: "true"
       SPRING_FLYWAY_LOCATIONS: classpath:db/migration
       SPRING_SQL_INIT_MODE: always
+      # API klíče
+      GOOGLE_GENAI_API_KEY: ${GOOGLE_GENAI_API_KEY}
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
     depends_on:
       postgres:
         condition: service_healthy
