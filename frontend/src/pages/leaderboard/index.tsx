@@ -1,8 +1,7 @@
 import { Col, Container, Row } from "react-bootstrap";
 import useTranslation from "../../hooks/useTranslation";
 
-import useLeaderboard from "./useLeaderboard";
-import type { PlayerModel } from "../../services/playerService";
+import useLeaderboard, { type PlayerModel } from "./useLeaderboard";
 
 const LeaderBoard = () => {
   const texts = useTranslation("leaderboard");
@@ -66,7 +65,10 @@ const LeaderBoard = () => {
           <Row>
             <Col>.</Col>
           </Row>
-          <LeaderBoardRow player={{ playerId, nickname, score }} index={currentPlayerScoreIndex} />
+          <LeaderBoardRow
+            player={{ playerId, nickname, score }}
+            index={currentPlayerScoreIndex}
+          />
         </>
       )}
     </Container>
