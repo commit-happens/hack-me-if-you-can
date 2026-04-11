@@ -229,12 +229,13 @@ export function useGame(props: UseGameProps) {
       // Pokud je skóre sníženo a máme playerId, aktualizujeme backend
       if (scoreChange && playerId) {
         const targetScore = currentScore + scoreChange;
-        console.log(`Špatná odpověď, aktualizuji skóre: ${targetScore}`);
+        const sanitizedTargetScore = Math.max(0, targetScore);
+        console.log(`Špatná odpověď, aktualizuji skóre: ${sanitizedTargetScore}`);
 
         updatePlayerMutation.mutate({
           playerId,
           data: updatePlayerBody.parse({
-            score: targetScore,
+            score: sanitizedTargetScore,
           }),
         });
       }

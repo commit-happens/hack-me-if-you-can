@@ -6,7 +6,7 @@ import { useAppDispatch } from "../../store/hooks";
 import { startGame } from "../../store/slices/gameSlice";
 import { setPlayer } from "../../store/slices/playerSlice";
 import { getPagePath } from "../../utils/routing";
-import { useState } from "react";
+import { useState, type ChangeEvent, type KeyboardEvent } from "react";
 import type { PlayerResponse } from "../../services/generated/model";
 
 export function useWelcome() {
@@ -19,6 +19,10 @@ export function useWelcome() {
 
   // Nový stav pro sledování načítání aby uživatel nemohl odeslat vícekrát request
   const [isLoading, setIsLoading] = useState(false);
+
+  const isNicknameValid = (value: string) => {
+    return addPlayerBody.shape.nickname.safeParse(value.trim()).success;
+  };
 
   const normalizePlayer = (player: PlayerResponse) => {
     if (player.playerId == null || player.nickname == null || player.score == null) {
@@ -33,12 +37,21 @@ export function useWelcome() {
   };
 
   const handleStart = async () => {
+    if (isLoading) {
+      return;
+    }
+
+    const trimmedNickname = nickname.trim();
+    if (!isNicknameValid(trimmedNickname)) {
+      setError(true);
+      return;
+    }
+
     setIsLoading(true);
     try {
       // Odeslání na backend a získání playerId
       const payload = addPlayerBody.parse({
-        nickname,
-        score: 100,
+        nickname: trimmedNickname,
       });
       const response = await addPlayer.mutateAsync({ data: payload });
       const player = normalizePlayer(response);
@@ -61,13 +74,15 @@ export function useWelcome() {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setError(event.target.value === "");
-    setNickname(event.target.value);
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const targetValue = event.target.value;
+
+    setError(!isNicknameValid(targetValue));
+    setNickname(targetValue);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter" && !error) {
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter" && !error && !isLoading) {
       handleStart();
     }
   };
