@@ -54,6 +54,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
+    @ExceptionHandler(PhishingCategoryNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handlePhishingCategoryNotFound(PhishingCategoryNotFoundException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put(STATUS, 404);
+        errorResponse.put(ERROR, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
+
     @ExceptionHandler(InvalidQuestionParameterException.class)
     public ResponseEntity<Map<String, Object>> handleInvalidQuestionParameter(InvalidQuestionParameterException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
