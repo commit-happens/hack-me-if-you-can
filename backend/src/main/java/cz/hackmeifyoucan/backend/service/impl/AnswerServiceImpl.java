@@ -41,15 +41,13 @@ public class AnswerServiceImpl implements AnswerService {
         Player player = playerRepository.findById(request.playerId())
                 .orElseThrow(() -> new PlayerNotFoundException(request.playerId()));
 
-        Question question = questionRepository.findWithCategoriesById(request.questionId())
+        Question question = questionRepository.findWithPhishingCategoryById(request.questionId())
                 .orElseThrow(() -> new QuestionNotFoundException(request.questionId()));
 
         AnswerId answerId = new AnswerId(request.playerId(), request.questionId(), request.sessionId());
 
         int difficultyPoints = toDifficultyPoints(question.getDifficulty());
-        int categoriesPoints = question.getCategories().stream()
-                .mapToInt(PhishingCategory::getRewardPoints)
-                .sum();
+        int categoriesPoints = question.getPhishingCategory().getRewardPoints();
         int speedBonus = request.remainTime() * SPEED_MULTIPLIER;
 
         boolean answerCorrect = request.phishing().equals(question.isPhishing());
