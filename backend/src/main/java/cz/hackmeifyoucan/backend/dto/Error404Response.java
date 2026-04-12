@@ -18,6 +18,6 @@ public class Error404Response {
     @Schema(description = "HTTP status kód", example = "404")
     private Integer status;
 
-    @Schema(description = "Popis chyby", example = "Hráč nenalezen pro ID: 1")
+    @Schema(description = "Popis chyby", example = "Požadovaný zdroj nebyl nalezen")
     private String error;
 }
