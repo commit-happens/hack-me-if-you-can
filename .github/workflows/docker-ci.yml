@@ -85,6 +85,11 @@ jobs:
           echo "Questions: $QUESTION_COUNT"
           [ "$QUESTION_COUNT" -eq 70 ] || { echo "❌ Expected 70 questions, got $QUESTION_COUNT"; exit 1; }
           
+          # Check question_to_categories junction table
+          MAPPING_COUNT=$(docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM question_to_categories;" | tr -d '[:space:]')
+          echo "Question-to-category mappings: $MAPPING_COUNT"
+          [ "$MAPPING_COUNT" -ge 70 ] || { echo "❌ Expected at least 70 mappings, got $MAPPING_COUNT"; exit 1; }
+          
           echo "✅ Docker Compose database properly initialized with expected data"
 
       - name: Wait for Frontend to be healthy
