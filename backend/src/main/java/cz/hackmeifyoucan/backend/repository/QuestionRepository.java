@@ -26,6 +26,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     )
     List<Question> getRandomQuestionsByDifficulty(@Param("difficultyLevel") int difficultyLevel, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"phishingCategory"})
-    Optional<Question> findWithPhishingCategoryById(Long id);
+    @EntityGraph(attributePaths = {"categories"})
+    Optional<Question> findWithCategoriesById(Long id);
 }
