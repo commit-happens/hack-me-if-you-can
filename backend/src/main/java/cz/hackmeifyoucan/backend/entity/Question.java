@@ -17,13 +17,15 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 @Entity
 @Getter
 @Setter
-@ToString(exclude = "phishingCategory")
+@ToString(exclude = "categories")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 @NoArgsConstructor
@@ -39,9 +41,14 @@ public class Question {
     @Convert(converter = PlatformTypeConverter.class)
     private PlatformType platformType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "phishing_category_id", nullable = false)
-    private PhishingCategory phishingCategory;
+    @Builder.Default
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "question_to_categories",
+        joinColumns = @JoinColumn(name = "question_id"),
+        inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<PhishingCategory> categories = new HashSet<>();
 
     @Column(name = "is_phishing", nullable = false)
     private boolean phishing;

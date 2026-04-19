@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -45,27 +46,28 @@ class AnswerServiceImplTest {
     @Test
     void given_correct_answer_when_submitting_then_should_add_all_score_components() {
         Player player = Player.builder().id(1L).nickname("tester").score(200).build();
-        PhishingCategory category = PhishingCategory.builder().id(1L).tag("FAKE_URL").rewardPoints(600).build();
+        PhishingCategory first = PhishingCategory.builder().id(1L).tag("FAKE_URL").rewardPoints(600).build();
+        PhishingCategory second = PhishingCategory.builder().id(2L).tag("URGENT").rewardPoints(500).build();
         Question question = Question.builder()
                 .id(3L)
                 .difficulty(Difficulty.EASY)
                 .phishing(false)
-                .phishingCategory(category)
+                .categories(Set.of(first, second))
                 .build();
 
         AnswerRequest request = new AnswerRequest(1L, 3L, "session-1", false, 10);
 
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
-        when(questionRepository.findWithPhishingCategoryById(3L)).thenReturn(Optional.of(question));
-        when(playerRepository.incrementScoreAtomically(1L, 200, 800)).thenReturn(1);
-        when(playerRepository.findScoreById(1L)).thenReturn(1000);
+        when(questionRepository.findWithCategoriesById(3L)).thenReturn(Optional.of(question));
+        when(playerRepository.incrementScoreAtomically(1L, 200, 1300)).thenReturn(1);
+        when(playerRepository.findScoreById(1L)).thenReturn(1500);
 
         AnswerResponse response = answerService.submitAnswer(request);
 
         assertThat(response.answerCorrect()).isTrue();
-        assertThat(response.score()).isEqualTo(1000);
+        assertThat(response.score()).isEqualTo(1500);
         verify(answerRepository).saveAndFlush(any());
-        verify(playerRepository).incrementScoreAtomically(1L, 200, 800);
+        verify(playerRepository).incrementScoreAtomically(1L, 200, 1300);
     }
 
     @Test
@@ -76,13 +78,13 @@ class AnswerServiceImplTest {
                 .id(3L)
                 .difficulty(Difficulty.HARD)
                 .phishing(true)
-                .phishingCategory(category)
+                .categories(Set.of(category))
                 .build();
 
         AnswerRequest request = new AnswerRequest(1L, 3L, "session-1", false, 20);
 
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
-        when(questionRepository.findWithPhishingCategoryById(3L)).thenReturn(Optional.of(question));
+        when(questionRepository.findWithCategoriesById(3L)).thenReturn(Optional.of(question));
         when(playerRepository.incrementScoreAtomically(1L, 200, 0)).thenReturn(1);
         when(playerRepository.findScoreById(1L)).thenReturn(200);
 
@@ -97,18 +99,16 @@ class AnswerServiceImplTest {
     @Test
     void given_unique_constraint_violation_when_submitting_then_should_throw_duplicate_answer_exception() {
         Player player = Player.builder().id(1L).nickname("tester").score(200).build();
-        PhishingCategory category = PhishingCategory.builder().id(1L).tag("FAKE_URL").rewardPoints(600).build();
         Question question = Question.builder()
                 .id(3L)
                 .difficulty(Difficulty.EASY)
                 .phishing(true)
-                .phishingCategory(category)
                 .build();
 
         AnswerRequest request = new AnswerRequest(1L, 3L, "session-1", true, 5);
 
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
-        when(questionRepository.findWithPhishingCategoryById(3L)).thenReturn(Optional.of(question));
+        when(questionRepository.findWithCategoriesById(3L)).thenReturn(Optional.of(question));
         when(answerRepository.saveAndFlush(any())).thenThrow(new DataIntegrityViolationException("duplicate key value violates unique constraint"));
 
         assertThatThrownBy(() -> answerService.submitAnswer(request))
