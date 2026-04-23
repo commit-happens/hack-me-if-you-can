@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/logo-hmiyc.png";
-import coin from "../../assets/Otter_coin.png";
-import idCard from "../../assets/OtterIDcard_finalversion.png";
-import mailIcon from "../../assets/Mail_icon.png";
+import coin from "../../assets/Otter_coin_v2.png";
+import idCard from "../../assets/Otter_idcard_v2.png";
+import mailIcon from "../../assets/Otter_magnifier_v2.png";
 import useTranslation from "../../hooks/useTranslation";
 import Page from "../../models/Page";
 import { getPagePath } from "../../utils/routing";
@@ -58,7 +58,17 @@ function Header({
         <span className="nav-item--label hide-on-mobile">{textsApp.title}</span>
       </Link>
 
-      <div className="nav-items" style={{ display: "flex", alignItems: "center", gap: "0.8em", flexWrap: "wrap", justifyContent: "flex-end" }}>
+      <div className="nav-items" style={{ display: "flex", alignItems: "center", gap: "0.8em", flexWrap: "wrap", justifyContent: "flex-start" }}>
+
+        <div className="nav-item" style={{ display: "flex", alignItems: "center", gap: "0.3em" }}>
+          <img
+            src={coin}
+            alt="Coin"
+            className="mobile-icon"
+            style={{ height: "60px" }}
+          />
+          <span>{score ?? 0}</span>
+        </div>
         {isGamePage &&
           currentQuestion !== undefined &&
           totalQuestions !== undefined && (
@@ -72,7 +82,7 @@ function Header({
               <span>{currentQuestion}/{totalQuestions}</span>
             </div>
           )}
-        <div className="nav-item" style={{ display: "flex", alignItems: "center", gap: "0.4em" }}>
+                <div className="nav-item" style={{ display: "flex", alignItems: "center", gap: "0.4em" }}>
           <img
             src={idCard}
             alt="Player ID"
@@ -80,9 +90,10 @@ function Header({
             style={{ height: "60px" }}
           />
           <span
+          title={nickname}
           className="nickname-text"
           style={{
-            maxWidth: "100px",
+            maxWidth: "150px",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -92,17 +103,8 @@ function Header({
           {nickname}
         </span>
         </div>
-
-        <div className="nav-item" style={{ display: "flex", alignItems: "center", gap: "0.3em" }}>
-          <img
-            src={coin}
-            alt="Coin"
-            className="mobile-icon"
-            style={{ height: "60px" }}
-          />
-          <span>{score ?? 0}</span>
-        </div>
       </div>
+
       <style>{`
         @media (max-width: 680px) {
           .hide-on-mobile {
@@ -114,7 +116,7 @@ function Header({
             height: 40px !important;
           }
         }
-        @media (max-width: 427px) {
+        @media (max-width: 430px) {
           .nickname-text {
             max-width: 70px !important;
           }
