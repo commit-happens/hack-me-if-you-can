@@ -1,11 +1,30 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useAppSelector } from "../../store/hooks";
-import { getPlayers, type PlayerModel } from "../../services/playerService";
+import { useGetPlayers } from "../../services/generated/player-controller/player-controller";
+import type { PlayerResponse } from "../../services/generated/model";
+
+export type PlayerModel = Required<PlayerResponse>;
+
+const normalizePlayer = (player: PlayerResponse): PlayerModel | null => {
+  if (player.playerId == null || player.nickname == null || player.score == null) {
+    return null;
+  }
+
+  return {
+    playerId: player.playerId,
+    nickname: player.nickname,
+    score: player.score,
+  };
+};
 
 const useLeaderboard = () => {
   const { score, isPlaying } = useAppSelector((state) => state.game);
   const { nickname, playerId } = useAppSelector((state) => state.player);
-  const [players, setPlayers] = useState<PlayerModel[]>([]);
+  const { data } = useGetPlayers();
+  const players = useMemo(
+    () => (data ?? []).map(normalizePlayer).filter(Boolean) as PlayerModel[],
+    [data],
+  );
 
   /** Seřazené skóre hráčů od nejvyššího po nejnižší. */
   const sortedScores = players.sort((a, b) => b.score - a.score);
@@ -17,14 +36,9 @@ const useLeaderboard = () => {
   const scoreIsBelowTop10 = score < top10Scores[top10Scores.length - 1]?.score;
 
   /** Umístění aktuálního hráče v žebříčku. */
-  const currentPlayerScoreIndex = sortedScores.findIndex((player) => player.playerId === playerId);
-
-  useEffect(() => {
-    (async () => {
-      const response = await getPlayers();
-      setPlayers(response);
-    })();
-  }, []);
+  const currentPlayerScoreIndex = sortedScores.findIndex(
+    (player) => player.playerId === playerId,
+  );
 
   return {
     score,

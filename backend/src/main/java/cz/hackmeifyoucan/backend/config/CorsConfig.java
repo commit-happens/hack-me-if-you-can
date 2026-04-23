@@ -18,13 +18,18 @@ public class CorsConfig {
             @Override
             @SuppressWarnings("null")
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins(allowedOrigins.split(","))
+                var registration = registry.addMapping("/**")
                         .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .exposedHeaders("Authorization", "Content-Type")
                         .allowCredentials(true)
                         .maxAge(3600);
+
+                if ("*".equals(allowedOrigins.trim())) {
+                    registration.allowedOriginPatterns("*");
+                } else {
+                    registration.allowedOrigins(allowedOrigins.split(","));
+                }
             }
         };
     }

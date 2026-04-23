@@ -1,13 +1,9 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
-import { updatePlayerScore } from "../../services/playerService";
 import { getEnvConfigValue } from "../../utils/envConfig";
 
-const gameQuestionsLimitDefault = getEnvConfigValue(
-  "VITE_GAME_QUESTIONS_LIMIT",
-  20,
-);
+const gameQuestionsLimitDefault = getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20);
 const gameInitialScoreDefault = getEnvConfigValue("VITE_INITIAL_SCORE", 200);
 
 interface GameState {
@@ -25,25 +21,6 @@ const initialState: GameState = {
   isPlaying: false,
   totalQuestions: gameQuestionsLimitDefault,
 };
-
-// Async thunk pro update skóre na backendu
-// Server-authoritativní update skóre: nejprve PATCH na backend, pak teprve upravíme lokální stav.
-export const updateScore = createAsyncThunk(
-  "game/updateScore",
-  async (
-    { playerId, scoreChange }: { playerId: number; scoreChange: number },
-    { getState },
-  ) => {
-    const state = getState() as RootState;
-    const currentScore = state.game.score;
-    const targetScore = currentScore + scoreChange;
-    console.log(
-      `Posílám na backend nové skóre hráče ${playerId}: ${currentScore} + (${scoreChange}) => ${targetScore}`,
-    );
-    const updated = await updatePlayerScore(playerId, targetScore);
-    return updated.score; // Vracíme absolutní skóre ze serveru
-  },
-);
 
 const gameSlice = createSlice({
   name: "game",
@@ -69,17 +46,9 @@ const gameSlice = createSlice({
     setTotalQuestions: (state, action: PayloadAction<number>) => {
       state.totalQuestions = action.payload;
     },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(updateScore.fulfilled, (state, action) => {
+    setScore: (state, action: PayloadAction<number>) => {
       state.score = action.payload;
-    });
-    builder.addCase(updateScore.rejected, (_state, action) => {
-      console.error(
-        "Nepodařilo se aktualizovat skóre na backendu:",
-        action.error,
-      );
-    });
+    },
   },
 });
 
@@ -89,6 +58,7 @@ export const {
   setCurrentIndex,
   increaseCorrectAnswers,
   setTotalQuestions,
+  setScore,
 } = gameSlice.actions;
 
 // Selektory
