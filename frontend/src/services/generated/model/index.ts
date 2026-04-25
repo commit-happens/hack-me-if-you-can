@@ -15,6 +15,7 @@ export * from './error500Response';
 export * from './getPlayerSummaryParams';
 export * from './getRandomQuestionsByDifficultyDifficulty';
 export * from './getRandomQuestionsByDifficultyParams';
+export * from './phishingCategoryResponse';
 export * from './playerRequest';
 export * from './playerResponse';
 export * from './playerSummaryResponse';
