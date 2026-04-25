@@ -8,11 +8,13 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   increaseCorrectAnswers,
   setCurrentIndex,
+  setScore,
   setTotalQuestions,
-  updateScore,
 } from "../../store/slices/gameSlice";
 import { selectPlayerId } from "../../store/slices/playerSlice";
 import { getEnvConfigValue } from "../../utils/envConfig";
+import { useUpdatePlayer } from "../../services/generated/player-controller/player-controller";
+import { updatePlayerBody } from "../../services/generated-zod/player-controller/player-controller";
 import { faAlarmClock, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 export enum Answer {
@@ -107,6 +109,7 @@ export function useGame(props: UseGameProps) {
   const randomizedEmails = useMemo(() => allEmails.sort(() => Math.random() - 0.5), [allEmails]);
 
   const currentIndex = useAppSelector((state) => state.game.currentIndex);
+  const currentScore = useAppSelector((state) => state.game.score);
 
   /** Z konfigurace si načteme čas na zodpovězení jedné otázky. */
   const timePerQuestion = Math.ceil(getEnvConfigValue("VITE_TIME_PER_QUESTION", 60) / difficulty);
@@ -118,6 +121,18 @@ export function useGame(props: UseGameProps) {
     },
   });
   const playerId = useAppSelector(selectPlayerId);
+  const updatePlayerMutation = useUpdatePlayer({
+    mutation: {
+      onSuccess: (player) => {
+        if (player.score != null) {
+          dispatch(setScore(player.score));
+        }
+      },
+      onError: (error) => {
+        console.error("Nepodařilo se aktualizovat skóre na backendu:", error);
+      },
+    },
+  });
 
   const questionsLimit = getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20);
 
@@ -221,14 +236,22 @@ export function useGame(props: UseGameProps) {
 
       // Pokud je skóre zvýšeno a máme playerId, aktualizujeme backend
       if (scoreChange && playerId) {
-        console.log(`Správná odpověď, aktualizuji skóre: +${scoreChange}`);
-        dispatch(updateScore({ playerId, scoreChange }));
+        const targetScore = currentScore + scoreChange;
+        const sanitizedTargetScore = Math.max(0, targetScore);
+        console.log(`Špatná odpověď, aktualizuji skóre: ${sanitizedTargetScore}`);
+
+        updatePlayerMutation.mutate({
+          playerId,
+          data: updatePlayerBody.parse({
+            score: sanitizedTargetScore,
+          }),
+        });
       }
 
       if (correct) dispatch(increaseCorrectAnswers());
       setAnswer(selected);
     },
-    [currentEmail, dispatch, isCorrectAnswer, playerId, stop],
+    [currentEmail, currentScore, dispatch, isCorrectAnswer, playerId, stop, updatePlayerMutation],
   );
 
   // Když vyprší čas na odpověď, považujeme to za špatnou odpověď.
