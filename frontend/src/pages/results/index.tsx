@@ -6,6 +6,7 @@ import { Button, Card, Col, Container, Row } from "react-bootstrap";
 import useTranslation, { getText } from "../../hooks/useTranslation";
 import useResults from "./useResults";
 import LeaderBoard from "../leaderboard";
+import { formatNumber } from "../../utils/format";
 
 const ResultsPage: React.FC = () => {
   const { correctAnswers, wrongAnswers, total, successRate, score, potentialScore, playAgain } =
@@ -15,10 +16,10 @@ const ResultsPage: React.FC = () => {
   return (
     <Container className="mx-auto my-4 p-3 text-dark" as="main">
       <h3 className="mb-3 fs-3 fw-bold text-center">{texts.yourScore}</h3>
-      <div className="text-center display-1">{score}</div>
+      <div className="text-center display-1">{formatNumber(score)}</div>
       {potentialScore > score && (
         <p className="text-center fw-bold mb-4 text-info">
-          {getText(texts.youCouldHaveWon, [potentialScore])}
+          {getText(texts.youCouldHaveWon, [formatNumber(potentialScore)])}
         </p>
       )}
 

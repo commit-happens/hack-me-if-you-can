@@ -4,7 +4,6 @@ import type { RootState } from "../../store";
 import { getEnvConfigValue } from "../../utils/envConfig";
 
 const gameQuestionsLimitDefault = getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20);
-const gameInitialScoreDefault = 100;
 
 function createGameSessionId() {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
@@ -24,7 +23,7 @@ interface GameState {
 }
 
 const initialState: GameState = {
-  score: gameInitialScoreDefault,
+  score: 0,
   correctAnswers: 0,
   currentIndex: 0,
   isPlaying: false,
@@ -38,7 +37,6 @@ const gameSlice = createSlice({
   reducers: {
     startGame: (state) => {
       state.isPlaying = true;
-      state.score = gameInitialScoreDefault;
       state.currentIndex = 0;
       state.correctAnswers = 0;
       state.totalQuestions = gameQuestionsLimitDefault;

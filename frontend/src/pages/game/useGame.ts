@@ -69,6 +69,7 @@ type TimeOutWarningThreshold = {
 
 const warningTimeThresholdDivisor = 3;
 const criticalTimeThresholdDivisor = 10;
+const submitAnswerBodyRemainTimeMax = 60;
 
 enum FeedbackType {
   Correct = "correct",
@@ -113,7 +114,10 @@ export function useGame(props: UseGameProps) {
   const sessionId = useAppSelector(selectSessionId);
 
   /** Z konfigurace si načteme čas na zodpovězení jedné otázky. */
-  const timePerQuestion = Math.ceil(getEnvConfigValue("VITE_TIME_PER_QUESTION", 60) / difficulty);
+  const timePerQuestion = Math.min(
+    Math.ceil(getEnvConfigValue("VITE_TIME_PER_QUESTION", 60) / difficulty),
+    submitAnswerBodyRemainTimeMax,
+  );
 
   const { remainingTime, reset, stop } = useCountdown({
     start: timePerQuestion,
@@ -232,18 +236,18 @@ export function useGame(props: UseGameProps) {
       stop();
 
       const correct = isCorrectAnswer(selected);
-      if (playerId) {
+      if (playerId && sessionId) {
         submitAnswer.mutate({
           data: submitAnswerBody.parse({
             player_id: playerId,
             question_id: currentEmail.id,
             session_id: sessionId,
             is_phishing: selected === Answer.Phishing,
-            remain_time: Math.max(0, Math.min(timePerQuestion, remainingTime)),
+            remain_time: Math.max(0, Math.min(remainingTime, submitAnswerBodyRemainTimeMax)),
           }),
         });
       } else {
-        console.error("Nelze odeslat odpověď: chybí playerId.");
+        console.error("Nelze odeslat odpověď: chybí playerId nebo sessionId.");
       }
 
       if (correct) dispatch(increaseCorrectAnswers());

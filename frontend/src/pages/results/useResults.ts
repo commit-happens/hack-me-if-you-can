@@ -21,7 +21,8 @@ const useResults = () => {
   const sessionId = useAppSelector(selectSessionId);
   const playerId = useAppSelector(selectPlayerId);
 
-  const summaryQuery = useGetPlayerSummary(playerId, { session_id: sessionId });
+  const summaryParams = sessionId ? { session_id: sessionId } : undefined;
+  const summaryQuery = useGetPlayerSummary(playerId, summaryParams);
 
   useEffect(() => {
     if (summaryQuery.error) {
