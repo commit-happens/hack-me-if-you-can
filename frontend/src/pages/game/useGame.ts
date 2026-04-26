@@ -22,6 +22,11 @@ export enum Answer {
   Safe = "safe",
 }
 
+export type Problem = {
+  id: string;
+  description: string;
+};
+
 export type EmailModel = {
   id: number;
   sender: string;
@@ -32,6 +37,7 @@ export type EmailModel = {
   phishingPlatformID: number;
   phishingTypeIDs: number[];
   difficulty: number;
+  problems?: Problem[];
 };
 
 type UseGameOptions = {
@@ -91,18 +97,13 @@ export function useGame(props: UseGameProps) {
   /**
    * Náhodné promíchání e-mailů pro zajištění různorodosti kvízu.
    */
-  const randomizedEmails = useMemo(
-    () => allEmails.sort(() => Math.random() - 0.5),
-    [allEmails],
-  );
+  const randomizedEmails = useMemo(() => allEmails.sort(() => Math.random() - 0.5), [allEmails]);
 
   const currentIndex = useAppSelector((state) => state.game.currentIndex);
   const currentScore = useAppSelector((state) => state.game.score);
 
   /** Z konfigurace si načteme čas na zodpovězení jedné otázky. */
-  const timePerQuestion = Math.ceil(
-    getEnvConfigValue("VITE_TIME_PER_QUESTION", 60) / difficulty,
-  );
+  const timePerQuestion = Math.ceil(getEnvConfigValue("VITE_TIME_PER_QUESTION", 60) / difficulty);
 
   const { remainingTime, reset, stop } = useCountdown({
     start: timePerQuestion,
@@ -174,8 +175,7 @@ export function useGame(props: UseGameProps) {
    */
   const isLastEmail = currentIndex === totalEmails - 1;
 
-  const continueButtonLabel =
-    isLastEmail ? texts.buttons.showResults : texts.buttons.continue;
+  const continueButtonLabel = isLastEmail ? texts.buttons.showResults : texts.buttons.continue;
 
   /** Definice barev pro upozornění na zbývající čas pro zodpovězení otázky. */
 
@@ -192,9 +192,7 @@ export function useGame(props: UseGameProps) {
 
   /** Barva odpočítávadla času. */
   const { colorVariant } =
-    timeoutWarningThresholds.find(
-      (threshold) => threshold.secondsRemaining >= remainingTime,
-    ) || {};
+    timeoutWarningThresholds.find((threshold) => threshold.secondsRemaining >= remainingTime) || {};
 
   const timeoutBgColor = colorVariant ? `bg-${colorVariant}` : undefined;
   const timeoutProgressBarVariant = colorVariant;
@@ -243,15 +241,7 @@ export function useGame(props: UseGameProps) {
       if (correct) dispatch(increaseCorrectAnswers());
       setAnswer(selected);
     },
-    [
-      currentEmail,
-      currentScore,
-      dispatch,
-      isCorrectAnswer,
-      playerId,
-      stop,
-      updatePlayerMutation,
-    ],
+    [currentEmail, currentScore, dispatch, isCorrectAnswer, playerId, stop, updatePlayerMutation],
   );
 
   // Když vyprší čas na odpověď, považujeme to za špatnou odpověď.

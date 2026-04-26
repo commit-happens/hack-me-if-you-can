@@ -4,12 +4,26 @@
       "id": 1,
       "sender": "security@mybank-support.com",
       "subject": "Okamžité ověření účtu vyžadováno",
-      "content": "Vážený zákazníku, zaznamenali jsme neobvyklou aktivitu na vašem účtu. Klikněte prosím na tento odkaz a ověřte své údaje: [Ověřit účet](http://mybank-support.verify-login.example/confirm). Pokud neověříte do 24 hodin, dojde k omezení přístupu.",
+      "content": "Vážený zákazníku, zaznamenali jsme neobvyklou aktivitu na vašem účtu. Klikněte prosím na tento odkaz a ověřte své údaje: [Ověřit účet](http://mybank-support.verify-login.example/confirm). Pokud neověříte do {{24 hodin|time-pressure}}, dojde k omezení přístupu.",
       "explanation": "Adresa odesílatele a URL neodpovídají oficiální doméně banky (obsahují navíc '-support' a podivnou doménu). E-mail vyvolává umělý tlak časovým limitem (urgentní akce).",
       "penalty": 10,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 2, 4],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        2,
+        4
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "time-pressure",
+          "description": "Uměle vytvářený tlak časovým limitem (24 hodin) je typický znak phishingu. Legální instituce obvykle dávají více času a neposluhují touto taktiku."
+        },
+        {
+          "id": "domain-spoof",
+          "description": "Doména 'mybank-support.verify-login.example' není oficiální doménou banky. Legální bankovní e-maily pocházejí z domén přímo banky bez dodatečných prefixů jako '-support'."
+        }
+      ]
     },
     {
       "id": 2,
@@ -20,40 +34,80 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 3,
       "sender": "uctar@dodavatel-faktury.eu",
       "subject": "Faktura č. 78945 - SPLATNOST DNES!",
-      "content": "Dobrý den,\n\nv příloze zasíláme fakturu k okamžité úhradě. [Zaplaťte pohodlně online](http://pay-now.example/payment?id=78945). Pokud nebyla faktura očekávána, kontaktujte nás na +420 123 456 789.",
+      "content": "Dobrý den,\n\n{{v příloze zasíláme fakturu k okamžité úhradě.|type-3-1-falesna-faktura-falesny-}} [Zaplaťte pohodlně online](http://pay-now.example/payment?id=78945). Pokud nebyla faktura očekávána, kontaktujte nás na +420 123 456 789.",
       "explanation": "E-mail žádá o okamžitou platbu a obsahuje odkaz s nejasnou doménou. Pokud nejste očekávaný příjemce této faktury, ověřte informace přímo u známého kontaktu dodavatele. (Příloha a odkaz mohou být škodlivé.)",
       "penalty": 8,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [3, 2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        3,
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-3-1-falesna-faktura-falesny-",
+          "description": "Falešná faktura / falešný dokument: Kontroluj čísla faktur a dodavatele v účetním systému před úhradou."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 4,
       "sender": "notifications@sluzby.example.org",
       "subject": "Aktualizace podmínek služby",
-      "content": "Vážený uživateli,\n\naktualizovali jsme podmínky používání služby. [Přihlaste se a potvrďte změny](https://example.org/update).",
+      "content": "Vážený uživateli,\n\n{{aktualizovali jsme podmínky používání služby.|type-1-1-falesne-url-neodpovidaji}} [Přihlaste se a potvrďte změny](https://example.org/update).",
       "explanation": "URL obsahuje správnou doménu, ale odesílatel 'notifications@sluzby.example.org' je obecný a v textu chybí personalizace. Před kliknutím ověřte, zda jste skutečně registrovaným uživatelem a zda adresa odpovídá oficiální adrese služby.",
       "penalty": 3,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        }
+      ]
     },
     {
       "id": 5,
       "sender": "it-helpdesk@firma-corp.com",
       "subject": "Reset hesla - akce vyžadována",
-      "content": "Ahoj, administrátor požádal o reset vašeho hesla. Prosím [ověřte svou identitu](http://firma-corp.reset-password.example). Pokud jste o požadavek nežádali, ignorujte tento e-mail.",
+      "content": "{{Ahoj, administrátor požádal o reset vašeho hesla. Prosím|type-1-1-falesne-url-neodpovidaji}} [ověřte svou identitu](http://firma-corp.reset-password.example). Pokud jste o požadavek nežádali, ignorujte tento e-mail.",
       "explanation": "Adresa odkazu obsahuje 'reset-password' na podezřelé doméně, která není oficiální firemní doménou. Také chybí další informace pro ověření požadavku. To jsou typické znaky podvrženého požadavku na přihlášení.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 4, 2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        4,
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-4-2-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        },
+        {
+          "id": "type-2-3-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 6,
@@ -64,18 +118,32 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 7,
       "sender": "support@dodavatel-služeb.example",
       "subject": "Potvrďte změnu platebních údajů",
-      "content": "Dobrý den,\n\nžádáme o potvrzení nových platebních údajů. Pro ověření klikněte [zde](https://billing.dodavatel.example/verify?token=XYZ). Pokud si tuto změnu nepamatujete, ihned kontaktujte support.",
+      "content": "Dobrý den,\n\n{{žádáme o potvrzení nových platebních údajů. Pro ověření|type-1-1-falesne-url-neodpovidaji}} klikněte [zde](https://billing.dodavatel.example/verify?token=XYZ). Pokud si tuto změnu nepamatujete, ihned kontaktujte support.",
       "explanation": "I když odkaz vypadá jako 'billing.dodavatel.example', parametr token v URL a žádost o potvrzení platebních údajů může znamenat pokus o získání přihlašovacích nebo platebních dat. Ověřte změnu přímo u známeho kontaktu dodavatele, ne přes vložený odkaz.",
       "penalty": 7,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 5],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        5
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-5-2-personalizovany-utok-soc",
+          "description": "Personalizovaný útok (sociální inženýrství na míru): Kontroluj, zda informace v e-mailu odpovídají tomu, co sdílíš veřejně."
+        }
+      ]
     },
     {
       "id": 8,
@@ -86,40 +154,90 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 9,
       "sender": "promo@letenky-super.example",
       "subject": "Speciální nabídka: letenky od 199 € - platí jen 2 hodiny!",
-      "content": "Skvělá nabídka! Klikněte na [Získat letenku nyní](http://letenky-super.example/deal) a získejte letenku za bezkonkurenční akční cenu. Nabídka končí už za 2 hodiny.",
+      "content": "{{Skvělá nabídka! Klikněte na|type-2-1-urgentni-zadost-socialni}} [Získat letenku nyní](http://letenky-super.example/deal) a získejte letenku za bezkonkurenční akční cenu. Nabídka končí už za 2 hodiny.",
       "explanation": "Tento typ zpráv používá naléhavost a podezřelé 'příliš dobré' tvrzení. Nabídka s extrémně nízkou cenou je častým trikem pro přilákání kliknutí. Před rezervací ověřte důvěryhodnost prodejce a platební formuláře.",
       "penalty": 4,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [2, 1],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        2,
+        1
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-2-1-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-1-2-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        }
+      ]
     },
     {
       "id": 10,
       "sender": "alerts@paypal-security.example",
       "subject": "Ověřte platbu - podezřelá aktivita na vašem účtu",
-      "content": "Vážený uživateli,\n\nzaznamenali jsme podezřelou platbu z vašeho účtu PayPal. Pro zablokování transakce a obnovení přístupu klikněte prosím na následující odkaz a ověřte svou identitu: [https://www.paypal.com/signin](http://paypal-secure.verify-example.com/login). Pokud jste tuto transakci neprovedli, jedná se o podvod a musíte jednat okamžitě.\n\nDěkujeme,\nPayPal Security Team",
+      "content": "Vážený uživateli,\n\n{{zaznamenali jsme podezřelou platbu z vašeho účtu PayPal.|type-4-1-sber-prihlasovacich-udaj}} Pro zablokování transakce a obnovení přístupu klikněte prosím na následující odkaz a ověřte svou identitu: [https://www.paypal.com/signin](http://paypal-secure.verify-example.com/login). Pokud jste tuto transakci neprovedli, jedná se o podvod a musíte jednat okamžitě.\n\nDěkujeme,\nPayPal Security Team",
       "explanation": "Odkaz a doména neodpovídají oficiální doméně PayPal (obsahují dodatečné části a podezřelou doménu). Žádost o okamžité přihlášení a ověření je typický trik pro získání přihlašovacích údajů (fake login).",
       "penalty": 10,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [4, 1, 2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        4,
+        1,
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-4-1-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        },
+        {
+          "id": "type-1-2-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-2-3-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 11,
       "sender": "support@steam-rewards.com",
       "subject": "Získali jste bonusové kredity – potvrďte převzetí",
-      "content": "Ahoj,\n\nna váš Steam účet vám byly přiděleny **bonusové kredity**. Pro jejich aktivaci klikněte zde: [Aktivovat kredity](http://steam-rewards-confirmation.com/bonus).\n\nDěkujeme,\nSteam Team",
+      "content": "Ahoj,\n\n{{na váš Steam účet vám byly přiděleny **bonusové|type-1-1-falesne-url-neodpovidaji}} kredity**. Pro jejich aktivaci klikněte zde: [Aktivovat kredity](http://steam-rewards-confirmation.com/bonus).\n\nDěkujeme,\nSteam Team",
       "explanation": "Doména neodpovídá skutečné službě Steam (použita podvodná doména). Tlačí na rychlou akci.",
       "penalty": 8,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 2, 6],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        2,
+        6
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-6-3-soutezni-loterijni-phish",
+          "description": "Soutěžní / loterijní phishing: Buď skeptický k oznámením o výhrách v soutěžích, kterých jsi se neúčastnil."
+        }
+      ]
     },
     {
       "id": 12,
@@ -130,18 +248,32 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 13,
       "sender": "billing@eshop-prodejnalevne.cz",
       "subject": "Vaše objednávka byla pozastavena",
-      "content": "Dobrý den,\n\nobjednávka z vašeho účtu byla **pozastavena** kvůli chybě v platbě. Pro pokračování prosím potvrďte údaje: [Potvrdit platbu](http://eshop-verify-payment.info/confirm).\n\nTým podpory",
+      "content": "Dobrý den,\n\n{{objednávka z vašeho účtu byla **pozastavena** kvůli chybě|type-1-1-falesne-url-neodpovidaji}} v platbě. Pro pokračování prosím potvrďte údaje: [Potvrdit platbu](http://eshop-verify-payment.info/confirm).\n\nTým podpory",
       "explanation": "Vyžaduje zadání platebních údajů přes nedůvěryhodnou URL. Neexistující nebo podezřelá doména.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 3],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        3
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-3-2-falesna-faktura-falesny-",
+          "description": "Falešná faktura / falešný dokument: Kontroluj čísla faktur a dodavatele v účetním systému před úhradou."
+        }
+      ]
     },
     {
       "id": 14,
@@ -152,18 +284,32 @@
       "penalty": 2,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 15,
       "sender": "rcmodely-support@secure-check.com",
       "subject": "Nutná aktualizace účtu v RC Model Clubu",
-      "content": "Dobrý den,\n\ntento e-mail vyžaduje ověření vašeho účtu, jinak budete odstraněni z klubu. K ověření použijte tento odkaz: [Ověřit účet](http://rcmodel-verification.net/secure).\n\nRC Model Club",
+      "content": "Dobrý den,\n\n{{tento e-mail vyžaduje ověření vašeho účtu, jinak budete|type-1-1-falesne-url-neodpovidaji}} odstraněni z klubu. K ověření použijte tento odkaz: [Ověřit účet](http://rcmodel-verification.net/secure).\n\nRC Model Club",
       "explanation": "Použita generická a nedůvěryhodná doména, nátlak na okamžité ověření účtu.",
       "penalty": 10,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 4],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        4
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-4-2-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        }
+      ]
     },
     {
       "id": 16,
@@ -174,18 +320,32 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 17,
       "sender": "garden-support@update-panel.com",
       "subject": "Problém s objednávkou zahradního vybavení",
-      "content": "Dobrý den,\n\nve vaší poslední objednávce jsme zaznamenali problém. Klikněte sem a přihlaste se, abyste chybu odstranili: [Vyřešit problém](http://garden-fix-account.org/login).\n\nDěkujeme.",
+      "content": "Dobrý den,\n\n{{ve vaší poslední objednávce jsme zaznamenali problém. Klikněte|type-1-1-falesne-url-neodpovidaji}} sem a přihlaste se, abyste chybu odstranili: [Vyřešit problém](http://garden-fix-account.org/login).\n\nDěkujeme.",
       "explanation": "Podvodná URL a vyžadování přihlášení mimo skutečný e-shop.",
       "penalty": 8,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 5],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        5
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-5-2-personalizovany-utok-soc",
+          "description": "Personalizovaný útok (sociální inženýrství na míru): Kontroluj, zda informace v e-mailu odpovídají tomu, co sdílíš veřejně."
+        }
+      ]
     },
     {
       "id": 18,
@@ -196,18 +356,32 @@
       "penalty": 2,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 19,
       "sender": "support@fitness-center-security.com",
       "subject": "Pozastavené členství – nutná aktualizace údajů",
-      "content": "Dobrý den,\n\nz bezpečnostních důvodů bylo vaše členství dočasně pozastaveno. Pro pokračování prosím aktualizujte údaje: [Aktualizovat účet](http://fitness-members-update.info/login).\n\nDěkujeme.",
+      "content": "Dobrý den,\n\n{{z bezpečnostních důvodů bylo vaše členství dočasně pozastaveno.|type-1-1-falesne-url-neodpovidaji}} Pro pokračování prosím aktualizujte údaje: [Aktualizovat účet](http://fitness-members-update.info/login).\n\nDěkujeme.",
       "explanation": "Nátlak na aktualizaci účtu přes podezřelý odkaz a nedůvěryhodná doména.",
       "penalty": 7,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 4],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        4
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-4-2-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        }
+      ]
     },
     {
       "id": 20,
@@ -218,7 +392,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 21,
@@ -229,18 +404,32 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 22,
       "sender": "delivery@dhl-track-package.xyz",
       "subject": "Váš balík nemohl být doručen",
-      "content": "Vážený zákazníku,\n\nkurýr se pokusil doručit vaši zásilku, ale nebyl úspěšný z důvodu nezaplaceného cla (35 Kč). Pro opětovné doručení prosím [uhradte poplatek zde](http://dhl-payment-gateway.xyz/pay). Pokud neuhradíte do 24 hodin, balík bude vrácen odesílateli.",
+      "content": "Vážený zákazníku,\n\n{{kurýr se pokusil doručit vaši zásilku, ale nebyl|type-1-1-falesne-url-neodpovidaji}} úspěšný z důvodu nezaplaceného cla (35 Kč). Pro opětovné doručení prosím [uhradte poplatek zde](http://dhl-payment-gateway.xyz/pay). Pokud neuhradíte do 24 hodin, balík bude vrácen odesílateli.",
       "explanation": "Klasický smishing/phishing zaměřený na doručovací služby. Doména 'dhl-track-package.xyz' není oficiální web DHL. Částka je záměrně malá, aby ji lidé zaplatili bez přemýšlení, ale cílem je získat údaje z karty.",
       "penalty": 6,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 23,
@@ -251,18 +440,32 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 24,
       "sender": "reditel.jan.novak@gmail.com",
       "subject": "Prosba - urgentní",
-      "content": "Ahoj,\n\njsem momentálně na schůzce s klienty a nemůžu telefonovat. Potřebuji, abys pro mě rychle zařídil nákup dárkových karet Apple v hodnotě 5000 Kč pro partnery. Pošli mi kódy obratem, peníze ti proplatím hned zítra. Je to důležité.\n\nJan Novák\nCEO",
+      "content": "Ahoj,\n\n{{jsem momentálně na schůzce s klienty a nemůžu|type-2-1-urgentni-zadost-socialni}} telefonovat. Potřebuji, abys pro mě rychle zařídil nákup dárkových karet Apple v hodnotě 5000 Kč pro partnery. Pošli mi kódy obratem, peníze ti proplatím hned zítra. Je to důležité.\n\nJan Novák\nCEO",
       "explanation": "CEO Fraud (ředitelský podvod). Útočník se vydává za nadřízeného, ale píše z freemailu (gmail.com), nikoliv z firemní adresy. Vytváří tlak a žádá o nestandardní finanční transakci (nákup dárkových karet).",
       "penalty": 8,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [2, 5],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        2,
+        5
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-2-1-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-5-2-personalizovany-utok-soc",
+          "description": "Personalizovaný útok (sociální inženýrství na míru): Kontroluj, zda informace v e-mailu odpovídají tomu, co sdílíš veřejně."
+        }
+      ]
     },
     {
       "id": 25,
@@ -273,18 +476,37 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 26,
       "sender": "system@sharepoint-files-secure.net",
       "subject": "Kolega s vámi sdílí dokument: 'Plán_Bonusů_2024.xlsx'",
-      "content": "Dobrý den,\n\nuživatel HR (hr@nase-firma.cz) s vámi sdílí zabezpečený dokument na OneDrive.\n\n[Otevřít dokument](http://sharepoint-login.auth-secure.net/login)\n\nK zobrazení souboru je nutné se přihlásit vaším pracovním e-mailem.",
+      "content": "Dobrý den,\n\n{{uživatel HR (hr@nase-firma.cz) s vámi sdílí zabezpečený dokument|type-1-1-falesne-url-neodpovidaji}} na OneDrive.\n\n[Otevřít dokument](http://sharepoint-login.auth-secure.net/login)\n\nK zobrazení souboru je nutné se přihlásit vaším pracovním e-mailem.",
       "explanation": "Sofistikovaný útok na přihlašovací údaje (Credential Harvesting). Odkaz vede na podvodnou stránku imitující přihlášení do Microsoft 365/SharePointu. Doména odkazu je zcela cizí ('auth-secure.net').",
       "penalty": 10,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 4, 3],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        4,
+        3
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-4-2-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        },
+        {
+          "id": "type-3-3-falesna-faktura-falesny-",
+          "description": "Falešná faktura / falešný dokument: Kontroluj čísla faktur a dodavatele v účetním systému před úhradou."
+        }
+      ]
     },
     {
       "id": 27,
@@ -295,18 +517,37 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 28,
       "sender": "podpora@moje-banka-servis.eu",
       "subject": "Důležité: Vaše mobilní aplikace vyprší",
-      "content": "Vážený kliente,\n\nz důvodu přechodu na nový bezpečnostní standard přestane vaše aplikace zítra fungovat. Pro zachování přístupu k účtu je nutné [aktivovat nový klíč](http://mojebanka.aktualizace-app.eu/activator.exe) a nainstalovat aktualizaci do PC nebo mobilu.",
+      "content": "Vážený kliente,\n\n{{z důvodu přechodu na nový bezpečnostní standard přestane|type-1-1-falesne-url-neodpovidaji}} vaše aplikace zítra fungovat. Pro zachování přístupu k účtu je nutné [aktivovat nový klíč](http://mojebanka.aktualizace-app.eu/activator.exe) a nainstalovat aktualizaci do PC nebo mobilu.",
       "explanation": "Velmi nebezpečný e-mail. Nabádá ke stažení spustitelného souboru (.exe) nebo aplikace z neoficiálního zdroje, což téměř jistě povede k instalaci malwaru/viru. Banky nikdy neposílají aktualizace e-mailem jako soubor.",
       "penalty": 10,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 2, 4],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        2,
+        4
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-4-3-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        }
+      ]
     },
     {
       "id": 29,
@@ -317,95 +558,220 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 30,
       "sender": "admin@it-support-portal.com",
       "subject": "Vaše heslo expirovalo",
-      "content": "Upozornění systému: Vaše heslo vypršelo před 3 dny. Váš účet bude zablokován, pokud heslo neobnovíte okamžitě. Ponechte si stejné heslo nebo zadejte nové zde: [Obnovit heslo](http://it-support-portal.com.shady-link.net/reset).",
+      "content": "{{Upozornění systému: Vaše heslo vypršelo před 3 dny.|type-1-1-falesne-url-neodpovidaji}} Váš účet bude zablokován, pokud heslo neobnovíte okamžitě. Ponechte si stejné heslo nebo zadejte nové zde: [Obnovit heslo](http://it-support-portal.com.shady-link.net/reset).",
       "explanation": "Klasický trik s expirací hesla. Odkaz vypadá na první pohled důvěryhodně ('it-support-portal.com'), ale ve skutečnosti je to jen subdoména na 'shady-link.net'. Vytváří stres hrozbou zablokování.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 4],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        4
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-4-2-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        }
+      ]
     },
     {
       "id": 31,
       "sender": "eRecept@zdravotniportal-info.com",
       "subject": "Váš elektronický recept vyprší za 24 hodin",
-      "content": "Dobrý den,\n\nupozorňujeme vás, že platnost eReceptu na váš lék brzy vyprší. Pro prodloužení klikněte zde: [Prodloužit eRecept](http://erecept-prodlouzeni.example/verify).\n\nPokud recept neprodloužíte, nebude možné lék vydat.",
+      "content": "Dobrý den,\n\n{{upozorňujeme vás, že platnost eReceptu na váš lék|type-1-1-falesne-url-neodpovidaji}} brzy vyprší. Pro prodloužení klikněte zde: [Prodloužit eRecept](http://erecept-prodlouzeni.example/verify).\n\nPokud recept neprodloužíte, nebude možné lék vydat.",
       "explanation": "Zdravotnictví nikdy nevyžaduje prodlužování eReceptu přes externí odkazy. Doména není oficiální. Kombinace falešné URL a urgentní hrozby.",
       "penalty": 10,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 2, 4],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        2,
+        4
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-4-3-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        }
+      ]
     },
     {
       "id": 32,
       "sender": "urad@mojedatovkaservis.com",
       "subject": "Zpráva ve vaší datové schránce: vyzvednutí nutné",
-      "content": "Vážený uživateli,\n\nobdrželi jste novou datovou zprávu. Pro přihlášení použijte bezpečný přístup: [Přihlásit se do datové schránky](http://datovka-login.example/auth).\n\nZpráva bude automaticky smazána po 48 hodinách.",
+      "content": "Vážený uživateli,\n\n{{obdrželi jste novou datovou zprávu. Pro přihlášení použijte|type-4-1-sber-prihlasovacich-udaj}} bezpečný přístup: [Přihlásit se do datové schránky](http://datovka-login.example/auth).\n\nZpráva bude automaticky smazána po 48 hodinách.",
       "explanation": "Útočníci často napodobují datové schránky. Doména nemá nic společného s gov.cz. Sběr přihlašovacích údajů + urgence.",
       "penalty": 10,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [4, 1, 2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        4,
+        1,
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-4-1-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        },
+        {
+          "id": "type-1-2-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-2-3-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 33,
       "sender": "info@vseobecnazdrpoj.cz",
       "subject": "Nadstandardní doplatek za vyšetření",
-      "content": "Dobrý den,\n\nv systému evidujeme doplatek 125 Kč. Uhradit ho můžete zde: [Zaplatit doplatek](http://pojistovna-doplatek.example/payment).\n\nDěkujeme.",
+      "content": "Dobrý den,\n\n{{v systému evidujeme doplatek 125 Kč. Uhradit ho|type-3-1-falesna-faktura-falesny-}} můžete zde: [Zaplatit doplatek](http://pojistovna-doplatek.example/payment).\n\nDěkujeme.",
       "explanation": "Falešná faktura z pojišťovny – doména je neexistující, pojišťovny neposílají platební odkazy e-mailem.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [3, 1],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        3,
+        1
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-3-1-falesna-faktura-falesny-",
+          "description": "Falešná faktura / falešný dokument: Kontroluj čísla faktur a dodavatele v účetním systému před úhradou."
+        },
+        {
+          "id": "type-1-2-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        }
+      ]
     },
     {
       "id": 34,
       "sender": "info@prepravce-doplatek.cz",
       "subject": "Zásilka č. 4789 – nutný doplatek 19 Kč",
-      "content": "Dobrý den,\n\nk doručení vaší zásilky je potřeba doplatit 19 Kč. Zaplaťte zde: [Uhradit doplatek](http://moje-zasilka.example/pay).\n\nBez úhrady nebude možné zásilku vydat.",
+      "content": "Dobrý den,\n\n{{k doručení vaší zásilky je potřeba doplatit 19|type-3-1-falesna-faktura-falesny-}} Kč. Zaplaťte zde: [Uhradit doplatek](http://moje-zasilka.example/pay).\n\nBez úhrady nebude možné zásilku vydat.",
       "explanation": "Nízko částkové doplatky jsou pověstné mezi seniorskými podvody. Nejde o oficiální dopravce. Falešná URL + urgentní akce.",
       "penalty": 8,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [3, 1, 2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        3,
+        1,
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-3-1-falesna-faktura-falesny-",
+          "description": "Falešná faktura / falešný dokument: Kontroluj čísla faktur a dodavatele v účetním systému před úhradou."
+        },
+        {
+          "id": "type-1-2-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-2-3-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 35,
       "sender": "servis@televizniset-top.cz",
       "subject": "Vaše satelitní karta bude deaktivována",
-      "content": "Dobrý den,\n\nv systému nevidíme platnou autorizaci vaší satelitní karty. Pokračujte zde pro ověření: [Aktivovat kartu](http://tv-karta.example/activate).\n\nJinak může dojít k přerušení příjmu.",
+      "content": "Dobrý den,\n\n{{v systému nevidíme platnou autorizaci vaší satelitní karty.|type-4-1-sber-prihlasovacich-udaj}} Pokračujte zde pro ověření: [Aktivovat kartu](http://tv-karta.example/activate).\n\nJinak může dojít k přerušení příjmu.",
       "explanation": "Podvodníci využívají strach ze ztráty TV signálu. Doména je falešná, vyžaduje přihlášení – sběr přihlašovacích údajů.",
       "penalty": 8,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [4, 1],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        4,
+        1
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-4-1-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        },
+        {
+          "id": "type-1-2-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        }
+      ]
     },
     {
       "id": 36,
       "sender": "vnuk.pavel@rodina-alert.info",
       "subject": "Babí, potřebuju rychle poslat peníze",
-      "content": "Babi, prosím, stala se mi nepříjemnost a potřebuju půjčit trochu peněz. Tady můžeš poslat částku: [Poslat peníze](http://rychla-pomoc.example/send).\n\nOzvu se hned, jak budu moct.",
+      "content": "{{Babi, prosím, stala se mi nepříjemnost a potřebuju|type-5-1-personalizovany-utok-soc}} půjčit trochu peněz. Tady můžeš poslat částku: [Poslat peníze](http://rychla-pomoc.example/send).\n\nOzvu se hned, jak budu moct.",
       "explanation": "Personalizovaný útok typu 'vnuk volá o pomoc'. Emoční manipulace, falešná doména, urgentní sociální inženýrství.",
       "penalty": 10,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [5, 2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        5,
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-5-1-personalizovany-utok-soc",
+          "description": "Personalizovaný útok (sociální inženýrství na míru): Kontroluj, zda informace v e-mailu odpovídají tomu, co sdílíš veřejně."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 37,
       "sender": "info@obecni-urad-oznameni.com",
       "subject": "Poplatek za odpad – poslední výzva",
-      "content": "Dobrý den,\n\npoplatek za komunální odpad je nutné uhradit ještě dnes. Úhradu proveďte: [Zaplatit poplatek](http://obec-poplatek.example/pay).\n\nDěkujeme.",
+      "content": "Dobrý den,\n\n{{poplatek za komunální odpad je nutné uhradit ještě|type-3-1-falesna-faktura-falesny-}} dnes. Úhradu proveďte: [Zaplatit poplatek](http://obec-poplatek.example/pay).\n\nDěkujeme.",
       "explanation": "Obecní úřady nemají generické .com domény. Jde o falešnou fakturu + urgentní výhružku.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [3, 2, 1],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        3,
+        2,
+        1
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-3-1-falesna-faktura-falesny-",
+          "description": "Falešná faktura / falešný dokument: Kontroluj čísla faktur a dodavatele v účetním systému před úhradou."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-1-3-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        }
+      ]
     },
     {
       "id": 38,
@@ -416,84 +782,186 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 39,
       "sender": "bankovni.sluzba@ucet-bezpecne.com",
       "subject": "Nutné ověření platební karty",
-      "content": "Vážený klient,\n\nkvůli podezřelé aktivitě musíme ověřit vaši platební kartu. Proveďte prosím bezpečné ověření zde: [Ověřit kartu](http://bezpecna-karta.example/verify).\n\nJinak bude karta dočasně blokována.",
+      "content": "Vážený klient,\n\n{{kvůli podezřelé aktivitě musíme ověřit vaši platební kartu.|type-4-1-sber-prihlasovacich-udaj}} Proveďte prosím bezpečné ověření zde: [Ověřit kartu](http://bezpecna-karta.example/verify).\n\nJinak bude karta dočasně blokována.",
       "explanation": "Kombinace falešného loginu, získávání citlivých údajů a urgence. Banky nikdy neposílají ověřovací odkazy tímto způsobem.",
       "penalty": 10,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [4, 1, 2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        4,
+        1,
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-4-1-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        },
+        {
+          "id": "type-1-2-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-2-3-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 40,
       "sender": "hlidac-elektro@domacnost-servis.cz",
       "subject": "Hrozí přetížení domácí sítě – nutná kontrola",
-      "content": "Dobrý den,\n\nautomaticky jsme detekovali potenciální přetížení vaší elektrické sítě. Doporučujeme provést online kontrolu: [Zkontrolovat síť](http://elektricka-kontrola.example/check).\n\nPrevence chrání před požárem.",
+      "content": "Dobrý den,\n\n{{automaticky jsme detekovali potenciální přetížení vaší elektrické sítě.|type-2-1-urgentni-zadost-socialni}} Doporučujeme provést online kontrolu: [Zkontrolovat síť](http://elektricka-kontrola.example/check).\n\nPrevence chrání před požárem.",
       "explanation": "Podvod využívající strach o bezpečí domácnosti. Falešná URL, psychologický nátlak, neexistující služba.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [2, 1],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        2,
+        1
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-2-1-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-1-2-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        }
+      ]
     },
     {
       "id": 41,
       "sender": "bezpecnost@moje-banka-verifikace.com",
       "subject": "DŮLEŽITÉ: Váš účet byl dočasně omezen",
-      "content": "Vážený zákazníku, \n\nzaznamenali jsme podezřelé přihlášení k vašemu účtu. Pro obnovení přístupu prosím ověřte svou totožnost zde: [Ověřit účet](http://moje-banka-verify.com/login). Pokud akci neprovedete do 24 hodin, bude účet uzamčen.",
+      "content": "Vážený zákazníku, \n\n{{zaznamenali jsme podezřelé přihlášení k vašemu účtu. Pro|type-1-1-falesne-url-neodpovidaji}} obnovení přístupu prosím ověřte svou totožnost zde: [Ověřit účet](http://moje-banka-verify.com/login). Pokud akci neprovedete do 24 hodin, bude účet uzamčen.",
       "explanation": "Podezřelá doména, výzva k okamžitému ověření a hrozba uzamčení účtu. Typické znaky phishingu.",
       "penalty": 10,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [1, 2, 4],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        1,
+        2,
+        4
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-1-1-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-4-3-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        }
+      ]
     },
     {
       "id": 42,
       "sender": "billing@ucetni-portal-pay.net",
       "subject": "Faktura 2025/118 – vyžaduje okamžitou úhradu",
-      "content": "Dobrý den,\n\ndokument k faktuře naleznete zde: [Zobrazit fakturu](http://secure-faktura-pay.com/doc). Pokud nebude uhrazena do dnešního konce dne, dojde k omezení služeb.",
+      "content": "Dobrý den,\n\n{{dokument k faktuře naleznete zde:|type-3-1-falesna-faktura-falesny-}} [Zobrazit fakturu](http://secure-faktura-pay.com/doc). Pokud nebude uhrazena do dnešního konce dne, dojde k omezení služeb.",
       "explanation": "Odkaz vede na neznámou doménu a e-mail vytváří nepřirozený tlak. Žádná legitimní služba nevyžaduje platbu přes neověřený odkaz.",
       "penalty": 8,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [3, 2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        3,
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-3-1-falesna-faktura-falesny-",
+          "description": "Falešná faktura / falešný dokument: Kontroluj čísla faktur a dodavatele v účetním systému před úhradou."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 43,
       "sender": "noreply@m1crosoft-security.com",
       "subject": "Vyžaduje se reset vašeho Microsoft hesla",
-      "content": "Vážený uživateli,\n\nz důvodu nových bezpečnostních opatření je nutné resetovat vaše heslo. Pro pokračování klikněte zde: [Resetovat heslo](http://microsoft-security-reset.example/verify).",
+      "content": "Vážený uživateli,\n\n{{z důvodu nových bezpečnostních opatření je nutné resetovat|type-4-1-sber-prihlasovacich-udaj}} vaše heslo. Pro pokračování klikněte zde: [Resetovat heslo](http://microsoft-security-reset.example/verify).",
       "explanation": "Falešná doména (m1crosoft), žádost o rychlou akci a odkaz na podezřelou URL.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [4, 1, 2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        4,
+        1,
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-4-1-sber-prihlasovacich-udaj",
+          "description": "Sběr přihlašovacích údajů (falešný login): Nezadávej přihlašovací údaje na stránkách, které nejsou oficiální."
+        },
+        {
+          "id": "type-1-2-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        },
+        {
+          "id": "type-2-3-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 44,
       "sender": "ceskaposta@delivery-cz.net",
       "subject": "Doplatek 49 Kč – zásilka nemohla být doručena",
-      "content": "Vážený zákazníku,\n\npro doručení zásilky uhraďte doplatek 49 Kč zde: [Uhradit doplatek](http://posta-doruceni-cz.net/pay). Pokud nebude doplatek uhrazen do 48 hodin, zásilka bude vrácena odesílateli.",
+      "content": "Vážený zákazníku,\n\n{{pro doručení zásilky uhraďte doplatek 49 Kč zde:|type-2-1-urgentni-zadost-socialni}} [Uhradit doplatek](http://posta-doruceni-cz.net/pay). Pokud nebude doplatek uhrazen do 48 hodin, zásilka bude vrácena odesílateli.",
       "explanation": "Typický phishing: falešná doména, malá částka, tlak na rychlou akci.",
       "penalty": 6,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [2, 5],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        2,
+        5
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-2-1-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-5-2-personalizovany-utok-soc",
+          "description": "Personalizovaný útok (sociální inženýrství na míru): Kontroluj, zda informace v e-mailu odpovídají tomu, co sdílíš veřejně."
+        }
+      ]
     },
     {
       "id": 45,
       "sender": "vyherce@promo-rewards-win.com",
       "subject": "Gratulujeme! Vyhrál jste poukaz 5 000 Kč",
-      "content": "Dobrý den,\n\ntento unikátní poukaz lze aktivovat pouze dnes. Potvrďte prosím své údaje zde: [Aktivovat poukaz](http://reward-claim-win.com/activate).",
+      "content": "Dobrý den,\n\n{{tento unikátní poukaz lze aktivovat pouze dnes. Potvrďte|type-2-1-urgentni-zadost-socialni}} prosím své údaje zde: [Aktivovat poukaz](http://reward-claim-win.com/activate).",
       "explanation": "Extrémně lákavá nabídka, agresivní časový limit a podezřelá doména jsou klasické rysy podvodu.",
       "penalty": 7,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-2-1-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 46,
@@ -504,7 +972,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 47,
@@ -515,7 +984,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 48,
@@ -526,7 +996,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 49,
@@ -537,7 +1008,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 50,
@@ -548,62 +1020,148 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 51,
       "sender": "fakturace@dodavatel-kancelar.net",
       "subject": "Faktura za kancelářské potřeby – splatnost DNES",
-      "content": "Dobrý den,\n\nv příloze zasíláme fakturu č. 2025-0892 za dodané kancelářské potřeby. Částka 4 850 Kč je splatná ještě dnes. Pro rychlou úhradu použijte tento odkaz: [Zaplatit fakturu](http://faktura-platba-rychle.example/pay).\n\nDěkujeme za spolupráci.",
+      "content": "Dobrý den,\n\n{{v příloze zasíláme fakturu č. 2025-0892 za dodané|type-3-1-falesna-faktura-falesny-}} kancelářské potřeby. Částka 4 850 Kč je splatná ještě dnes. Pro rychlou úhradu použijte tento odkaz: [Zaplatit fakturu](http://faktura-platba-rychle.example/pay).\n\nDěkujeme za spolupráci.",
       "explanation": "Falešná faktura s nátlakem na okamžitou platbu. Doména odkazu je podezřelá a neodpovídá žádnému známému dodavateli. Vždy ověřte faktury přímo u dodavatele.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [3, 2, 1],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        3,
+        2,
+        1
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-3-1-falesna-faktura-falesny-",
+          "description": "Falešná faktura / falešný dokument: Kontroluj čísla faktur a dodavatele v účetním systému před úhradou."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-1-3-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        }
+      ]
     },
     {
       "id": 52,
       "sender": "loterie-vyhry@super-loterie.info",
       "subject": "Byli jste vylosováni! Výhra 50 000 Kč čeká",
-      "content": "Gratulujeme!\n\nVaše e-mailová adresa byla náhodně vylosována v naší mezinárodní loterii. Vyhráli jste 50 000 Kč! Pro převzetí výhry prosím vyplňte formulář: [Nárokovat výhru](http://loterie-vyzvedni.example/claim).\n\nVýhra propadá za 48 hodin.",
+      "content": "Gratulujeme!\n\n{{Vaše e-mailová adresa byla náhodně vylosována v naší|type-6-1-soutezni-loterijni-phish}} mezinárodní loterii. Vyhráli jste 50 000 Kč! Pro převzetí výhry prosím vyplňte formulář: [Nárokovat výhru](http://loterie-vyzvedni.example/claim).\n\nVýhra propadá za 48 hodin.",
       "explanation": "Klasický loterijní podvod. Uživatel se žádné loterie neúčastnil. Cílem je získat osobní údaje nebo platbu za 'poplatky' spojené s výhrou.",
       "penalty": 8,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [6, 2, 1],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        6,
+        2,
+        1
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-6-1-soutezni-loterijni-phish",
+          "description": "Soutěžní / loterijní phishing: Buď skeptický k oznámením o výhrách v soutěžích, kterých jsi se neúčastnil."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-1-3-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        }
+      ]
     },
     {
       "id": 53,
       "sender": "kolega.martin@firma-ext.com",
       "subject": "Urgentní – potřebuji tvou pomoc",
-      "content": "Ahoj,\n\nomlouvám se, že tě ruším, ale mám problém. Jsem na služební cestě a ztratil jsem peněženku. Potřeboval bych, abys mi poslal/a 3000 Kč přes tento odkaz: [Poslat peníze](http://pomoc-kolegovi.example/send). Vrátím ti to hned v pondělí.\n\nDíky moc,\nMartin",
+      "content": "Ahoj,\n\n{{omlouvám se, že tě ruším, ale mám problém.|type-5-1-personalizovany-utok-soc}} Jsem na služební cestě a ztratil jsem peněženku. Potřeboval bych, abys mi poslal/a 3000 Kč přes tento odkaz: [Poslat peníze](http://pomoc-kolegovi.example/send). Vrátím ti to hned v pondělí.\n\nDíky moc,\nMartin",
       "explanation": "Personalizovaný útok vydávající se za kolegu v nouzi. E-mail přichází z podezřelé domény (firma-ext.com místo firemní domény). Vždy ověřte identitu jiným kanálem.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [5, 2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        5,
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-5-1-personalizovany-utok-soc",
+          "description": "Personalizovaný útok (sociální inženýrství na míru): Kontroluj, zda informace v e-mailu odpovídají tomu, co sdílíš veřejně."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 54,
       "sender": "uctarna@nase-spolecnost-faktury.com",
       "subject": "Nezaplacená faktura – hrozí penále",
-      "content": "Vážený zákazníku,\n\nevidujeme u vás nezaplacenou fakturu č. FA-2025-445 ve výši 2 340 Kč. Pokud nebude uhrazena do konce dne, bude účtováno penále. Fakturu a platební údaje naleznete zde: [Zobrazit fakturu](http://faktury-splatnost.example/doc).\n\nS pozdravem,\nÚčtárna",
+      "content": "Vážený zákazníku,\n\n{{evidujeme u vás nezaplacenou fakturu č. FA-2025-445 ve|type-3-1-falesna-faktura-falesny-}} výši 2 340 Kč. Pokud nebude uhrazena do konce dne, bude účtováno penále. Fakturu a platební údaje naleznete zde: [Zobrazit fakturu](http://faktury-splatnost.example/doc).\n\nS pozdravem,\nÚčtárna",
       "explanation": "Falešná faktura s hrozbou penále pro vytvoření tlaku. Podezřelá doména a obecný text bez konkrétních údajů o společnosti.",
       "penalty": 8,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [3, 2, 1],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        3,
+        2,
+        1
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-3-1-falesna-faktura-falesny-",
+          "description": "Falešná faktura / falešný dokument: Kontroluj čísla faktur a dodavatele v účetním systému před úhradou."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-1-3-falesne-url-neodpovidaji",
+          "description": "Falešné URL / neodpovídající doména: Zkontroluj přesnou doménu odesílatele a odkazů (malá změna v názvu může znamenat podvrh)."
+        }
+      ]
     },
     {
       "id": 55,
       "sender": "soutez@elektronika-vyhraj.net",
       "subject": "Výherce soutěže o iPhone 15 Pro!",
-      "content": "Dobrý den,\n\nbyli jste vybráni jako výherce naší soutěže o iPhone 15 Pro! Pro dokončení registrace a odeslání výhry prosím uhraďte manipulační poplatek 299 Kč: [Dokončit registraci](http://iphone-vyhra-claim.example/pay).\n\nNabídka platí pouze 24 hodin.",
+      "content": "Dobrý den,\n\n{{byli jste vybráni jako výherce naší soutěže o|type-6-1-soutezni-loterijni-phish}} iPhone 15 Pro! Pro dokončení registrace a odeslání výhry prosím uhraďte manipulační poplatek 299 Kč: [Dokončit registraci](http://iphone-vyhra-claim.example/pay).\n\nNabídka platí pouze 24 hodin.",
       "explanation": "Soutěžní podvod vyžadující platbu za 'manipulační poplatek'. Legitimní soutěže nikdy nevyžadují platbu od výherce. Kombinace urgence a lákavé nabídky.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [6, 2, 3],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        6,
+        2,
+        3
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-6-1-soutezni-loterijni-phish",
+          "description": "Soutěžní / loterijní phishing: Buď skeptický k oznámením o výhrách v soutěžích, kterých jsi se neúčastnil."
+        },
+        {
+          "id": "type-2-2-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        },
+        {
+          "id": "type-3-3-falesna-faktura-falesny-",
+          "description": "Falešná faktura / falešný dokument: Kontroluj čísla faktur a dodavatele v účetním systému před úhradou."
+        }
+      ]
     },
     {
       "id": 56,
@@ -614,7 +1172,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 57,
@@ -625,7 +1184,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 58,
@@ -636,7 +1196,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 59,
@@ -647,7 +1208,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 60,
@@ -658,18 +1220,37 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 61,
       "sender": "vyhry@mobilni-soutez-cz.net",
       "subject": "Gratulujeme k výhře v soutěži O2!",
-      "content": "Dobrý den,\n\nbyli jste vybráni jako výherce naší soutěže O2 o Samsung Galaxy S24! Pro dokončení převzetí výhry prosím ověřte svou identitu a uhraďte poštovné 149 Kč: [Převzít výhru](http://o2-soutez-vyhra.example/claim).\n\nVýhra bude rezervována pouze 24 hodin.",
+      "content": "Dobrý den,\n\n{{byli jste vybráni jako výherce naší soutěže O2|type-6-1-soutezni-loterijni-phish}} o Samsung Galaxy S24! Pro dokončení převzetí výhry prosím ověřte svou identitu a uhraďte poštovné 149 Kč: [Převzít výhru](http://o2-soutez-vyhra.example/claim).\n\nVýhra bude rezervována pouze 24 hodin.",
       "explanation": "Podvodný e-mail vydávající se za operátora O2. Doména neodpovídá oficiální doméně O2, vyžaduje platbu za 'poštovné' a vytváří umělou urgenci. Legitimní soutěže nikdy nevyžadují platbu od výherce.",
       "penalty": 9,
       "phishingPlatformID": 1,
-      "phishingTypeIDs": [6, 3, 2],
-      "difficulty": 1
+      "phishingTypeIDs": [
+        6,
+        3,
+        2
+      ],
+      "difficulty": 1,
+      "problems": [
+        {
+          "id": "type-6-1-soutezni-loterijni-phish",
+          "description": "Soutěžní / loterijní phishing: Buď skeptický k oznámením o výhrách v soutěžích, kterých jsi se neúčastnil."
+        },
+        {
+          "id": "type-3-2-falesna-faktura-falesny-",
+          "description": "Falešná faktura / falešný dokument: Kontroluj čísla faktur a dodavatele v účetním systému před úhradou."
+        },
+        {
+          "id": "type-2-3-urgentni-zadost-socialni",
+          "description": "Urgentní žádost / sociální inženýrství: Buď podezřívavý k e-mailům vyžadujícím okamžitou akci."
+        }
+      ]
     },
     {
       "id": 62,
@@ -680,7 +1261,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 63,
@@ -691,7 +1273,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 64,
@@ -702,7 +1285,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 65,
@@ -713,7 +1297,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 66,
@@ -724,7 +1309,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 67,
@@ -735,7 +1321,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 68,
@@ -746,7 +1333,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 69,
@@ -757,7 +1345,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     },
     {
       "id": 70,
@@ -768,7 +1357,8 @@
       "penalty": 1,
       "phishingPlatformID": 1,
       "phishingTypeIDs": [],
-      "difficulty": 1
+      "difficulty": 1,
+      "problems": []
     }
   ]
 }

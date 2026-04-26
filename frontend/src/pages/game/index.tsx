@@ -40,7 +40,7 @@ function Game() {
     onFinish: () => navigate(getPagePath(Page.Results)),
   });
 
-  const { id, sender, subject, content, explanation } = currentEmail || {};
+  const { id, sender, subject, content, explanation, problems } = currentEmail || {};
 
   /** Zobrazí zpětnou vazbu na odpověď uživatele. */
   const renderFeedback = () => {
@@ -104,7 +104,13 @@ function Game() {
         totalQuestions={emailsOfDifficulty.length}
       />
       <div className="mx-auto mb-4">
-        <EmailTemplate key={id} sender={sender} subject={subject} content={content} />
+        <EmailTemplate
+          key={id}
+          sender={sender}
+          subject={subject}
+          content={content}
+          problems={answer ? problems : undefined}
+        />
       </div>
       {renderContent()}
     </Container>
