@@ -1,18 +1,14 @@
-import {
-  faCircleXmark,
-  faRepeat,
-  faTrophy,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCircleXmark, faRepeat, faTrophy } from "@fortawesome/free-solid-svg-icons";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons/faCheckCircle";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 import { Button, Card, Col, Container, Row } from "react-bootstrap";
-import useTranslation from "../../hooks/useTranslation";
+import useTranslation, { getText } from "../../hooks/useTranslation";
 import useResults from "./useResults";
 import LeaderBoard from "../leaderboard";
 
 const ResultsPage: React.FC = () => {
-  const { correctAnswers, wrongAnswers, total, successRate, score, playAgain } =
+  const { correctAnswers, wrongAnswers, total, successRate, score, potentialScore, playAgain } =
     useResults();
   const texts = useTranslation("results");
 
@@ -20,6 +16,7 @@ const ResultsPage: React.FC = () => {
     <Container className="mx-auto my-4 p-3 text-dark" as="main">
       <h3 className="mb-3 fs-3 fw-bold text-center">{texts.yourScore}</h3>
       <div className="text-center display-1 mb-4">{score}</div>
+      <p className="text-center">{getText(texts.youCouldHaveWon, [potentialScore])}</p>
 
       <Row className="g-3 mb-5 justify-content-center">
         <Col xs={12} md={6}>
@@ -52,11 +49,7 @@ const ResultsPage: React.FC = () => {
                   <hr />
                 </Col>
                 <Col xs={8}>
-                  <FontAwesomeIcon
-                    icon={faTrophy}
-                    aria-hidden="true"
-                    className="text-warning"
-                  />{" "}
+                  <FontAwesomeIcon icon={faTrophy} aria-hidden="true" className="text-warning" />{" "}
                   {texts.success}:
                 </Col>
                 <Col className="text-end">{successRate} %</Col>
@@ -72,8 +65,7 @@ const ResultsPage: React.FC = () => {
 
       <div className="text-center">
         <Button type="button" onClick={playAgain}>
-          <FontAwesomeIcon icon={faRepeat} aria-hidden="true" />{" "}
-          {texts.playAgain}
+          <FontAwesomeIcon icon={faRepeat} aria-hidden="true" /> {texts.playAgain}
         </Button>
       </div>
     </Container>

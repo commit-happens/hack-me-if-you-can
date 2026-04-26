@@ -15,6 +15,7 @@ const useResults = () => {
   const {
     correctAnswers,
     score: localScore,
+
     totalQuestions,
   } = useAppSelector((state) => state.game);
   const sessionId = useAppSelector(selectSessionId);
@@ -30,7 +31,8 @@ const useResults = () => {
 
   const total = totalQuestions;
   const wrongAnswers = total - correctAnswers;
-  const score = summaryQuery.data?.score ?? localScore;
+  const { score = localScore, potential_score: potentialScore = localScore } =
+    summaryQuery.data ?? {};
 
   const successRate = total > 0 ? Math.round((correctAnswers / total) * 100) : 0;
 
@@ -45,6 +47,7 @@ const useResults = () => {
     total,
     successRate,
     score,
+    potentialScore,
     playAgain,
   };
 };
