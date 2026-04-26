@@ -1,11 +1,18 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { RootState } from "../../store";
 import { getEnvConfigValue } from "../../utils/envConfig";
-import { updatePlayerScore } from "../../services/playerService";
 
 const gameQuestionsLimitDefault = getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20);
-const gameInitialScoreDefault = getEnvConfigValue("VITE_INITIAL_SCORE", 100);
+const gameInitialScoreDefault = 100;
+
+function createGameSessionId() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+
+  return `session-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
 
 interface GameState {
   score: number;
@@ -13,6 +20,7 @@ interface GameState {
   currentIndex: number;
   isPlaying: boolean;
   totalQuestions: number;
+  sessionId: string;
 }
 
 const initialState: GameState = {
@@ -21,23 +29,8 @@ const initialState: GameState = {
   currentIndex: 0,
   isPlaying: false,
   totalQuestions: gameQuestionsLimitDefault,
+  sessionId: "",
 };
-
-// Async thunk pro update skóre na backendu
-// Server-authoritativní update skóre: nejprve PATCH na backend, pak teprve upravíme lokální stav.
-export const updateScore = createAsyncThunk(
-  "game/updateScore",
-  async ({ playerId, scoreChange }: { playerId: number; scoreChange: number }, { getState }) => {
-    const state = getState() as RootState;
-    const currentScore = state.game.score;
-    const targetScore = currentScore + scoreChange;
-    console.log(
-      `Posílám na backend nové skóre hráče ${playerId}: ${currentScore} + (${scoreChange}) => ${targetScore}`,
-    );
-    const updated = await updatePlayerScore(playerId, targetScore);
-    return updated.score; // Vracíme absolutní skóre ze serveru
-  },
-);
 
 const gameSlice = createSlice({
   name: "game",
@@ -49,6 +42,7 @@ const gameSlice = createSlice({
       state.currentIndex = 0;
       state.correctAnswers = 0;
       state.totalQuestions = gameQuestionsLimitDefault;
+      state.sessionId = createGameSessionId();
     },
     endGame: (state) => {
       state.isPlaying = false;
@@ -67,14 +61,6 @@ const gameSlice = createSlice({
       state.score = action.payload;
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(updateScore.fulfilled, (state, action) => {
-      state.score = action.payload;
-    });
-    builder.addCase(updateScore.rejected, (_state, action) => {
-      console.error("Nepodařilo se aktualizovat skóre na backendu:", action.error);
-    });
-  },
 });
 
 export const {
@@ -90,6 +76,7 @@ export const {
 export const selectScore = (state: RootState) => state.game.score;
 export const selectCurrentIndex = (state: RootState) => state.game.currentIndex;
 export const selectIsPlaying = (state: RootState) => state.game.isPlaying;
+export const selectSessionId = (state: RootState) => state.game.sessionId;
 export const selectGameState = (state: RootState) => state.game;
 
 export default gameSlice.reducer;

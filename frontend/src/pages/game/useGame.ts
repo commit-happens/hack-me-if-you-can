@@ -7,14 +7,15 @@ import type { Translation } from "../../languages/csCZ";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   increaseCorrectAnswers,
+  selectSessionId,
   setCurrentIndex,
   setScore,
   setTotalQuestions,
 } from "../../store/slices/gameSlice";
 import { selectPlayerId } from "../../store/slices/playerSlice";
 import { getEnvConfigValue } from "../../utils/envConfig";
-import { useUpdatePlayer } from "../../services/generated/player-controller/player-controller";
-import { updatePlayerBody } from "../../services/generated-zod/player-controller/player-controller";
+import { useSubmitAnswer } from "../../services/generated/answer-controller/answer-controller";
+import { submitAnswerBody } from "../../services/generated-zod/answer-controller/answer-controller";
 import { faAlarmClock, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 export enum Answer {
@@ -109,7 +110,7 @@ export function useGame(props: UseGameProps) {
   const randomizedEmails = useMemo(() => allEmails.sort(() => Math.random() - 0.5), [allEmails]);
 
   const currentIndex = useAppSelector((state) => state.game.currentIndex);
-  const currentScore = useAppSelector((state) => state.game.score);
+  const sessionId = useAppSelector(selectSessionId);
 
   /** Z konfigurace si načteme čas na zodpovězení jedné otázky. */
   const timePerQuestion = Math.ceil(getEnvConfigValue("VITE_TIME_PER_QUESTION", 60) / difficulty);
@@ -121,15 +122,15 @@ export function useGame(props: UseGameProps) {
     },
   });
   const playerId = useAppSelector(selectPlayerId);
-  const updatePlayerMutation = useUpdatePlayer({
+  const submitAnswer = useSubmitAnswer({
     mutation: {
-      onSuccess: (player) => {
-        if (player.score != null) {
-          dispatch(setScore(player.score));
+      onSuccess: (answerResponse) => {
+        if (answerResponse.score != null) {
+          dispatch(setScore(answerResponse.score));
         }
       },
       onError: (error) => {
-        console.error("Nepodařilo se aktualizovat skóre na backendu:", error);
+        console.error("Nepodařilo se odeslat odpověď na backend:", error);
       },
     },
   });
@@ -231,27 +232,34 @@ export function useGame(props: UseGameProps) {
       stop();
 
       const correct = isCorrectAnswer(selected);
-      // Pozitivní bodování: za správnou odpověď získáváme reward
-      const scoreChange = correct ? currentEmail.reward : 0;
-
-      // Pokud je skóre zvýšeno a máme playerId, aktualizujeme backend
-      if (scoreChange && playerId) {
-        const targetScore = currentScore + scoreChange;
-        const sanitizedTargetScore = Math.max(0, targetScore);
-        console.log(`Špatná odpověď, aktualizuji skóre: ${sanitizedTargetScore}`);
-
-        updatePlayerMutation.mutate({
-          playerId,
-          data: updatePlayerBody.parse({
-            score: sanitizedTargetScore,
+      if (playerId) {
+        submitAnswer.mutate({
+          data: submitAnswerBody.parse({
+            player_id: playerId,
+            question_id: currentEmail.id,
+            session_id: sessionId,
+            is_phishing: selected === Answer.Phishing,
+            remain_time: Math.max(0, Math.min(timePerQuestion, remainingTime)),
           }),
         });
+      } else {
+        console.error("Nelze odeslat odpověď: chybí playerId.");
       }
 
       if (correct) dispatch(increaseCorrectAnswers());
       setAnswer(selected);
     },
-    [currentEmail, currentScore, dispatch, isCorrectAnswer, playerId, stop, updatePlayerMutation],
+    [
+      currentEmail,
+      dispatch,
+      isCorrectAnswer,
+      playerId,
+      remainingTime,
+      sessionId,
+      stop,
+      submitAnswer,
+      timePerQuestion,
+    ],
   );
 
   // Když vyprší čas na odpověď, považujeme to za špatnou odpověď.
