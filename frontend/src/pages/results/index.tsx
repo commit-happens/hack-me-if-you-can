@@ -15,10 +15,14 @@ const ResultsPage: React.FC = () => {
   return (
     <Container className="mx-auto my-4 p-3 text-dark" as="main">
       <h3 className="mb-3 fs-3 fw-bold text-center">{texts.yourScore}</h3>
-      <div className="text-center display-1 mb-4">{score}</div>
-      <p className="text-center">{getText(texts.youCouldHaveWon, [potentialScore])}</p>
+      <div className="text-center display-1">{score}</div>
+      {potentialScore > score && (
+        <p className="text-center fw-bold mb-4 text-info">
+          {getText(texts.youCouldHaveWon, [potentialScore])}
+        </p>
+      )}
 
-      <Row className="g-3 mb-5 justify-content-center">
+      <Row className="g-3 mt-4 mb-5 justify-content-center">
         <Col xs={12} md={6}>
           <Card>
             <Card.Body className="fs-5 fw-semibold">
