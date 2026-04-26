@@ -17,7 +17,7 @@ module.exports = {
       schemas: "src/services/generated/model",
       client: "react-query",
       mode: "tags-split",
-      clean: true,
+      clean: false,
       override: {
         mutator: {
           path: "src/services/httpClient.ts",
