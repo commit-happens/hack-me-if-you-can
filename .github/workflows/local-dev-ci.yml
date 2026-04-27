@@ -64,7 +64,7 @@ jobs:
             
             # Čekáme na start backendu
             echo "Waiting for backend to start..."
-            until curl -sf http://localhost:8080/api/hello; do
+            until curl -sf http://localhost:8080/hello; do
               # Zkontrolujeme, jestli proces stále běží
               if ! kill -0 $BACKEND_PID 2>/dev/null; then
                 echo "Backend process died!"
@@ -76,12 +76,12 @@ jobs:
             echo "Backend is running!"
             
             # Test API endpointů
-            echo "Testing /api/hello..."
-            curl -sf http://localhost:8080/api/hello
+            echo "Testing /hello..."
+            curl -sf http://localhost:8080/hello
             echo ""
             
-            echo "Testing /api/players..."
-            curl -sf http://localhost:8080/api/players | head -c 500
+            echo "Testing /players..."
+            curl -sf http://localhost:8080/players | head -c 500
             echo ""
             
             # Ukončíme backend

@@ -8,15 +8,14 @@ import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   increaseCorrectAnswers,
   setCurrentIndex,
+  setScore,
   setTotalQuestions,
-  updateScore,
 } from "../../store/slices/gameSlice";
 import { selectPlayerId } from "../../store/slices/playerSlice";
 import { getEnvConfigValue } from "../../utils/envConfig";
-import {
-  faAlarmClock,
-  type IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
+import { useUpdatePlayer } from "../../services/generated/player-controller/player-controller";
+import { updatePlayerBody } from "../../services/generated-zod/player-controller/player-controller";
+import { faAlarmClock, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 export enum Answer {
   Phishing = "phishing",
@@ -98,6 +97,7 @@ export function useGame(props: UseGameProps) {
   );
 
   const currentIndex = useAppSelector((state) => state.game.currentIndex);
+  const currentScore = useAppSelector((state) => state.game.score);
 
   /** Z konfigurace si načteme čas na zodpovězení jedné otázky. */
   const timePerQuestion = Math.ceil(
@@ -111,14 +111,24 @@ export function useGame(props: UseGameProps) {
     },
   });
   const playerId = useAppSelector(selectPlayerId);
+  const updatePlayerMutation = useUpdatePlayer({
+    mutation: {
+      onSuccess: (player) => {
+        if (player.score != null) {
+          dispatch(setScore(player.score));
+        }
+      },
+      onError: (error) => {
+        console.error("Nepodařilo se aktualizovat skóre na backendu:", error);
+      },
+    },
+  });
 
   const questionsLimit = getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20);
 
   const emailsOfDifficulty = useMemo(() => {
     const filteredQuestions = randomizedEmails.filter(
-      (item) =>
-        item.difficulty === difficulty &&
-        item.phishingPlatformID === platformId,
+      (item) => item.difficulty === difficulty && item.phishingPlatformID === platformId,
     );
 
     if (questionsLimit > 0 && questionsLimit < filteredQuestions.length) {
@@ -164,23 +174,18 @@ export function useGame(props: UseGameProps) {
    */
   const isLastEmail = currentIndex === totalEmails - 1;
 
-  const continueButtonLabel = isLastEmail
-    ? texts.buttons.showResults
-    : texts.buttons.continue;
+  const continueButtonLabel =
+    isLastEmail ? texts.buttons.showResults : texts.buttons.continue;
 
   /** Definice barev pro upozornění na zbývající čas pro zodpovězení otázky. */
 
   const timeoutWarningThresholds: TimeOutWarningThreshold[] = [
     {
-      secondsRemaining: Math.round(
-        timePerQuestion / criticalTimeThresholdDivisor,
-      ),
+      secondsRemaining: Math.round(timePerQuestion / criticalTimeThresholdDivisor),
       colorVariant: "danger",
     },
     {
-      secondsRemaining: Math.round(
-        timePerQuestion / warningTimeThresholdDivisor,
-      ),
+      secondsRemaining: Math.round(timePerQuestion / warningTimeThresholdDivisor),
       colorVariant: "warning",
     },
   ];
@@ -223,14 +228,30 @@ export function useGame(props: UseGameProps) {
 
       // Pokud je skóre sníženo a máme playerId, aktualizujeme backend
       if (scoreChange && playerId) {
-        console.log(`Špatná odpověď, aktualizuji skóre: ${scoreChange}`);
-        dispatch(updateScore({ playerId, scoreChange }));
+        const targetScore = currentScore + scoreChange;
+        const sanitizedTargetScore = Math.max(0, targetScore);
+        console.log(`Špatná odpověď, aktualizuji skóre: ${sanitizedTargetScore}`);
+
+        updatePlayerMutation.mutate({
+          playerId,
+          data: updatePlayerBody.parse({
+            score: sanitizedTargetScore,
+          }),
+        });
       }
 
       if (correct) dispatch(increaseCorrectAnswers());
       setAnswer(selected);
     },
-    [currentEmail, dispatch, isCorrectAnswer, playerId, stop],
+    [
+      currentEmail,
+      currentScore,
+      dispatch,
+      isCorrectAnswer,
+      playerId,
+      stop,
+      updatePlayerMutation,
+    ],
   );
 
   // Když vyprší čas na odpověď, považujeme to za špatnou odpověď.
@@ -256,13 +277,7 @@ export function useGame(props: UseGameProps) {
     }
 
     dispatch(setCurrentIndex(currentIndex + 1));
-  }, [
-    currentIndex,
-    dispatch,
-    emailsOfDifficulty.length,
-    isLastEmail,
-    onFinish,
-  ]);
+  }, [currentIndex, dispatch, emailsOfDifficulty.length, isLastEmail, onFinish]);
 
   return {
     currentEmail,

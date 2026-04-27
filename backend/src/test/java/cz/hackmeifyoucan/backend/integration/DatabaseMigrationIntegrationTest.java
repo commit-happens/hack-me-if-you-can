@@ -1,0 +1,172 @@
+package cz.hackmeifyoucan.backend.integration;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest
+@ActiveProfiles("test")
+class DatabaseMigrationIntegrationTest {
+
+    private static final String TEMP_PLAYER_NICK = "migration_default_score_probe";
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Test
+    void given_flyway_migrations_when_applied_then_players_table_should_have_seed_data() {
+        Integer playerCount = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM players",
+            Integer.class
+        );
+
+        assertThat(playerCount)
+            .as("Players table should contain seed data")
+            .isNotNull()
+            .isGreaterThanOrEqualTo(90);
+    }
+
+    @Test
+    void given_flyway_migrations_when_applied_then_questions_should_use_only_supported_platform_type_ids() {
+        Integer invalidPlatformTypeIds = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM questions WHERE platform_type_id NOT IN (1, 2)",
+            Integer.class
+        );
+
+        assertThat(invalidPlatformTypeIds)
+            .as("Questions should use only enum platform type ids (1=email, 2=sms)")
+            .isNotNull()
+            .isEqualTo(0);
+    }
+
+    @Test
+    void given_flyway_migrations_when_applied_then_phishing_categories_table_should_have_data() {
+        Integer categoryCount = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM phishing_categories",
+            Integer.class
+        );
+
+        assertThat(categoryCount)
+            .as("Phishing categories table should contain all defined categories")
+            .isNotNull()
+            .isEqualTo(7);
+    }
+
+    @Test
+    void given_flyway_migrations_when_applied_then_questions_table_should_have_expected_count() {
+        Integer questionCount = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM questions",
+            Integer.class
+        );
+
+        assertThat(questionCount)
+            .as("Questions table should contain all seeded questions from V2 migration")
+            .isNotNull()
+            .isGreaterThanOrEqualTo(70);
+    }
+
+    @Test
+    void given_flyway_migrations_when_applied_then_question_to_categories_junction_table_should_have_mappings() {
+        Integer mappingCount = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM question_to_categories",
+            Integer.class
+        );
+
+        assertThat(mappingCount)
+            .as("Question to categories junction table should have mappings for all questions")
+            .isNotNull()
+            .isGreaterThanOrEqualTo(70);
+    }
+
+
+    @Test
+    void given_flyway_migrations_when_applied_then_questions_should_have_required_fields() {
+        Integer invalidQuestions = jdbcTemplate.queryForObject(
+            """
+            SELECT COUNT(*)
+            FROM questions
+            WHERE content IS NULL
+               OR content = ''
+               OR explanation IS NULL
+               OR explanation = ''
+               OR platform_type_id IS NULL
+            """,
+            Integer.class
+        );
+
+        assertThat(invalidQuestions)
+            .as("All questions should have required fields filled")
+            .isNotNull()
+            .isEqualTo(0);
+    }
+
+    @Test
+    void given_flyway_migrations_when_applied_then_phishing_categories_should_have_unique_tags() {
+        Integer duplicateTags = jdbcTemplate.queryForObject(
+            """
+            SELECT COUNT(*)
+            FROM (
+                SELECT tag
+                FROM phishing_categories
+                GROUP BY tag
+                HAVING COUNT(*) > 1
+            ) AS duplicates
+            """,
+            Integer.class
+        );
+
+        assertThat(duplicateTags)
+            .as("All phishing category tags should be unique")
+            .isNotNull()
+            .isEqualTo(0);
+    }
+
+    @Test
+    void given_flyway_migrations_when_applied_then_phishing_categories_should_have_reward_points() {
+        Integer missingRewardPoints = jdbcTemplate.queryForObject(
+            "SELECT COUNT(*) FROM phishing_categories WHERE reward_points IS NULL OR reward_points <= 0",
+            Integer.class
+        );
+
+        assertThat(missingRewardPoints)
+            .as("All phishing categories should have positive reward_points")
+            .isNotNull()
+            .isEqualTo(0);
+    }
+
+    @Test
+    void given_flyway_migrations_when_applied_then_answers_table_should_exist() {
+        Integer tableExists = jdbcTemplate.queryForObject(
+            """
+            SELECT COUNT(*)
+            FROM information_schema.tables
+            WHERE table_schema = 'public' AND table_name = 'answers'
+            """,
+            Integer.class
+        );
+
+        assertThat(tableExists)
+            .as("Answers table should exist")
+            .isNotNull()
+            .isEqualTo(1);
+    }
+
+    @Test
+    void given_player_insert_without_score_when_inserting_then_default_score_should_be_200() {
+        jdbcTemplate.update("DELETE FROM players WHERE nickname = ?", TEMP_PLAYER_NICK);
+        Integer createdScore = jdbcTemplate.queryForObject(
+            "INSERT INTO players (nickname) VALUES (?) RETURNING score",
+            Integer.class,
+            TEMP_PLAYER_NICK
+        );
+
+        assertThat(createdScore)
+            .as("Players default score should be 200")
+            .isEqualTo(200);
+    }
+}
+

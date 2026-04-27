@@ -47,37 +47,50 @@ jobs:
       - name: Wait for Backend to be healthy
         run: |
           echo "Waiting for Backend..."
-          timeout 120 bash -c 'until curl -sf http://localhost:8080/api/hello; do sleep 5; done'
+          timeout 120 bash -c 'until curl -sf http://localhost:8080/hello; do sleep 5; done'
           echo "Backend is ready!"
 
       - name: Check Backend API response
         run: |
-          echo "Testing /api/hello endpoint..."
-          curl -sf http://localhost:8080/api/hello
+          echo "Testing /hello endpoint..."
+          curl -sf http://localhost:8080/hello
           echo ""
-          echo "Testing /api/players endpoint..."
-          curl -sf http://localhost:8080/api/players | head -c 500
+          echo "Testing /players endpoint..."
+          curl -sf http://localhost:8080/players | head -c 500
           echo ""
+          echo "✅ Backend API is responding"
 
       - name: Check Flyway migrations applied
         run: |
           echo "Checking Flyway migration status..."
           docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -c "SELECT version, description, success FROM flyway_schema_history ORDER BY installed_rank;"
+          echo "✅ Flyway migrations applied successfully"
 
-      - name: Check players table has data
+      - name: Verify database initialization (basic counts)
         run: |
-          echo "Checking players table..."
+          echo "🔍 Verifying Docker Compose database initialization..."
+          
+          # Check players table
           PLAYER_COUNT=$(docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM players;" | tr -d '[:space:]')
-          echo "Player count: '$PLAYER_COUNT'"
-          if [ -z "$PLAYER_COUNT" ] || [ "$PLAYER_COUNT" -lt 1 ]; then
-            echo "ERROR: No players found in database!"
-            echo "Debug: Checking if table exists..."
-            docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -c "\dt players"
-            echo "Debug: Showing first 5 rows..."
-            docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -c "SELECT * FROM players LIMIT 5;"
-            exit 1
-          fi
-          echo "✅ Database has $PLAYER_COUNT players"
+          echo "Players: $PLAYER_COUNT"
+          [ "$PLAYER_COUNT" -ge 90 ] || { echo "❌ Expected 90 players initialized with seed data"; exit 1; }
+          
+          # Check phishing_categories table
+          CATEGORY_COUNT=$(docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM phishing_categories;" | tr -d '[:space:]')
+          echo "Phishing categories: $CATEGORY_COUNT"
+          [ "$CATEGORY_COUNT" -eq 7 ] || { echo "❌ Expected 7 phishing categories, got $CATEGORY_COUNT"; exit 1; }
+          
+          # Check questions table
+          QUESTION_COUNT=$(docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM questions;" | tr -d '[:space:]')
+          echo "Questions: $QUESTION_COUNT"
+          [ "$QUESTION_COUNT" -eq 70 ] || { echo "❌ Expected 70 questions, got $QUESTION_COUNT"; exit 1; }
+          
+          # Check question_to_categories junction table
+          MAPPING_COUNT=$(docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM question_to_categories;" | tr -d '[:space:]')
+          echo "Question-to-category mappings: $MAPPING_COUNT"
+          [ "$MAPPING_COUNT" -ge 70 ] || { echo "❌ Expected at least 70 mappings, got $MAPPING_COUNT"; exit 1; }
+          
+          echo "✅ Docker Compose database properly initialized with expected data"
 
       - name: Wait for Frontend to be healthy
         run: |
