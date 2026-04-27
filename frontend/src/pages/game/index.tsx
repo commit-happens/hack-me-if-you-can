@@ -62,11 +62,7 @@ function Game() {
           {renderFeedback()}
           {explanation}
           <div style={{ textAlign: "center" }} className="mt-4">
-            <Button
-              onClick={() => handleContinue()}
-              onKeyDown={(e) => e.key === "Space" && handleContinue()}
-              autoFocus
-            >
+            <Button onClick={() => handleContinue()} autoFocus>
               {isLastEmail ? texts.buttons.showResults : texts.buttons.continue}{" "}
               <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" />
             </Button>

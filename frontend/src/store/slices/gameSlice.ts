@@ -41,6 +41,7 @@ const gameSlice = createSlice({
       state.correctAnswers = 0;
       state.totalQuestions = gameQuestionsLimitDefault;
       state.sessionId = createGameSessionId();
+      state.score = 0;
     },
     endGame: (state) => {
       state.isPlaying = false;
