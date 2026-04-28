@@ -9,12 +9,11 @@ import org.springframework.util.StringUtils;
 
 import cz.hackmeifyoucan.backend.common.ScoringConstants;
 import cz.hackmeifyoucan.backend.dto.PlayerRequest;
-import cz.hackmeifyoucan.backend.dto.PlayerUpdateRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerResponse;
 import cz.hackmeifyoucan.backend.dto.PlayerSummaryResponse;
 import cz.hackmeifyoucan.backend.entity.Player;
-import cz.hackmeifyoucan.backend.exception.PlayerNotFoundException;
 import cz.hackmeifyoucan.backend.exception.DuplicateNicknameException;
+import cz.hackmeifyoucan.backend.exception.PlayerNotFoundException;
 import cz.hackmeifyoucan.backend.repository.AnswerRepository;
 import cz.hackmeifyoucan.backend.repository.PlayerRepository;
 import cz.hackmeifyoucan.backend.service.PlayerService;
@@ -38,51 +37,33 @@ public class PlayerServiceImpl implements PlayerService {
         }
         Player player = new Player();
         player.setNickname(playerRequest.nickname());
-        player.setScore(ScoringConstants.INITIAL_SCORE);
         Player savedPlayer = playerRepository.save(player);
-        return convertToResponse(savedPlayer);
+        return convertToResponse(savedPlayer, ScoringConstants.INITIAL_SCORE);
     }
 
     @Override
     public PlayerResponse getPlayerById(Long playerId) {
         Player player = findPlayerOrThrow(playerId);
-        return convertToResponse(player);
+        int score = ScoringConstants.INITIAL_SCORE + answerRepository.sumEarnedPointsByPlayer(playerId);
+        return convertToResponse(player, score);
     }
 
     @Override
     public List<PlayerResponse> getPlayers() {
         List<PlayerResponse> responseList = new ArrayList<>();
-        Iterable<Player> allPlayers = playerRepository.findAll();
-        for (Player player : allPlayers) {
-            PlayerResponse response = convertToResponse(player);
-            responseList.add(response);
+        for (Player player : playerRepository.findAll()) {
+            int score = ScoringConstants.INITIAL_SCORE + answerRepository.sumEarnedPointsByPlayer(player.getId());
+            responseList.add(convertToResponse(player, score));
         }
         return responseList;
     }
 
     @Override
-    @Transactional
-    public PlayerResponse updatePlayer(Long playerId, PlayerUpdateRequest request) {
-        Player player = findPlayerOrThrow(playerId);
-        if (request.nickname() != null && !request.nickname().isBlank()) {
-            if (!request.nickname().equals(player.getNickname()) && playerRepository.existsByNickname(request.nickname())) {
-                throw new DuplicateNicknameException(request.nickname());
-            }
-            player.setNickname(request.nickname());
-        }
-        if (request.score() != null) {
-            player.setScore(request.score());
-        }
-        Player updatedPlayer = playerRepository.save(player);
-        return convertToResponse(updatedPlayer);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public PlayerSummaryResponse getPlayerSummary(Long playerId, String sessionId) {
-        Player player = findPlayerOrThrow(playerId);
+        findPlayerOrThrow(playerId);
         if (!StringUtils.hasText(sessionId)) {
-            int currentScore = player.getScore();
+            int currentScore = ScoringConstants.INITIAL_SCORE + answerRepository.sumEarnedPointsByPlayer(playerId);
             return new PlayerSummaryResponse(playerId, null, currentScore, currentScore);
         }
         int score = ScoringConstants.INITIAL_SCORE + answerRepository.sumEarnedPointsByPlayerAndSession(playerId, sessionId);
@@ -95,12 +76,8 @@ public class PlayerServiceImpl implements PlayerService {
                 .orElseThrow(() -> new PlayerNotFoundException(playerId));
     }
 
-    private PlayerResponse convertToResponse(Player player) {
-        return new PlayerResponse(
-            player.getId(),
-            player.getNickname(),
-            player.getScore()
-        );
+    private PlayerResponse convertToResponse(Player player, int score) {
+        return new PlayerResponse(player.getId(), player.getNickname(), score);
     }
 
 }
