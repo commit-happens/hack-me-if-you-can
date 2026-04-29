@@ -71,11 +71,7 @@ public class AnswerServiceImpl implements AnswerService {
             throw new DuplicateAnswerException(request.playerId(), request.questionId(), request.sessionId());
         }
 
-        playerRepository.incrementScoreAtomically(player.getId(), ScoringConstants.INITIAL_SCORE, earnedPoints);
-        Integer updatedScore = playerRepository.findScoreById(player.getId());
-        if (updatedScore == null) {
-            throw new PlayerNotFoundException(player.getId());
-        }
+        int updatedScore = ScoringConstants.INITIAL_SCORE + answerRepository.sumEarnedPointsByPlayer(player.getId());
 
         return new AnswerResponse(answerCorrect, updatedScore);
     }

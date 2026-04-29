@@ -57,9 +57,6 @@ public class Question {
     @Convert(converter = DifficultyConverter.class)
     private Difficulty difficulty;
 
-    @Column(name = "penalty", nullable = false)
-    private int penalty;
-
     @Column(name = "content", nullable = false, length = 1000)
     private String content;
 

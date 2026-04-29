@@ -15,6 +15,13 @@ public interface AnswerRepository extends JpaRepository<Answer, AnswerId> {
             SELECT COALESCE(SUM(earned_points), 0)
             FROM answers
             WHERE player_id = :playerId
+            """, nativeQuery = true)
+    int sumEarnedPointsByPlayer(@Param("playerId") Long playerId);
+
+    @Query(value = """
+            SELECT COALESCE(SUM(earned_points), 0)
+            FROM answers
+            WHERE player_id = :playerId
               AND session_id = :sessionId
             """, nativeQuery = true)
     int sumEarnedPointsByPlayerAndSession(@Param("playerId") Long playerId, @Param("sessionId") String sessionId);
