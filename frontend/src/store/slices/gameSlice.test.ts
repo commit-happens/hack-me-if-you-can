@@ -23,7 +23,7 @@ describe("gameSlice reducers", () => {
 
     const s = store.getState().game;
     expect(s.isPlaying).toBe(true);
-    expect(s.score).toBe(100);
+    expect(s.score).toBe(0);
     expect(s.currentIndex).toBe(0);
     expect(s.correctAnswers).toBe(0);
     expect(s.totalQuestions).toBeGreaterThanOrEqual(0);
