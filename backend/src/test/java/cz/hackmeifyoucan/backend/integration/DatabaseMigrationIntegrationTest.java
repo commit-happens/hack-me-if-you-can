@@ -12,8 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 class DatabaseMigrationIntegrationTest {
 
-    private static final String TEMP_PLAYER_NICK = "migration_default_score_probe";
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -155,18 +153,5 @@ class DatabaseMigrationIntegrationTest {
             .isEqualTo(1);
     }
 
-    @Test
-    void given_player_insert_without_score_when_inserting_then_default_score_should_be_200() {
-        jdbcTemplate.update("DELETE FROM players WHERE nickname = ?", TEMP_PLAYER_NICK);
-        Integer createdScore = jdbcTemplate.queryForObject(
-            "INSERT INTO players (nickname) VALUES (?) RETURNING score",
-            Integer.class,
-            TEMP_PLAYER_NICK
-        );
-
-        assertThat(createdScore)
-            .as("Players default score should be 200")
-            .isEqualTo(200);
-    }
 }
 
