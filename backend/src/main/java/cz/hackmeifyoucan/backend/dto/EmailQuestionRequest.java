@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Positive;
+import cz.hackmeifyoucan.backend.enums.Difficulty;
 
 @Schema(description = "Request pro vytvoření emailové otázky")
 public record EmailQuestionRequest(
@@ -28,16 +30,19 @@ public record EmailQuestionRequest(
         @Size(max = 2000, message = "explanation nesmí překročit 2000 znaků")
         String explanation,
 
-        @Schema(description = "Tag kategorie (case-insensitive).", example = "URGENT")
-        @NotBlank(message = "category_tag je povinné")
+        @Schema(description = "ID kategorie (volitelné, pokud není poslán tag).", example = "1")
+        @Positive(message = "category_id musí být kladné číslo")
+        @JsonProperty("category_id")
+        Long categoryId,
+
+        @Schema(description = "Tag kategorie (case-insensitive). Pokud není poslán id, použije se tag.", example = "URGENT")
         @Size(max = 30, message = "category_tag nesmí překročit 30 znaků")
         @JsonProperty("category_tag")
         String categoryTag,
 
-        @Schema(description = "Obtížnost", example = "HARD", allowableValues = {"EASY", "MEDIUM", "HARD"})
-        @NotBlank(message = "difficulty je povinné")
-        @Size(max = 20, message = "difficulty nesmí překročit 20 znaků")
-        String difficulty,
+        @Schema(description = "Obtížnost", example = "HARD")
+        @NotNull(message = "difficulty je povinné")
+        Difficulty difficulty,
 
         @Schema(description = "Indikace phishingu", example = "true")
         @NotNull(message = "is_phishing je povinné")
