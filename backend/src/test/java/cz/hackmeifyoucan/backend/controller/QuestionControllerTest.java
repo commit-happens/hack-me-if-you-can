@@ -1,7 +1,9 @@
 package cz.hackmeifyoucan.backend.controller;
 
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -23,6 +25,8 @@ import java.util.Map;
 class QuestionControllerTest {
 
     private static final String QUESTIONS_API = "/questions/random";
+    private static final String SAVE_EMAIL_API = "/questions/email";
+    private static final String SAVE_SMS_API = "/questions/sms";
     private static final String APPLICATION_JSON = "application/json";
 
     @Autowired
@@ -96,6 +100,76 @@ class QuestionControllerTest {
                             .param("limit", "1"))
                     .andExpect(status().isInternalServerError())
                     .andExpect(jsonPath("$.error").value("Neočekávaná chyba serveru"));
+        }
+    }
+
+    @Nested
+    class SaveQuestionTests {
+
+        @Test
+        void given_valid_email_request_when_saving_then_return_saved_question() throws Exception {
+            QuestionResponse response = new QuestionResponse(
+                    101L,
+                    "email",
+                    Map.of("sender", "security@acme.com", "subject", "Urgent account verification"),
+                    "Please verify your account immediately",
+                    "Podvodny email tlaci na rychlou akci."
+            );
+            when(questionService.saveEmailQuestion(any())).thenReturn(response);
+
+            mockMvc.perform(post(SAVE_EMAIL_API)
+                            .contentType(APPLICATION_JSON)
+                            .content("""
+                                    {
+                                      "subject": "Urgent account verification",
+                                      "sender": "security@acme.com",
+                                      "content": "Please verify your account immediately",
+                                      "explanation": "Podvodny email tlaci na rychlou akci.",
+                                      "category_id": 1,
+                                      "difficulty": "HARD",
+                                      "is_phishing": true
+                                    }
+                                    """))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(101))
+                    .andExpect(jsonPath("$.platform").value("email"))
+                    .andExpect(jsonPath("$.metadata.sender").value("security@acme.com"))
+                    .andExpect(jsonPath("$.metadata.subject").value("Urgent account verification"))
+                    .andExpect(jsonPath("$.content").value("Please verify your account immediately"))
+                    .andExpect(jsonPath("$.explanation").value("Podvodny email tlaci na rychlou akci."));
+        }
+
+        @Test
+        void given_valid_sms_request_when_saving_then_return_saved_question() throws Exception {
+            QuestionResponse response = new QuestionResponse(
+                    102L,
+                    "sms",
+                    Map.of("sender", "InfoSMS", "phoneNumber", "+420123456789"),
+                    "Klikněte na odkaz",
+                    "Podezřelý odkaz"
+            );
+            when(questionService.saveSmsQuestion(any())).thenReturn(response);
+
+            mockMvc.perform(post(SAVE_SMS_API)
+                            .contentType(APPLICATION_JSON)
+                            .content("""
+                                    {
+                                      "sender": "InfoSMS",
+                                      "phoneNumber": "+420123456789",
+                                      "content": "Klikněte na odkaz",
+                                      "explanation": "Podezřelý odkaz",
+                                      "category_id": 2,
+                                      "difficulty": "EASY",
+                                      "is_phishing": false
+                                    }
+                                    """))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(102))
+                    .andExpect(jsonPath("$.platform").value("sms"))
+                    .andExpect(jsonPath("$.metadata.sender").value("InfoSMS"))
+                    .andExpect(jsonPath("$.metadata.phoneNumber").value("+420123456789"))
+                    .andExpect(jsonPath("$.content").value("Klikněte na odkaz"))
+                    .andExpect(jsonPath("$.explanation").value("Podezřelý odkaz"));
         }
     }
 
