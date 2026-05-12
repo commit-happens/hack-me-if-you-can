@@ -44,7 +44,10 @@ jobs:
           DB_NAME: ${{ env.DB_NAME }}
           DB_USER: ${{ env.DB_USER }}
           DB_PASSWORD: ${{ env.DB_PASSWORD }}
-        run: make docker-up-detached
+        run: |
+          # Ensure no leftover containers/volumes from previous steps (clean state)
+          docker compose down -v || true
+          make docker-up-detached
 
       - name: Wait for PostgreSQL to be healthy
         run: |
