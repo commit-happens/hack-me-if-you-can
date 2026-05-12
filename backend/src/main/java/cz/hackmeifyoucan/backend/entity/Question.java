@@ -57,6 +57,9 @@ public class Question {
     @Convert(converter = DifficultyConverter.class)
     private Difficulty difficulty;
 
+    @Column(name = "penalty", nullable = false)
+    private Integer penalty;
+
     @Column(name = "content", nullable = false, length = 1000)
     private String content;
 
@@ -65,7 +68,7 @@ public class Question {
     @Column(name = "metadata", columnDefinition = "jsonb")
     private Map<String, String> metadata = new HashMap<>();
 
-    @Column(name = "explanation", nullable = false, length = 1000)
+    @Column(name = "explanation", nullable = false, length = 2000)
     private String explanation;
 
     @Column(name = "created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP")
