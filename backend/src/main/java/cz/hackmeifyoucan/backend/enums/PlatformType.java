@@ -1,14 +1,13 @@
 package cz.hackmeifyoucan.backend.enums;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
 @Schema(description = "Typ platformy na kterou je otázka cílená")
 public enum PlatformType {
-    EMAIL(1, "email"),
-    SMS(2, "sms");
+    EMAIL(1, "EMAIL"),
+    SMS(2, "SMS");
 
     private final int id;
     private final String apiValue;
@@ -18,9 +17,8 @@ public enum PlatformType {
         this.apiValue = apiValue;
     }
 
-    @JsonValue
     public String getName() {
-        return apiValue;
+        return apiValue.toLowerCase();
     }
 
     public static PlatformType fromId(int id) {
