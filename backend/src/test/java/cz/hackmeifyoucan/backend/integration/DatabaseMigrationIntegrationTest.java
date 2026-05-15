@@ -12,6 +12,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 class DatabaseMigrationIntegrationTest {
 
+    private static final String TEMP_PLAYER_NICK = "migration_default_score_probe";
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -68,16 +70,38 @@ class DatabaseMigrationIntegrationTest {
     }
 
     @Test
-    void given_flyway_migrations_when_applied_then_question_to_categories_junction_table_should_have_mappings() {
-        Integer mappingCount = jdbcTemplate.queryForObject(
-            "SELECT COUNT(*) FROM question_to_categories",
-            Integer.class
+    void given_flyway_migrations_when_applied_then_questions_should_reference_existing_category_id() {
+        Integer invalidCategoryRefs = jdbcTemplate.queryForObject(
+                """
+                SELECT COUNT(*)
+                FROM questions q
+                LEFT JOIN phishing_categories c ON c.id = q.phishing_category_id
+                WHERE q.phishing_category_id IS NULL OR c.id IS NULL
+                """,
+                Integer.class
         );
 
-        assertThat(mappingCount)
-            .as("Question to categories junction table should have mappings for all questions")
-            .isNotNull()
-            .isGreaterThanOrEqualTo(70);
+        assertThat(invalidCategoryRefs)
+                .as("Every question should reference one valid phishing_category_id")
+                .isNotNull()
+                .isEqualTo(0);
+    }
+
+    @Test
+    void given_flyway_migrations_when_applied_then_question_to_categories_junction_table_should_not_exist() {
+        Integer tableExists = jdbcTemplate.queryForObject(
+                """
+                SELECT COUNT(*)
+                FROM information_schema.tables
+                WHERE table_schema = 'public' AND table_name = 'question_to_categories'
+                """,
+                Integer.class
+        );
+
+        assertThat(tableExists)
+                .as("question_to_categories junction table should be removed")
+                .isNotNull()
+                .isEqualTo(0);
     }
 
 

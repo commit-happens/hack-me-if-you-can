@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -45,19 +44,18 @@ class AnswerServiceImplTest {
     @Test
     void given_correct_answer_when_submitting_then_should_add_all_score_components() {
         Player player = Player.builder().id(1L).nickname("tester").build();
-        PhishingCategory first = PhishingCategory.builder().id(1L).tag("FAKE_URL").rewardPoints(600).build();
-        PhishingCategory second = PhishingCategory.builder().id(2L).tag("URGENT").rewardPoints(500).build();
+        PhishingCategory category = PhishingCategory.builder().id(1L).tag("FAKE_URL").rewardPoints(600).build();
         Question question = Question.builder()
                 .id(3L)
                 .difficulty(Difficulty.EASY)
                 .phishing(false)
-                .categories(Set.of(first, second))
+                .phishingCategory(category)
                 .build();
 
         AnswerRequest request = new AnswerRequest(1L, 3L, "session-1", false, 10);
 
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
-        when(questionRepository.findWithCategoriesById(3L)).thenReturn(Optional.of(question));
+        when(questionRepository.findWithPhishingCategoryById(3L)).thenReturn(Optional.of(question));
         // earnedPoints = 100 (EASY) + 1100 (categories) + 100 (10*10 speed) = 1300
         // updatedScore = INITIAL_SCORE(200) + sumEarnedPointsByPlayer = 200 + 1300 = 1500
         when(answerRepository.sumEarnedPointsByPlayer(1L)).thenReturn(1300);
@@ -78,13 +76,13 @@ class AnswerServiceImplTest {
                 .id(3L)
                 .difficulty(Difficulty.HARD)
                 .phishing(true)
-                .categories(Set.of(category))
+                .phishingCategory(category)
                 .build();
 
         AnswerRequest request = new AnswerRequest(1L, 3L, "session-1", false, 20);
 
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
-        when(questionRepository.findWithCategoriesById(3L)).thenReturn(Optional.of(question));
+        when(questionRepository.findWithPhishingCategoryById(3L)).thenReturn(Optional.of(question));
         // Wrong answer: earnedPoints = 0, sum stays at 0, score = 200 + 0 = 200
         when(answerRepository.sumEarnedPointsByPlayer(1L)).thenReturn(0);
 
@@ -99,16 +97,18 @@ class AnswerServiceImplTest {
     @Test
     void given_unique_constraint_violation_when_submitting_then_should_throw_duplicate_answer_exception() {
         Player player = Player.builder().id(1L).nickname("tester").build();
+        PhishingCategory category = PhishingCategory.builder().id(1L).tag("FAKE_URL").rewardPoints(600).build();
         Question question = Question.builder()
                 .id(3L)
                 .difficulty(Difficulty.EASY)
                 .phishing(true)
+                .phishingCategory(category)
                 .build();
 
         AnswerRequest request = new AnswerRequest(1L, 3L, "session-1", true, 5);
 
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
-        when(questionRepository.findWithCategoriesById(3L)).thenReturn(Optional.of(question));
+        when(questionRepository.findWithPhishingCategoryById(3L)).thenReturn(Optional.of(question));
         when(answerRepository.saveAndFlush(any())).thenThrow(new DataIntegrityViolationException("duplicate key value violates unique constraint"));
 
         assertThatThrownBy(() -> answerService.submitAnswer(request))
