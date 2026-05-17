@@ -7,14 +7,15 @@ import type { Translation } from "../../languages/csCZ";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
   increaseCorrectAnswers,
+  selectSessionId,
   setCurrentIndex,
   setScore,
   setTotalQuestions,
 } from "../../store/slices/gameSlice";
 import { selectPlayerId } from "../../store/slices/playerSlice";
 import { getEnvConfigValue } from "../../utils/envConfig";
-import { useUpdatePlayer } from "../../services/generated/player-controller/player-controller";
-import { updatePlayerBody } from "../../services/generated-zod/player-controller/player-controller";
+import { useSubmitAnswer } from "../../services/generated/answer-controller/answer-controller";
+import { submitAnswerBody } from "../../services/generated-zod/answer-controller/answer-controller";
 import { faAlarmClock, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 export enum Answer {
@@ -24,13 +25,28 @@ export enum Answer {
 
 export type EmailModel = {
   id: number;
+  /* Odesílatel e-mailu */
   sender: string;
+
+  /* Předmět e-mailu */
   subject: string;
+
+  /* Obsah e-mailu */
   content: string;
+
+  /* Vysvětlení, proč je e-mail phishing nebo bezpečný */
   explanation: string;
-  penalty: number;
+
+  /* Odměna za správné určení, zda se jedná o phishing */
+  reward: number;
+
+  /* ID phishingové platformy */
   phishingPlatformID: number;
+
+  /* ID typů phishingu */
   phishingTypeIDs: number[];
+
+  /* Obtížnost */
   difficulty: number;
 };
 
@@ -53,6 +69,7 @@ type TimeOutWarningThreshold = {
 
 const warningTimeThresholdDivisor = 3;
 const criticalTimeThresholdDivisor = 10;
+const submitAnswerBodyRemainTimeMax = 60;
 
 enum FeedbackType {
   Correct = "correct",
@@ -91,17 +108,15 @@ export function useGame(props: UseGameProps) {
   /**
    * Náhodné promíchání e-mailů pro zajištění různorodosti kvízu.
    */
-  const randomizedEmails = useMemo(
-    () => allEmails.sort(() => Math.random() - 0.5),
-    [allEmails],
-  );
+  const randomizedEmails = useMemo(() => allEmails.sort(() => Math.random() - 0.5), [allEmails]);
 
   const currentIndex = useAppSelector((state) => state.game.currentIndex);
-  const currentScore = useAppSelector((state) => state.game.score);
+  const sessionId = useAppSelector(selectSessionId);
 
   /** Z konfigurace si načteme čas na zodpovězení jedné otázky. */
-  const timePerQuestion = Math.ceil(
-    getEnvConfigValue("VITE_TIME_PER_QUESTION", 60) / difficulty,
+  const timePerQuestion = Math.min(
+    Math.ceil(getEnvConfigValue("VITE_TIME_PER_QUESTION", 60) / difficulty),
+    submitAnswerBodyRemainTimeMax,
   );
 
   const { remainingTime, reset, stop } = useCountdown({
@@ -111,15 +126,15 @@ export function useGame(props: UseGameProps) {
     },
   });
   const playerId = useAppSelector(selectPlayerId);
-  const updatePlayerMutation = useUpdatePlayer({
+  const submitAnswer = useSubmitAnswer({
     mutation: {
-      onSuccess: (player) => {
-        if (player.score != null) {
-          dispatch(setScore(player.score));
+      onSuccess: (answerResponse) => {
+        if (answerResponse.score != null) {
+          dispatch(setScore(answerResponse.score));
         }
       },
       onError: (error) => {
-        console.error("Nepodařilo se aktualizovat skóre na backendu:", error);
+        console.error("Nepodařilo se odeslat odpověď na backend:", error);
       },
     },
   });
@@ -174,8 +189,7 @@ export function useGame(props: UseGameProps) {
    */
   const isLastEmail = currentIndex === totalEmails - 1;
 
-  const continueButtonLabel =
-    isLastEmail ? texts.buttons.showResults : texts.buttons.continue;
+  const continueButtonLabel = isLastEmail ? texts.buttons.showResults : texts.buttons.continue;
 
   /** Definice barev pro upozornění na zbývající čas pro zodpovězení otázky. */
 
@@ -192,9 +206,7 @@ export function useGame(props: UseGameProps) {
 
   /** Barva odpočítávadla času. */
   const { colorVariant } =
-    timeoutWarningThresholds.find(
-      (threshold) => threshold.secondsRemaining >= remainingTime,
-    ) || {};
+    timeoutWarningThresholds.find((threshold) => threshold.secondsRemaining >= remainingTime) || {};
 
   const timeoutBgColor = colorVariant ? `bg-${colorVariant}` : undefined;
   const timeoutProgressBarVariant = colorVariant;
@@ -224,20 +236,18 @@ export function useGame(props: UseGameProps) {
       stop();
 
       const correct = isCorrectAnswer(selected);
-      const scoreChange = correct ? 0 : -currentEmail.penalty;
-
-      // Pokud je skóre sníženo a máme playerId, aktualizujeme backend
-      if (scoreChange && playerId) {
-        const targetScore = currentScore + scoreChange;
-        const sanitizedTargetScore = Math.max(0, targetScore);
-        console.log(`Špatná odpověď, aktualizuji skóre: ${sanitizedTargetScore}`);
-
-        updatePlayerMutation.mutate({
-          playerId,
-          data: updatePlayerBody.parse({
-            score: sanitizedTargetScore,
+      if (playerId && sessionId) {
+        submitAnswer.mutate({
+          data: submitAnswerBody.parse({
+            player_id: playerId,
+            question_id: currentEmail.id,
+            session_id: sessionId,
+            is_phishing: selected === Answer.Phishing,
+            remain_time: Math.max(0, Math.min(remainingTime, submitAnswerBodyRemainTimeMax)),
           }),
         });
+      } else {
+        console.error("Nelze odeslat odpověď: chybí playerId nebo sessionId.");
       }
 
       if (correct) dispatch(increaseCorrectAnswers());
@@ -245,12 +255,14 @@ export function useGame(props: UseGameProps) {
     },
     [
       currentEmail,
-      currentScore,
       dispatch,
       isCorrectAnswer,
       playerId,
+      remainingTime,
+      sessionId,
       stop,
-      updatePlayerMutation,
+      submitAnswer,
+      timePerQuestion,
     ],
   );
 

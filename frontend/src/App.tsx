@@ -5,7 +5,29 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { routes } from "./routing/routes";
 import { store } from "./store";
 
-const queryClient = new QueryClient();
+function createQueryClient() {
+  return new QueryClient();
+}
+
+type AppQueryClient = ReturnType<typeof createQueryClient>;
+
+declare global {
+  var __HMIYC_QUERY_CLIENT__: AppQueryClient | undefined;
+}
+
+function getQueryClient() {
+  if (import.meta.env.DEV) {
+    if (!globalThis.__HMIYC_QUERY_CLIENT__) {
+      globalThis.__HMIYC_QUERY_CLIENT__ = createQueryClient();
+    }
+
+    return globalThis.__HMIYC_QUERY_CLIENT__;
+  }
+
+  return createQueryClient();
+}
+
+const queryClient = getQueryClient();
 
 function App() {
   const [locale] = useState("cs");

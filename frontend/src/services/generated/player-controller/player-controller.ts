@@ -4,7 +4,10 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery
+} from '@tanstack/react-query'
 import type {
   MutationFunction,
   QueryFunction,
@@ -12,8 +15,8 @@ import type {
   UseMutationOptions,
   UseMutationResult,
   UseQueryOptions,
-  UseQueryResult,
-} from "@tanstack/react-query";
+  UseQueryResult
+} from '@tanstack/react-query'
 import type {
   Error400Response,
   Error404Response,
@@ -22,391 +25,319 @@ import type {
   PlayerRequest,
   PlayerResponse,
   PlayerSummaryResponse,
-  PlayerUpdateRequest,
-} from ".././model";
-import { httpClient } from "../../httpClient";
+  PlayerUpdateRequest
+} from '.././model'
+import { httpClient } from '../../httpClient';
+
 
 type SecondParameter<T extends (...args: any) => any> = Parameters<T>[1];
+
 
 /**
  * Vrací seznam všech hráčů v databázi.
  * @summary Získat všechny hráče
  */
 export const getPlayers = (
-  options?: SecondParameter<typeof httpClient>,
-  signal?: AbortSignal,
+    
+ options?: SecondParameter<typeof httpClient>,signal?: AbortSignal
 ) => {
-  return httpClient<PlayerResponse[]>(
-    { url: `/players`, method: "GET", signal },
-    options,
-  );
-};
+      
+      
+      return httpClient<PlayerResponse[]>(
+      {url: `/players`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
 export const getGetPlayersQueryKey = () => {
-  return [`/players`] as const;
-};
+    return [`/players`] as const;
+    }
 
-export const getGetPlayersQueryOptions = <
-  TData = Awaited<ReturnType<typeof getPlayers>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlayers>>, TError, TData>>;
-  request?: SecondParameter<typeof httpClient>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+    
+export const getGetPlayersQueryOptions = <TData = Awaited<ReturnType<typeof getPlayers>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlayers>>, TError, TData>>, request?: SecondParameter<typeof httpClient>}
+) => {
 
-  const queryKey = queryOptions?.queryKey ?? getGetPlayersQueryKey();
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPlayers>>> = ({ signal }) =>
-    getPlayers(requestOptions, signal);
+  const queryKey =  queryOptions?.queryKey ?? getGetPlayersQueryKey();
 
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getPlayers>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+  
 
-export type GetPlayersQueryResult = NonNullable<Awaited<ReturnType<typeof getPlayers>>>;
-export type GetPlayersQueryError = unknown;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPlayers>>> = ({ signal }) => getPlayers(requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPlayers>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPlayersQueryResult = NonNullable<Awaited<ReturnType<typeof getPlayers>>>
+export type GetPlayersQueryError = unknown
 
 /**
  * @summary Získat všechny hráče
  */
-export const useGetPlayers = <
-  TData = Awaited<ReturnType<typeof getPlayers>>,
-  TError = unknown,
->(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlayers>>, TError, TData>>;
-  request?: SecondParameter<typeof httpClient>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetPlayersQueryOptions(options);
+export const useGetPlayers = <TData = Awaited<ReturnType<typeof getPlayers>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlayers>>, TError, TData>>, request?: SecondParameter<typeof httpClient>}
 
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetPlayersQueryOptions(options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
-};
+}
+
+
 
 /**
  * Vytvoří nového hráče s přezdívkou. Počáteční skóre nastavuje backend na výchozí hodnotu.
  * @summary Vytvořit záznam nového hráče
  */
 export const addPlayer = (
-  playerRequest: PlayerRequest,
-  options?: SecondParameter<typeof httpClient>,
-) => {
-  return httpClient<PlayerResponse>(
-    {
-      url: `/players`,
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      data: playerRequest,
+    playerRequest: PlayerRequest,
+ options?: SecondParameter<typeof httpClient>,) => {
+      
+      
+      return httpClient<PlayerResponse>(
+      {url: `/players`, method: 'POST',
+      headers: {'Content-Type': 'application/json', },
+      data: playerRequest
     },
-    options,
-  );
-};
+      options);
+    }
+  
 
-export const getAddPlayerMutationOptions = <
-  TError = Error400Response | Error409Response,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof addPlayer>>,
-    TError,
-    { data: PlayerRequest },
-    TContext
-  >;
-  request?: SecondParameter<typeof httpClient>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof addPlayer>>,
-  TError,
-  { data: PlayerRequest },
-  TContext
-> => {
-  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof addPlayer>>,
-    { data: PlayerRequest }
-  > = (props) => {
-    const { data } = props ?? {};
+export const getAddPlayerMutationOptions = <TError = Error400Response | Error409Response,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addPlayer>>, TError,{data: PlayerRequest}, TContext>, request?: SecondParameter<typeof httpClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof addPlayer>>, TError,{data: PlayerRequest}, TContext> => {
+const {mutation: mutationOptions, request: requestOptions} = options ?? {};
 
-    return addPlayer(data, requestOptions);
-  };
+      
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type AddPlayerMutationResult = NonNullable<Awaited<ReturnType<typeof addPlayer>>>;
-export type AddPlayerMutationBody = PlayerRequest;
-export type AddPlayerMutationError = Error400Response | Error409Response;
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof addPlayer>>, {data: PlayerRequest}> = (props) => {
+          const {data} = props ?? {};
 
-/**
+          return  addPlayer(data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type AddPlayerMutationResult = NonNullable<Awaited<ReturnType<typeof addPlayer>>>
+    export type AddPlayerMutationBody = PlayerRequest
+    export type AddPlayerMutationError = Error400Response | Error409Response
+
+    /**
  * @summary Vytvořit záznam nového hráče
  */
-export const useAddPlayer = <
-  TError = Error400Response | Error409Response,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof addPlayer>>,
-    TError,
-    { data: PlayerRequest },
-    TContext
-  >;
-  request?: SecondParameter<typeof httpClient>;
-}): UseMutationResult<
-  Awaited<ReturnType<typeof addPlayer>>,
-  TError,
-  { data: PlayerRequest },
-  TContext
-> => {
-  const mutationOptions = getAddPlayerMutationOptions(options);
+export const useAddPlayer = <TError = Error400Response | Error409Response,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof addPlayer>>, TError,{data: PlayerRequest}, TContext>, request?: SecondParameter<typeof httpClient>}
+): UseMutationResult<
+        Awaited<ReturnType<typeof addPlayer>>,
+        TError,
+        {data: PlayerRequest},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions);
-};
-/**
+      const mutationOptions = getAddPlayerMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
  * Vrací údaje o jednom hráči na základě jeho unikátního ID.
  * @summary Získat hráče podle ID
  */
 export const getPlayer = (
-  playerId: number,
-  options?: SecondParameter<typeof httpClient>,
-  signal?: AbortSignal,
+    playerId: number,
+ options?: SecondParameter<typeof httpClient>,signal?: AbortSignal
 ) => {
-  return httpClient<PlayerResponse>(
-    { url: `/players/${playerId}`, method: "GET", signal },
-    options,
-  );
-};
+      
+      
+      return httpClient<PlayerResponse>(
+      {url: `/players/${playerId}`, method: 'GET', signal
+    },
+      options);
+    }
+  
 
-export const getGetPlayerQueryKey = (playerId: number) => {
-  return [`/players/${playerId}`] as const;
-};
+export const getGetPlayerQueryKey = (playerId: number,) => {
+    return [`/players/${playerId}`] as const;
+    }
 
-export const getGetPlayerQueryOptions = <
-  TData = Awaited<ReturnType<typeof getPlayer>>,
-  TError = Error404Response,
->(
-  playerId: number,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPlayer>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof httpClient>;
-  },
+    
+export const getGetPlayerQueryOptions = <TData = Awaited<ReturnType<typeof getPlayer>>, TError = Error404Response>(playerId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlayer>>, TError, TData>>, request?: SecondParameter<typeof httpClient>}
 ) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
 
-  const queryKey = queryOptions?.queryKey ?? getGetPlayerQueryKey(playerId);
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPlayer>>> = ({ signal }) =>
-    getPlayer(playerId, requestOptions, signal);
+  const queryKey =  queryOptions?.queryKey ?? getGetPlayerQueryKey(playerId);
 
-  return { queryKey, queryFn, enabled: !!playerId, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getPlayer>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+  
 
-export type GetPlayerQueryResult = NonNullable<Awaited<ReturnType<typeof getPlayer>>>;
-export type GetPlayerQueryError = Error404Response;
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPlayer>>> = ({ signal }) => getPlayer(playerId, requestOptions, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(playerId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPlayer>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPlayerQueryResult = NonNullable<Awaited<ReturnType<typeof getPlayer>>>
+export type GetPlayerQueryError = Error404Response
 
 /**
  * @summary Získat hráče podle ID
  */
-export const useGetPlayer = <
-  TData = Awaited<ReturnType<typeof getPlayer>>,
-  TError = Error404Response,
->(
-  playerId: number,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPlayer>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof httpClient>;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetPlayerQueryOptions(playerId, options);
+export const useGetPlayer = <TData = Awaited<ReturnType<typeof getPlayer>>, TError = Error404Response>(
+ playerId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlayer>>, TError, TData>>, request?: SecondParameter<typeof httpClient>}
 
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetPlayerQueryOptions(playerId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
-};
+}
+
+
 
 /**
  * Částečně aktualizuje údaje hráče. Můžete poslat pouze pole, která chcete změnit (např. jen přezdívku nebo jen skóre).
  * @summary Aktualizovat hráče
  */
 export const updatePlayer = (
-  playerId: number,
-  playerUpdateRequest: PlayerUpdateRequest,
-  options?: SecondParameter<typeof httpClient>,
-) => {
-  return httpClient<PlayerResponse>(
-    {
-      url: `/players/${playerId}`,
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      data: playerUpdateRequest,
+    playerId: number,
+    playerUpdateRequest: PlayerUpdateRequest,
+ options?: SecondParameter<typeof httpClient>,) => {
+      
+      
+      return httpClient<PlayerResponse>(
+      {url: `/players/${playerId}`, method: 'PATCH',
+      headers: {'Content-Type': 'application/json', },
+      data: playerUpdateRequest
     },
-    options,
-  );
-};
+      options);
+    }
+  
 
-export const getUpdatePlayerMutationOptions = <
-  TError = Error400Response | Error404Response | Error409Response,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof updatePlayer>>,
-    TError,
-    { playerId: number; data: PlayerUpdateRequest },
-    TContext
-  >;
-  request?: SecondParameter<typeof httpClient>;
-}): UseMutationOptions<
-  Awaited<ReturnType<typeof updatePlayer>>,
-  TError,
-  { playerId: number; data: PlayerUpdateRequest },
-  TContext
-> => {
-  const { mutation: mutationOptions, request: requestOptions } = options ?? {};
 
-  const mutationFn: MutationFunction<
-    Awaited<ReturnType<typeof updatePlayer>>,
-    { playerId: number; data: PlayerUpdateRequest }
-  > = (props) => {
-    const { playerId, data } = props ?? {};
+export const getUpdatePlayerMutationOptions = <TError = Error400Response | Error404Response | Error409Response,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePlayer>>, TError,{playerId: number;data: PlayerUpdateRequest}, TContext>, request?: SecondParameter<typeof httpClient>}
+): UseMutationOptions<Awaited<ReturnType<typeof updatePlayer>>, TError,{playerId: number;data: PlayerUpdateRequest}, TContext> => {
+const {mutation: mutationOptions, request: requestOptions} = options ?? {};
 
-    return updatePlayer(playerId, data, requestOptions);
-  };
+      
 
-  return { mutationFn, ...mutationOptions };
-};
 
-export type UpdatePlayerMutationResult = NonNullable<
-  Awaited<ReturnType<typeof updatePlayer>>
->;
-export type UpdatePlayerMutationBody = PlayerUpdateRequest;
-export type UpdatePlayerMutationError =
-  | Error400Response
-  | Error404Response
-  | Error409Response;
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePlayer>>, {playerId: number;data: PlayerUpdateRequest}> = (props) => {
+          const {playerId,data} = props ?? {};
 
-/**
+          return  updatePlayer(playerId,data,requestOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpdatePlayerMutationResult = NonNullable<Awaited<ReturnType<typeof updatePlayer>>>
+    export type UpdatePlayerMutationBody = PlayerUpdateRequest
+    export type UpdatePlayerMutationError = Error400Response | Error404Response | Error409Response
+
+    /**
  * @summary Aktualizovat hráče
  */
-export const useUpdatePlayer = <
-  TError = Error400Response | Error404Response | Error409Response,
-  TContext = unknown,
->(options?: {
-  mutation?: UseMutationOptions<
-    Awaited<ReturnType<typeof updatePlayer>>,
-    TError,
-    { playerId: number; data: PlayerUpdateRequest },
-    TContext
-  >;
-  request?: SecondParameter<typeof httpClient>;
-}): UseMutationResult<
-  Awaited<ReturnType<typeof updatePlayer>>,
-  TError,
-  { playerId: number; data: PlayerUpdateRequest },
-  TContext
-> => {
-  const mutationOptions = getUpdatePlayerMutationOptions(options);
+export const useUpdatePlayer = <TError = Error400Response | Error404Response | Error409Response,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePlayer>>, TError,{playerId: number;data: PlayerUpdateRequest}, TContext>, request?: SecondParameter<typeof httpClient>}
+): UseMutationResult<
+        Awaited<ReturnType<typeof updatePlayer>>,
+        TError,
+        {playerId: number;data: PlayerUpdateRequest},
+        TContext
+      > => {
 
-  return useMutation(mutationOptions);
-};
-/**
+      const mutationOptions = getUpdatePlayerMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
  * Vrací score a potential_score pro session_id z requestu. Pokud session_id chybí, vrátí se výchozí hodnoty bez výpočtu session statistik.
  * @summary Získat souhrn skóre hráče
  */
 export const getPlayerSummary = (
-  playerId: number,
-  params?: GetPlayerSummaryParams,
-  options?: SecondParameter<typeof httpClient>,
-  signal?: AbortSignal,
+    playerId: number,
+    params?: GetPlayerSummaryParams,
+ options?: SecondParameter<typeof httpClient>,signal?: AbortSignal
 ) => {
-  return httpClient<PlayerSummaryResponse>(
-    { url: `/players/${playerId}/summary`, method: "GET", params, signal },
-    options,
-  );
-};
+      
+      
+      return httpClient<PlayerSummaryResponse>(
+      {url: `/players/${playerId}/summary`, method: 'GET',
+        params, signal
+    },
+      options);
+    }
+  
 
-export const getGetPlayerSummaryQueryKey = (
-  playerId: number,
-  params?: GetPlayerSummaryParams,
+export const getGetPlayerSummaryQueryKey = (playerId: number,
+    params?: GetPlayerSummaryParams,) => {
+    return [`/players/${playerId}/summary`, ...(params ? [params]: [])] as const;
+    }
+
+    
+export const getGetPlayerSummaryQueryOptions = <TData = Awaited<ReturnType<typeof getPlayerSummary>>, TError = Error404Response>(playerId: number,
+    params?: GetPlayerSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlayerSummary>>, TError, TData>>, request?: SecondParameter<typeof httpClient>}
 ) => {
-  return [`/players/${playerId}/summary`, ...(params ? [params] : [])] as const;
-};
 
-export const getGetPlayerSummaryQueryOptions = <
-  TData = Awaited<ReturnType<typeof getPlayerSummary>>,
-  TError = Error404Response,
->(
-  playerId: number,
-  params?: GetPlayerSummaryParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPlayerSummary>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof httpClient>;
-  },
-) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
+const {query: queryOptions, request: requestOptions} = options ?? {};
 
-  const queryKey =
-    queryOptions?.queryKey ?? getGetPlayerSummaryQueryKey(playerId, params);
+  const queryKey =  queryOptions?.queryKey ?? getGetPlayerSummaryQueryKey(playerId,params);
 
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getPlayerSummary>>> = ({
-    signal,
-  }) => getPlayerSummary(playerId, params, requestOptions, signal);
+  
 
-  return { queryKey, queryFn, enabled: !!playerId, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getPlayerSummary>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPlayerSummary>>> = ({ signal }) => getPlayerSummary(playerId,params, requestOptions, signal);
 
-export type GetPlayerSummaryQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getPlayerSummary>>
->;
-export type GetPlayerSummaryQueryError = Error404Response;
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(playerId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPlayerSummary>>, TError, TData> & { queryKey: QueryKey }
+}
+
+export type GetPlayerSummaryQueryResult = NonNullable<Awaited<ReturnType<typeof getPlayerSummary>>>
+export type GetPlayerSummaryQueryError = Error404Response
 
 /**
  * @summary Získat souhrn skóre hráče
  */
-export const useGetPlayerSummary = <
-  TData = Awaited<ReturnType<typeof getPlayerSummary>>,
-  TError = Error404Response,
->(
-  playerId: number,
-  params?: GetPlayerSummaryParams,
-  options?: {
-    query?: Partial<
-      UseQueryOptions<Awaited<ReturnType<typeof getPlayerSummary>>, TError, TData>
-    >;
-    request?: SecondParameter<typeof httpClient>;
-  },
-): UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
-  const queryOptions = getGetPlayerSummaryQueryOptions(playerId, params, options);
+export const useGetPlayerSummary = <TData = Awaited<ReturnType<typeof getPlayerSummary>>, TError = Error404Response>(
+ playerId: number,
+    params?: GetPlayerSummaryParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPlayerSummary>>, TError, TData>>, request?: SecondParameter<typeof httpClient>}
 
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
+  ):  UseQueryResult<TData, TError> & { queryKey: QueryKey } => {
 
-  query.queryKey = queryOptions.queryKey;
+  const queryOptions = getGetPlayerSummaryQueryOptions(playerId,params,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: QueryKey };
+
+  query.queryKey = queryOptions.queryKey ;
 
   return query;
-};
+}
+
+
+
