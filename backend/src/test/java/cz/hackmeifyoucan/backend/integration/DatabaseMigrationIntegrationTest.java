@@ -12,8 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 class DatabaseMigrationIntegrationTest {
 
-    private static final String TEMP_PLAYER_NICK = "migration_default_score_probe";
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
