@@ -41,15 +41,13 @@ public class AnswerServiceImpl implements AnswerService {
         Player player = playerRepository.findById(request.playerId())
                 .orElseThrow(() -> new PlayerNotFoundException(request.playerId()));
 
-        Question question = questionRepository.findWithCategoriesById(request.questionId())
+        Question question = questionRepository.findWithPhishingCategoryById(request.questionId())
                 .orElseThrow(() -> new QuestionNotFoundException(request.questionId()));
 
         AnswerId answerId = new AnswerId(request.playerId(), request.questionId(), request.sessionId());
 
         int difficultyPoints = toDifficultyPoints(question.getDifficulty());
-        int categoriesPoints = question.getCategories().stream()
-                .mapToInt(PhishingCategory::getRewardPoints)
-                .sum();
+        int categoriesPoints = question.getPhishingCategory().getRewardPoints();
         int speedBonus = request.remainTime() * SPEED_MULTIPLIER;
 
         boolean answerCorrect = request.phishing().equals(question.isPhishing());
@@ -71,11 +69,7 @@ public class AnswerServiceImpl implements AnswerService {
             throw new DuplicateAnswerException(request.playerId(), request.questionId(), request.sessionId());
         }
 
-        playerRepository.incrementScoreAtomically(player.getId(), ScoringConstants.INITIAL_SCORE, earnedPoints);
-        Integer updatedScore = playerRepository.findScoreById(player.getId());
-        if (updatedScore == null) {
-            throw new PlayerNotFoundException(player.getId());
-        }
+        int updatedScore = ScoringConstants.INITIAL_SCORE + answerRepository.sumEarnedPointsByPlayer(player.getId());
 
         return new AnswerResponse(answerCorrect, updatedScore);
     }

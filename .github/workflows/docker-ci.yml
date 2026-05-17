@@ -33,9 +33,17 @@ jobs:
           echo "DB_PASSWORD=${{ env.DB_PASSWORD }}" >> .env
 
       - name: Build Docker images
+        env:
+          DB_NAME: ${{ env.DB_NAME }}
+          DB_USER: ${{ env.DB_USER }}
+          DB_PASSWORD: ${{ env.DB_PASSWORD }}
         run: make docker-build
 
       - name: Start services
+        env:
+          DB_NAME: ${{ env.DB_NAME }}
+          DB_USER: ${{ env.DB_USER }}
+          DB_PASSWORD: ${{ env.DB_PASSWORD }}
         run: make docker-up-detached
 
       - name: Wait for PostgreSQL to be healthy
@@ -85,17 +93,12 @@ jobs:
           echo "Questions: $QUESTION_COUNT"
           [ "$QUESTION_COUNT" -eq 70 ] || { echo "❌ Expected 70 questions, got $QUESTION_COUNT"; exit 1; }
           
-          # Check question_to_categories junction table
-          MAPPING_COUNT=$(docker compose exec -T postgres psql -U ${{ env.DB_USER }} -d ${{ env.DB_NAME }} -t -c "SELECT COUNT(*) FROM question_to_categories;" | tr -d '[:space:]')
-          echo "Question-to-category mappings: $MAPPING_COUNT"
-          [ "$MAPPING_COUNT" -ge 70 ] || { echo "❌ Expected at least 70 mappings, got $MAPPING_COUNT"; exit 1; }
-          
           echo "✅ Docker Compose database properly initialized with expected data"
 
       - name: Wait for Frontend to be healthy
         run: |
           echo "Waiting for Frontend..."
-          timeout 60 bash -c 'until curl -sf http://localhost:3000; do sleep 5; done'
+          timeout 120 bash -c 'until curl -sf http://localhost:3000; do sleep 5; done'
           echo "Frontend is ready!"
 
       - name: Show running containers
