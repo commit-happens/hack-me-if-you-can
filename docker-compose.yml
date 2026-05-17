@@ -29,7 +29,7 @@ services:
       - "8080:8080"
     environment:
       # Datasource konfigurace
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://${PGHOST:-localhost}:${PGPORT:-5432}/${PGDATABASE:-${DB_NAME:-hmiyc}}"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://${PGHOST:-postgres}:${PGPORT:-5432}/${PGDATABASE:-${DB_NAME:-hmiyc}}"
       SPRING_DATASOURCE_USERNAME: "${PGUSER:-${DB_USER:-postgres}}"
       SPRING_DATASOURCE_PASSWORD: "${PGPASSWORD:-${DB_PASSWORD:-postgres@123}}"
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
