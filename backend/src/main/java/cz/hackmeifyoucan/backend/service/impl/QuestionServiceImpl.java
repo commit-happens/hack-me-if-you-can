@@ -1,5 +1,6 @@
 package cz.hackmeifyoucan.backend.service.impl;
 
+import cz.hackmeifyoucan.backend.dto.ProblemResponse;
 import cz.hackmeifyoucan.backend.dto.QuestionMetadataResponse;
 import cz.hackmeifyoucan.backend.dto.QuestionResponse;
 import cz.hackmeifyoucan.backend.enums.Difficulty;
@@ -32,7 +33,9 @@ public class QuestionServiceImpl implements QuestionService {
                 toMetadataResponse(question.getMetadata()),
                         question.getContent(),
                         question.getExplanation(),
-                        question.getProblems()
+                        question.getProblems().stream()
+                                .map(p -> new ProblemResponse(p.getTag(), p.getDescription()))
+                                .toList()
                 ))
                 .toList();
     }

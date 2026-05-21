@@ -64,9 +64,13 @@ public class Question {
     private String explanation;
 
     @Builder.Default
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "problems", columnDefinition = "jsonb")
-    private List<Map<String, String>> problems = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "question_problems",
+            joinColumns = @JoinColumn(name = "question_id"),
+            inverseJoinColumns = @JoinColumn(name = "problem_id")
+    )
+    private List<Problem> problems = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;

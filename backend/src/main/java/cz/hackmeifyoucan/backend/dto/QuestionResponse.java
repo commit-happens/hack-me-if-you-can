@@ -38,10 +38,7 @@ public record QuestionResponse (
         )
         String explanation,
 
-        @Schema(
-                description = "Seznam problémů (chytáků) identifikovaných v obsahu zprávy",
-                example = "[{\"id\": \"time-pressure\", \"description\": \"Uměle vytvářený tlak časovým limitem...\"}]"
-        )
-        List<Map<String, String>> problems
+        @Schema(description = "Seznam chytáků identifikovaných v obsahu zprávy")
+        List<ProblemResponse> problems
 ) {
 }
