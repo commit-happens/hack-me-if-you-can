@@ -31,7 +31,8 @@ public class QuestionServiceImpl implements QuestionService {
                         question.getPlatformType().getName(),
                 toMetadataResponse(question.getMetadata()),
                         question.getContent(),
-                        question.getExplanation()
+                        question.getExplanation(),
+                        question.getProblems()
                 ))
                 .toList();
     }

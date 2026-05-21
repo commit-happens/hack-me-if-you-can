@@ -36,6 +36,12 @@ public record QuestionResponse (
                 description = "Vysvětlení, proč se jedná o phishing a jaké jsou varovné znaky",
                 example = "Podvodný email tlačí na rychlou akci"
         )
-        String explanation
+        String explanation,
+
+        @Schema(
+                description = "Seznam problémů (chytáků) identifikovaných v obsahu zprávy",
+                example = "[{\"id\": \"time-pressure\", \"description\": \"Uměle vytvářený tlak časovým limitem...\"}]"
+        )
+        List<Map<String, String>> problems
 ) {
 }
