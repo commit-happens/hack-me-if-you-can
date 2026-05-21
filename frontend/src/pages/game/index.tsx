@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Alert, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header";
-import emailsData from "../../data/emails.json";
 import useTranslation from "../../hooks/useTranslation";
 import Page from "../../models/Page";
 import { useAppSelector } from "../../store/hooks";
@@ -11,14 +10,24 @@ import { getPagePath } from "../../utils/routing";
 import ActionsRow from "./components/actionRow";
 import EmailTemplate from "./templates/EmailTemplate";
 import { useGame } from "./useGame";
+import { useQuery } from "@tanstack/react-query";
+import { getQuestions } from "../../services/questionsApi";
 
 function Game() {
   const navigate = useNavigate();
   const score = useAppSelector((state) => state.game.score);
   const nickname = useAppSelector((state) => state.player.nickname);
   const texts = useTranslation("game");
+  const {
+    data: emails,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["questions"],
+    queryFn: getQuestions,
+  });
 
-  const { emails } = emailsData;
 
   const {
     currentEmail,
@@ -35,7 +44,7 @@ function Game() {
     timeoutProgressBarVariant,
     feedbackData,
   } = useGame({
-    allEmails: emails,
+    allEmails: emails ?? [],
     texts,
     onFinish: () => navigate(getPagePath(Page.Results)),
   });
@@ -82,6 +91,31 @@ function Game() {
       />
     );
   };
+
+  if (isLoading) {
+    return (
+      <>
+        <Header nickname={nickname} score={score} />
+        <Container className="text-center mt-5">
+          <h1>Načítám hru...</h1>
+        </Container>
+      </>
+    );
+  }
+
+  if (isError) {
+    return (
+      <>
+        <Header nickname={nickname} score={score} />
+        <Container className="text-center mt-5">
+          <h1>Nepodařilo se načíst hru.</h1>
+          <Button onClick={() => refetch()} className="mt-3">
+            Zkusit znovu
+          </Button>
+        </Container>
+      </>
+    );
+  }
 
   if (emailsOfDifficulty.length === 0) {
     return (
