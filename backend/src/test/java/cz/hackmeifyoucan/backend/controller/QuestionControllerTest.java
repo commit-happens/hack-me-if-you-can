@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import cz.hackmeifyoucan.backend.dto.QuestionMetadataResponse;
 import cz.hackmeifyoucan.backend.dto.QuestionResponse;
 import cz.hackmeifyoucan.backend.enums.Difficulty;
 import cz.hackmeifyoucan.backend.service.QuestionService;
@@ -17,7 +18,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
-import java.util.Map;
 
 @WebMvcTest(QuestionController.class)
 class QuestionControllerTest {
@@ -40,7 +40,7 @@ class QuestionControllerTest {
             QuestionResponse first = new QuestionResponse(
                     35L,
                     "email",
-                    Map.of("sender", "security@acme.com", "subject", "Urgent account verification"),
+                    new QuestionMetadataResponse("security@acme.com", "Urgent account verification"),
                     "Please verify your account immediately",
                     "Podvodny email tlaci na rychlou akci."
             );
@@ -48,7 +48,7 @@ class QuestionControllerTest {
             QuestionResponse second = new QuestionResponse(
                     36L,
                     "sms",
-                    Map.of("sender", "Bank", "subject", "Payment pending"),
+                    new QuestionMetadataResponse("Bank", "Payment pending"),
                     "Confirm payment at this link",
                     "SMS obsahuje podezrely odkaz."
             );
