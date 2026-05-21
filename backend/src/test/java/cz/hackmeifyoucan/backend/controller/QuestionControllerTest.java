@@ -42,7 +42,8 @@ class QuestionControllerTest {
                     "email",
                     new QuestionMetadataResponse("security@acme.com", "Urgent account verification"),
                     "Please verify your account immediately",
-                    "Podvodny email tlaci na rychlou akci."
+                    "Podvodny email tlaci na rychlou akci.",
+                    List.of()
             );
 
             QuestionResponse second = new QuestionResponse(
@@ -50,7 +51,8 @@ class QuestionControllerTest {
                     "sms",
                     new QuestionMetadataResponse("Bank", "Payment pending"),
                     "Confirm payment at this link",
-                    "SMS obsahuje podezrely odkaz."
+                    "SMS obsahuje podezrely odkaz.",
+                    List.of()
             );
 
             when(questionService.getRandomQuestionsByDifficulty(Difficulty.EASY, 2)).thenReturn(List.of(first, second));
