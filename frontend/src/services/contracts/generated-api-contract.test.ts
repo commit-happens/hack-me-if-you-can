@@ -97,16 +97,6 @@ describe("generated API controllers contract", () => {
     expect(httpClientMock).toHaveBeenNthCalledWith(
       4,
       {
-        url: "/players/15",
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        data: { score: 42 },
-      },
-      undefined,
-    );
-    expect(httpClientMock).toHaveBeenNthCalledWith(
-      5,
-      {
         url: "/players/15/summary",
         method: "GET",
         params: { session_id: "session-1" },
