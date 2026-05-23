@@ -24,8 +24,7 @@ import type {
   GetPlayerSummaryParams,
   PlayerRequest,
   PlayerResponse,
-  PlayerSummaryResponse,
-  PlayerUpdateRequest
+  PlayerSummaryResponse
 } from '.././model'
 import { httpClient } from '../../httpClient';
 
@@ -216,65 +215,6 @@ export const useGetPlayer = <TData = Awaited<ReturnType<typeof getPlayer>>, TErr
 
 
 /**
- * Částečně aktualizuje údaje hráče. Můžete poslat pouze pole, která chcete změnit (např. jen přezdívku nebo jen skóre).
- * @summary Aktualizovat hráče
- */
-export const updatePlayer = (
-    playerId: number,
-    playerUpdateRequest: PlayerUpdateRequest,
- options?: SecondParameter<typeof httpClient>,) => {
-      
-      
-      return httpClient<PlayerResponse>(
-      {url: `/players/${playerId}`, method: 'PATCH',
-      headers: {'Content-Type': 'application/json', },
-      data: playerUpdateRequest
-    },
-      options);
-    }
-  
-
-
-export const getUpdatePlayerMutationOptions = <TError = Error400Response | Error404Response | Error409Response,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePlayer>>, TError,{playerId: number;data: PlayerUpdateRequest}, TContext>, request?: SecondParameter<typeof httpClient>}
-): UseMutationOptions<Awaited<ReturnType<typeof updatePlayer>>, TError,{playerId: number;data: PlayerUpdateRequest}, TContext> => {
-const {mutation: mutationOptions, request: requestOptions} = options ?? {};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePlayer>>, {playerId: number;data: PlayerUpdateRequest}> = (props) => {
-          const {playerId,data} = props ?? {};
-
-          return  updatePlayer(playerId,data,requestOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdatePlayerMutationResult = NonNullable<Awaited<ReturnType<typeof updatePlayer>>>
-    export type UpdatePlayerMutationBody = PlayerUpdateRequest
-    export type UpdatePlayerMutationError = Error400Response | Error404Response | Error409Response
-
-    /**
- * @summary Aktualizovat hráče
- */
-export const useUpdatePlayer = <TError = Error400Response | Error404Response | Error409Response,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePlayer>>, TError,{playerId: number;data: PlayerUpdateRequest}, TContext>, request?: SecondParameter<typeof httpClient>}
-): UseMutationResult<
-        Awaited<ReturnType<typeof updatePlayer>>,
-        TError,
-        {playerId: number;data: PlayerUpdateRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getUpdatePlayerMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    /**
  * Vrací score a potential_score pro session_id z requestu. Pokud session_id chybí, vrátí se výchozí hodnoty bez výpočtu session statistik.
  * @summary Získat souhrn skóre hráče
  */

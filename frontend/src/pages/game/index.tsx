@@ -10,32 +10,20 @@ import { getPagePath } from "../../utils/routing";
 import ActionsRow from "./components/actionRow";
 import EmailTemplate from "./templates/EmailTemplate";
 import { useGame } from "./useGame";
-import { useQuery } from "@tanstack/react-query";
-import { getQuestions } from "../../services/questionsApi";
 
 function Game() {
   const navigate = useNavigate();
   const score = useAppSelector((state) => state.game.score);
   const nickname = useAppSelector((state) => state.player.nickname);
   const texts = useTranslation("game");
-  const {
-    data: emails,
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery({
-    queryKey: ["questions"],
-    queryFn: getQuestions,
-  });
-
 
   const {
     currentEmail,
     currentIndex,
-    answer,
+    answerCorrect,
     isLastEmail,
     difficulty,
-    emailsOfDifficulty,
+    allEmails,
     handleAnswer,
     handleContinue,
     remainingTime,
@@ -43,13 +31,17 @@ function Game() {
     timePerQuestion,
     timeoutProgressBarVariant,
     feedbackData,
+    isLoading,
+    isError,
+    refetch,
   } = useGame({
-    allEmails: emails ?? [],
     texts,
     onFinish: () => navigate(getPagePath(Page.Results)),
   });
 
-  const { id, sender, subject, content, explanation } = currentEmail || {};
+  const { id, content, explanation, metadata = {} } = currentEmail || {};
+
+  const { subject, sender } = metadata;
 
   /** Zobrazí zpětnou vazbu na odpověď uživatele. */
   const renderFeedback = () => {
@@ -65,7 +57,7 @@ function Game() {
    * Zobrazení obsahu podle toho, zda uživatel odpověděl.
    */
   const renderContent = () => {
-    if (answer) {
+    if (answerCorrect !== undefined) {
       return (
         <div className="w-100">
           {renderFeedback()}
@@ -117,7 +109,7 @@ function Game() {
     );
   }
 
-  if (emailsOfDifficulty.length === 0) {
+  if (allEmails.length === 0) {
     return (
       <>
         <Header nickname={nickname} score={score} />
@@ -129,13 +121,15 @@ function Game() {
     );
   }
 
+  if (!content || !sender || !subject) return null;
+
   return (
     <Container fluid="sm" className="game-container">
       <Header
         nickname={nickname}
         score={score}
         currentQuestion={currentIndex + 1}
-        totalQuestions={emailsOfDifficulty.length}
+        totalQuestions={allEmails.length}
       />
       <div className="mx-auto mb-4">
         <EmailTemplate key={id} sender={sender} subject={subject} content={content} />

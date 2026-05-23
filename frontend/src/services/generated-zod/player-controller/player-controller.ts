@@ -30,25 +30,6 @@ export const getPlayerParams = zod.object({
 })
 
 /**
- * Částečně aktualizuje údaje hráče. Můžete poslat pouze pole, která chcete změnit (např. jen přezdívku nebo jen skóre).
- * @summary Aktualizovat hráče
- */
-export const updatePlayerParams = zod.object({
-  "playerId": zod.number()
-})
-
-export const updatePlayerBodyNicknameMin = 3;
-
-export const updatePlayerBodyNicknameMax = 50;
-export const updatePlayerBodyScoreMin = 0;
-
-
-export const updatePlayerBody = zod.object({
-  "nickname": zod.string().min(updatePlayerBodyNicknameMin).max(updatePlayerBodyNicknameMax).optional(),
-  "score": zod.number().min(updatePlayerBodyScoreMin).optional()
-})
-
-/**
  * Vrací score a potential_score pro session_id z requestu. Pokud session_id chybí, vrátí se výchozí hodnoty bez výpočtu session statistik.
  * @summary Získat souhrn skóre hráče
  */

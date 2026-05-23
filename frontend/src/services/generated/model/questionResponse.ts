@@ -4,7 +4,7 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
-import type { QuestionResponseMetadata } from './questionResponseMetadata';
+import type { QuestionMetadataResponse } from './questionMetadataResponse';
 
 /**
  * Reprezentuje jednu phishingovou otázku vracenou API
@@ -16,8 +16,7 @@ export interface QuestionResponse {
   explanation?: string;
   /** Unikátní identifikátor otázky */
   id?: number;
-  /** Metadata otázky obsahující dodatečné informace (odesílatel, předmět, atd.) */
-  metadata?: QuestionResponseMetadata;
+  metadata?: QuestionMetadataResponse;
   /** Platforma, na kterou se otázka vztahuje (např. email, sms, web) */
   platform?: string;
 }

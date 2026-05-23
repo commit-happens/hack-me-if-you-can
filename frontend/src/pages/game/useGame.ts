@@ -1,12 +1,19 @@
+import { faAlarmClock, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { faSkullCrossbones } from "@fortawesome/free-solid-svg-icons/faSkullCrossbones";
 import { faThumbsUp } from "@fortawesome/free-solid-svg-icons/faThumbsUp";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ProgressBarProps } from "react-bootstrap";
 import useCountdown from "../../hooks/useCountdown";
 import type { Translation } from "../../languages/csCZ";
+import { submitAnswerBody } from "../../services/generated-zod/answer-controller/answer-controller";
+import { useSubmitAnswer } from "../../services/generated/answer-controller/answer-controller";
+import {
+  GetRandomQuestionsByDifficultyDifficulty,
+  type GetRandomQuestionsByDifficultyParams,
+} from "../../services/generated/model";
+import { useGetRandomQuestionsByDifficulty } from "../../services/generated/question-controller/question-controller";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
-  increaseCorrectAnswers,
   selectSessionId,
   setCurrentIndex,
   setScore,
@@ -14,9 +21,6 @@ import {
 } from "../../store/slices/gameSlice";
 import { selectPlayerId } from "../../store/slices/playerSlice";
 import { getEnvConfigValue } from "../../utils/envConfig";
-import { useSubmitAnswer } from "../../services/generated/answer-controller/answer-controller";
-import { submitAnswerBody } from "../../services/generated-zod/answer-controller/answer-controller";
-import { faAlarmClock, type IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 export enum Answer {
   Phishing = "phishing",
@@ -58,7 +62,6 @@ type UseGameOptions = {
 
 type UseGameProps = UseGameOptions & {
   texts: Translation["game"];
-  allEmails: EmailModel[];
   onFinish?: () => void;
 };
 
@@ -85,7 +88,10 @@ type FeedbackData = {
 
 export function useGame(props: UseGameProps) {
   const dispatch = useAppDispatch();
-  const { difficulty = 1, platformId = 1, allEmails, texts, onFinish } = props;
+
+  const [answerCorrect, setAnswerCorrect] = useState<boolean | undefined>(undefined);
+
+  const { difficulty = 1, texts, onFinish } = props;
 
   const feedbackDataByType: Record<FeedbackType, FeedbackData> = {
     [FeedbackType.Correct]: {
@@ -108,7 +114,7 @@ export function useGame(props: UseGameProps) {
   /**
    * Náhodné promíchání e-mailů pro zajištění různorodosti kvízu.
    */
-  const randomizedEmails = useMemo(() => allEmails.sort(() => Math.random() - 0.5), [allEmails]);
+  // const randomizedEmails = useMemo(() => allEmails.sort(() => Math.random() - 0.5), [allEmails]);
 
   const currentIndex = useAppSelector((state) => state.game.currentIndex);
   const sessionId = useAppSelector(selectSessionId);
@@ -125,6 +131,7 @@ export function useGame(props: UseGameProps) {
       handleTimeout();
     },
   });
+
   const playerId = useAppSelector(selectPlayerId);
   const submitAnswer = useSubmitAnswer({
     mutation: {
@@ -132,6 +139,8 @@ export function useGame(props: UseGameProps) {
         if (answerResponse.score != null) {
           dispatch(setScore(answerResponse.score));
         }
+
+        setAnswerCorrect(answerResponse.answer_correct);
       },
       onError: (error) => {
         console.error("Nepodařilo se odeslat odpověď na backend:", error);
@@ -141,55 +150,37 @@ export function useGame(props: UseGameProps) {
 
   const questionsLimit = getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20);
 
-  const emailsOfDifficulty = useMemo(() => {
-    const filteredQuestions = randomizedEmails.filter(
-      (item) => item.difficulty === difficulty && item.phishingPlatformID === platformId,
-    );
+  const getRandomQuestionsByDifficultyParams: GetRandomQuestionsByDifficultyParams = {
+    difficulty: GetRandomQuestionsByDifficultyDifficulty.EASY,
+    limit: questionsLimit,
+  };
 
-    if (questionsLimit > 0 && questionsLimit < filteredQuestions.length) {
-      return filteredQuestions.slice(0, questionsLimit);
-    }
+  const randomQuestionsByDifficultyQuery = useGetRandomQuestionsByDifficulty(
+    getRandomQuestionsByDifficultyParams,
+  );
 
-    return filteredQuestions;
-  }, [randomizedEmails, difficulty, platformId, questionsLimit]);
+  const allEmails = randomQuestionsByDifficultyQuery.data ?? [];
 
   // Uložit celkový počet otázek do Redux při změně emailsOfDifficulty
   useEffect(() => {
-    dispatch(setTotalQuestions(emailsOfDifficulty.length));
-  }, [dispatch, emailsOfDifficulty.length]);
+    dispatch(setTotalQuestions(allEmails.length));
+  }, [dispatch, allEmails.length]);
 
   const [answer, setAnswer] = useState<Answer | undefined>(undefined);
 
   // Aktuální e-mail k zodpovězení.
-  const currentEmail = emailsOfDifficulty[currentIndex];
-
-  /**
-   * Kontrola správnosti odpovědi.
-   */
-  const isCorrectAnswer = useCallback(
-    (chosen?: Answer) => {
-      const currentAnswer = chosen ?? answer;
-
-      if (!currentAnswer || !currentEmail) return false;
-
-      if (currentAnswer === Answer.Phishing) {
-        return (currentEmail.phishingTypeIDs || []).length > 0;
-      } else {
-        return (currentEmail.phishingTypeIDs || []).length === 0;
-      }
-    },
-    [answer, currentEmail],
-  );
+  const currentEmail = allEmails[currentIndex];
 
   /** Celkový počet e-mailů k zodpovězení.   */
-  const totalEmails = emailsOfDifficulty.length;
+  const totalEmails = allEmails.length;
 
   /**
    * Je-li true, jedná se o poslední e-mail kvízu.
    */
   const isLastEmail = currentIndex === totalEmails - 1;
 
-  const continueButtonLabel = isLastEmail ? texts.buttons.showResults : texts.buttons.continue;
+  const continueButtonLabel =
+    isLastEmail ? texts.buttons.showResults : texts.buttons.continue;
 
   /** Definice barev pro upozornění na zbývající čas pro zodpovězení otázky. */
 
@@ -206,7 +197,9 @@ export function useGame(props: UseGameProps) {
 
   /** Barva odpočítávadla času. */
   const { colorVariant } =
-    timeoutWarningThresholds.find((threshold) => threshold.secondsRemaining >= remainingTime) || {};
+    timeoutWarningThresholds.find(
+      (threshold) => threshold.secondsRemaining >= remainingTime,
+    ) || {};
 
   const timeoutBgColor = colorVariant ? `bg-${colorVariant}` : undefined;
   const timeoutProgressBarVariant = colorVariant;
@@ -215,10 +208,8 @@ export function useGame(props: UseGameProps) {
   const getFeedbackType = () => {
     let feedbackType = FeedbackType.Correct;
 
-    if (answer) {
-      if (!isCorrectAnswer()) feedbackType = FeedbackType.Incorrect;
-      if (remainingTime === 0) feedbackType = FeedbackType.TimeIsUp;
-    }
+    if (answerCorrect === false) feedbackType = FeedbackType.Incorrect;
+    if (remainingTime === 0) feedbackType = FeedbackType.TimeIsUp;
 
     return feedbackType;
   };
@@ -229,13 +220,18 @@ export function useGame(props: UseGameProps) {
    * Zpracování odpovědi uživatele.
    */
   const handleAnswer = useCallback(
-    (selected: Answer) => {
+    (selected?: Answer) => {
+      const remain_time = Math.max(
+        0,
+        Math.min(remainingTime, submitAnswerBodyRemainTimeMax),
+      );
+
       if (!currentEmail) return;
 
       // Okamžitě zastavit odpočítávání
       stop();
 
-      const correct = isCorrectAnswer(selected);
+      // const correct = isCorrectAnswer(selected);
       if (playerId && sessionId) {
         submitAnswer.mutate({
           data: submitAnswerBody.parse({
@@ -243,20 +239,18 @@ export function useGame(props: UseGameProps) {
             question_id: currentEmail.id,
             session_id: sessionId,
             is_phishing: selected === Answer.Phishing,
-            remain_time: Math.max(0, Math.min(remainingTime, submitAnswerBodyRemainTimeMax)),
+            remain_time,
           }),
         });
       } else {
         console.error("Nelze odeslat odpověď: chybí playerId nebo sessionId.");
       }
 
-      if (correct) dispatch(increaseCorrectAnswers());
       setAnswer(selected);
     },
     [
       currentEmail,
       dispatch,
-      isCorrectAnswer,
       playerId,
       remainingTime,
       sessionId,
@@ -270,10 +264,10 @@ export function useGame(props: UseGameProps) {
   const handleTimeout = useCallback(() => {
     if (!currentEmail) return;
 
-    const phishingIsCorrect = (currentEmail.phishingTypeIDs || []).length > 0;
-    const wrongChoice = phishingIsCorrect ? Answer.Safe : Answer.Phishing;
+    // const wrongChoice = answerCorrect === true ? Answer.Safe : Answer.Phishing;
 
-    handleAnswer(wrongChoice);
+    // handleAnswer(wrongChoice);
+    setAnswerCorrect(false);
   }, [currentEmail, handleAnswer]);
 
   /**
@@ -281,6 +275,7 @@ export function useGame(props: UseGameProps) {
    */
   const handleContinue = useCallback(() => {
     setAnswer(undefined);
+    setAnswerCorrect(undefined);
     reset();
 
     if (isLastEmail) {
@@ -289,24 +284,27 @@ export function useGame(props: UseGameProps) {
     }
 
     dispatch(setCurrentIndex(currentIndex + 1));
-  }, [currentIndex, dispatch, emailsOfDifficulty.length, isLastEmail, onFinish]);
+  }, [currentIndex, dispatch, allEmails.length, isLastEmail, onFinish]);
 
   return {
     currentEmail,
     currentIndex,
     totalEmails,
     answer,
+    answerCorrect,
     difficulty,
     isLastEmail,
     continueButtonLabel,
-    isCorrectAnswer,
     handleAnswer,
     handleContinue,
-    emailsOfDifficulty,
+    allEmails,
     remainingTime,
     timePerQuestion,
     timeoutBgColor,
     timeoutProgressBarVariant,
     feedbackData,
+    isLoading: randomQuestionsByDifficultyQuery.isLoading,
+    isError: randomQuestionsByDifficultyQuery.isError,
+    refetch: randomQuestionsByDifficultyQuery.refetch,
   };
 }
