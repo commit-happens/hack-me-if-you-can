@@ -1,6 +1,7 @@
 package cz.hackmeifyoucan.backend.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
 
 @Schema(
         name = "QuestionResponse",
@@ -36,6 +37,9 @@ public record QuestionResponse (
                 description = "Vysvětlení, proč se jedná o phishing a jaké jsou varovné znaky",
                 example = "Podvodný email tlačí na rychlou akci"
         )
-        String explanation
+        String explanation,
+
+        @Schema(description = "Seznam chytáků identifikovaných v obsahu zprávy")
+        List<ProblemResponse> problems
 ) {
 }
