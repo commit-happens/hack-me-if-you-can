@@ -14,6 +14,7 @@ import {
 import { useGetRandomQuestionsByDifficulty } from "../../services/generated/question-controller/question-controller";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
+  increaseCorrectAnswers,
   selectSessionId,
   setCurrentIndex,
   setScore,
@@ -139,7 +140,9 @@ export function useGame(props: UseGameProps) {
         if (answerResponse.score != null) {
           dispatch(setScore(answerResponse.score));
         }
-
+        if (answerResponse.answer_correct) {
+          dispatch(increaseCorrectAnswers());
+        }
         setAnswerCorrect(answerResponse.answer_correct);
       },
       onError: (error) => {
