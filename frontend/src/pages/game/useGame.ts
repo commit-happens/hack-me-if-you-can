@@ -14,6 +14,7 @@ import {
 import { useGetRandomQuestionsByDifficulty } from "../../services/generated/question-controller/question-controller";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
 import {
+  increaseCorrectAnswers,
   selectSessionId,
   setCurrentIndex,
   setScore,
@@ -111,11 +112,6 @@ export function useGame(props: UseGameProps) {
     },
   };
 
-  /**
-   * Náhodné promíchání e-mailů pro zajištění různorodosti kvízu.
-   */
-  // const randomizedEmails = useMemo(() => allEmails.sort(() => Math.random() - 0.5), [allEmails]);
-
   const currentIndex = useAppSelector((state) => state.game.currentIndex);
   const sessionId = useAppSelector(selectSessionId);
 
@@ -138,6 +134,10 @@ export function useGame(props: UseGameProps) {
       onSuccess: (answerResponse) => {
         if (answerResponse.score != null) {
           dispatch(setScore(answerResponse.score));
+        }
+
+        if (answerResponse.answer_correct) {
+          dispatch(increaseCorrectAnswers());
         }
 
         setAnswerCorrect(answerResponse.answer_correct);
@@ -231,7 +231,6 @@ export function useGame(props: UseGameProps) {
       // Okamžitě zastavit odpočítávání
       stop();
 
-      // const correct = isCorrectAnswer(selected);
       if (playerId && sessionId) {
         submitAnswer.mutate({
           data: submitAnswerBody.parse({
@@ -264,9 +263,6 @@ export function useGame(props: UseGameProps) {
   const handleTimeout = useCallback(() => {
     if (!currentEmail) return;
 
-    // const wrongChoice = answerCorrect === true ? Answer.Safe : Answer.Phishing;
-
-    // handleAnswer(wrongChoice);
     setAnswerCorrect(false);
   }, [currentEmail, handleAnswer]);
 
