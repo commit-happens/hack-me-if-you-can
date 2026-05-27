@@ -1,19 +1,20 @@
 package cz.hackmeifyoucan.backend.exception;
 
+import com.google.genai.errors.ClientException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.validation.FieldError;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -38,24 +39,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    @ExceptionHandler(PlayerNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handlePlayerNotFound(PlayerNotFoundException ex) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put(STATUS, 404);
-        errorResponse.put(ERROR, ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-    }
-
-    @ExceptionHandler(QuestionNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleQuestionNotFound(QuestionNotFoundException ex) {
-        Map<String, Object> errorResponse = new HashMap<>();
-        errorResponse.put(STATUS, 404);
-        errorResponse.put(ERROR, ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-    }
-
-    @ExceptionHandler(PhishingCategoryNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handlePhishingCategoryNotFound(PhishingCategoryNotFoundException ex) {
+    @ExceptionHandler({PlayerNotFoundException.class, QuestionNotFoundException.class, PhishingCategoryNotFoundException.class})
+    public ResponseEntity<Map<String, Object>> handleNotFound(RuntimeException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put(STATUS, 404);
         errorResponse.put(ERROR, ex.getMessage());
@@ -108,6 +93,15 @@ public class GlobalExceptionHandler {
         errorResponse.put(STATUS, 409);
         errorResponse.put(ERROR, "Porušení databázového omezení");
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
+
+    @ExceptionHandler(ClientException.class)
+    public ResponseEntity<Map<String, Object>> handleGoogleGenAiClientError(ClientException ex) {
+        logger.warn("Google GenAI API chyba", ex);
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put(STATUS, 429);
+        errorResponse.put(ERROR, "Byl překročen limit volání AI služby, zkuste to prosím znovu později");
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(errorResponse);
     }
 
     @ExceptionHandler(RuntimeException.class)
