@@ -29,4 +29,13 @@ public enum PlatformType {
         }
         throw new IllegalArgumentException("Unsupported platform type id: " + id);
     }
+
+    public static PlatformType fromName(String name) {
+        for (PlatformType platformType : values()) {
+            if (platformType.getName().equalsIgnoreCase(name)) {
+                return platformType;
+            }
+        }
+        throw new IllegalArgumentException("Unsupported platform type: " + name + ". Allowed values: email, sms");
+    }
 }
