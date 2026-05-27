@@ -7,10 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import cz.hackmeifyoucan.backend.dto.Error400Response;
 import cz.hackmeifyoucan.backend.dto.Error500Response;
 import cz.hackmeifyoucan.backend.dto.QuestionResponse;
+import cz.hackmeifyoucan.backend.dto.QuestionRequest;
+import cz.hackmeifyoucan.backend.dto.Error409Response;
 import cz.hackmeifyoucan.backend.enums.Difficulty;
 import cz.hackmeifyoucan.backend.exception.InvalidQuestionParameterException;
 import cz.hackmeifyoucan.backend.service.QuestionService;
@@ -22,6 +26,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/questions")
@@ -96,5 +101,26 @@ public class QuestionController {
         if (limit > REQUEST_LIMIT) {
             throw new InvalidQuestionParameterException("Limit nesmí překročit " + REQUEST_LIMIT);
         }
+    }
+
+    @PostMapping
+    @Operation(
+            summary = "Uložení otázky",
+            description = "Uloží novou otázku do databáze (email nebo SMS)"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Otázka byla úspěšně uložena",
+                    content = @Content(schema = @Schema(implementation = QuestionResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Neplatný request",
+                    content = @Content(schema = @Schema(implementation = Error400Response.class))),
+            @ApiResponse(responseCode = "409", description = "Konflikt při zápisu do databáze",
+                    content = @Content(schema = @Schema(implementation = Error409Response.class))),
+            @ApiResponse(responseCode = "500", description = "Neočekávaná chyba serveru",
+                    content = @Content(schema = @Schema(implementation = Error500Response.class)))
+    })
+    public ResponseEntity<QuestionResponse> saveQuestion(
+            @RequestBody @Valid QuestionRequest request
+    ) {
+        return ResponseEntity.ok(questionService.saveQuestion(request));
     }
 }

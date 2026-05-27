@@ -1,6 +1,7 @@
 package cz.hackmeifyoucan.backend.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import cz.hackmeifyoucan.backend.enums.PlatformType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +9,11 @@ import jakarta.validation.constraints.Size;
 
 @Schema(description = "Request pro vytvoření otázky")
 public record QuestionRequest(
+        @Schema(description = "Platforma (email nebo sms)", example = "email", allowableValues = {"email", "sms"})
+        @NotBlank(message = "platform je povinné")
+        @JsonProperty("platform")
+        String platform,
+
         @Schema(description = "Předmět nebo název", example = "Urgent account verification")
         @NotBlank(message = "subject je povinné")
         @Size(max = 255, message = "subject nesmí překročit 255 znaků")
@@ -44,4 +50,7 @@ public record QuestionRequest(
         @JsonProperty("is_phishing")
         Boolean phishing
 ) {
+    public PlatformType getPlatformType() {
+        return PlatformType.fromName(this.platform);
+    }
 }
