@@ -26,6 +26,19 @@
         <java.version>21</java.version>
     </properties>
 
+    <!-- SPRÁVA ZÁVISLOSTÍ (DEPENDENCY MANAGEMENT) - pro centralizaci verzí Spring AI závislostí -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.ai</groupId>
+                <artifactId>spring-ai-bom</artifactId>
+                <version>1.1.4</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
     <!-- ZÁVISLOSTI (DEPENDENCIES) -->
     <dependencies>
@@ -64,7 +77,7 @@
             <scope>test</scope>
         </dependency>
 
-         <!-- Spring Data JPA - práce s entitami a databází -->
+        <!-- Spring Data JPA - práce s entitami a databází -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -115,6 +128,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Spring AI Starter pro Google GenAI - integrace s Google GenAI API -->
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-google-genai</artifactId>
         </dependency>
 
     </dependencies>
