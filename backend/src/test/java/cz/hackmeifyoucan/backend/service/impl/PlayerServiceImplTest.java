@@ -30,9 +30,10 @@ class PlayerServiceImplTest {
     private PlayerServiceImpl playerService;
 
     @Test
-    void given_missing_session_id_when_getting_summary_then_should_return_persisted_player_score() {
-        Player player = Player.builder().id(1L).nickname("tester").score(3000).build();
+    void given_missing_session_id_when_getting_summary_then_should_return_computed_player_score() {
+        Player player = Player.builder().id(1L).nickname("tester").build();
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
+        when(answerRepository.sumEarnedPointsByPlayer(1L)).thenReturn(2800);
 
         PlayerSummaryResponse response = playerService.getPlayerSummary(1L, null);
 
@@ -45,9 +46,10 @@ class PlayerServiceImplTest {
     }
 
     @Test
-    void given_blank_session_id_when_getting_summary_then_should_return_persisted_player_score() {
-        Player player = Player.builder().id(1L).nickname("tester").score(2750).build();
+    void given_blank_session_id_when_getting_summary_then_should_return_computed_player_score() {
+        Player player = Player.builder().id(1L).nickname("tester").build();
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
+        when(answerRepository.sumEarnedPointsByPlayer(1L)).thenReturn(2550);
 
         PlayerSummaryResponse response = playerService.getPlayerSummary(1L, "   ");
 
@@ -59,7 +61,7 @@ class PlayerServiceImplTest {
 
     @Test
     void given_session_id_when_getting_summary_then_should_return_session_calculated_score() {
-        Player player = Player.builder().id(1L).nickname("tester").score(3000).build();
+        Player player = Player.builder().id(1L).nickname("tester").build();
         when(playerRepository.findById(1L)).thenReturn(Optional.of(player));
         when(answerRepository.sumEarnedPointsByPlayerAndSession(1L, "session-1")).thenReturn(400);
         when(answerRepository.sumPotentialPointsForWrongAnswersInSession(1L, "session-1")).thenReturn(150);

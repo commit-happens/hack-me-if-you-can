@@ -12,7 +12,6 @@ import {
   getPlayer,
   getPlayerSummary,
   getPlayers,
-  updatePlayer,
 } from "../generated/player-controller/player-controller";
 import { getRandomQuestionsByDifficulty } from "../generated/question-controller/question-controller";
 
@@ -73,7 +72,6 @@ describe("generated API controllers contract", () => {
     await getPlayers();
     await addPlayer({ nickname: "Tester" });
     await getPlayer(15);
-    await updatePlayer(15, { score: 42 });
     await getPlayerSummary(15, { session_id: "session-1" });
 
     expect(httpClientMock).toHaveBeenNthCalledWith(
@@ -98,16 +96,6 @@ describe("generated API controllers contract", () => {
     );
     expect(httpClientMock).toHaveBeenNthCalledWith(
       4,
-      {
-        url: "/players/15",
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        data: { score: 42 },
-      },
-      undefined,
-    );
-    expect(httpClientMock).toHaveBeenNthCalledWith(
-      5,
       {
         url: "/players/15/summary",
         method: "GET",

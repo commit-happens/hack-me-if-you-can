@@ -1,5 +1,7 @@
 package cz.hackmeifyoucan.backend.service.impl;
 
+import cz.hackmeifyoucan.backend.dto.ProblemResponse;
+import cz.hackmeifyoucan.backend.dto.QuestionMetadataResponse;
 import cz.hackmeifyoucan.backend.dto.QuestionResponse;
 import cz.hackmeifyoucan.backend.enums.Difficulty;
 import cz.hackmeifyoucan.backend.repository.QuestionRepository;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class QuestionServiceImpl implements QuestionService {
@@ -27,10 +30,20 @@ public class QuestionServiceImpl implements QuestionService {
                 .map(question -> new QuestionResponse(
                         question.getId(),
                         question.getPlatformType().getName(),
-                        question.getMetadata(),
+                toMetadataResponse(question.getMetadata()),
                         question.getContent(),
-                        question.getExplanation()
+                        question.getExplanation(),
+                        question.getProblems().stream()
+                                .map(p -> new ProblemResponse(p.getTag(), p.getDescription()))
+                                .toList()
                 ))
                 .toList();
     }
+
+        private QuestionMetadataResponse toMetadataResponse(Map<String, String> metadata) {
+        return new QuestionMetadataResponse(
+            metadata.getOrDefault("sender", ""),
+            metadata.getOrDefault("subject", "")
+        );
+        }
 }

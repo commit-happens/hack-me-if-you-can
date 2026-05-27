@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import cz.hackmeifyoucan.backend.dto.PlayerRequest;
-import cz.hackmeifyoucan.backend.dto.PlayerUpdateRequest;
 import cz.hackmeifyoucan.backend.dto.PlayerResponse;
 import cz.hackmeifyoucan.backend.dto.PlayerSummaryResponse;
 import cz.hackmeifyoucan.backend.service.PlayerService;
@@ -93,24 +91,6 @@ public class PlayerController {
     public ResponseEntity<List<PlayerResponse>> getPlayers() {
         List<PlayerResponse> players = playerService.getPlayers();
         return ResponseEntity.ok(players);
-    }
-
-    /* TODO: Odstranit updatePlayer az FE prejde na pouzivani AnswerAPI (update pobezi na BE a ne pres FE) */
-    @Operation(summary = "Aktualizovat hráče", description = "Částečně aktualizuje údaje hráče. Můžete poslat pouze pole, která chcete změnit (např. jen přezdívku nebo jen skóre).")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Hráč úspěšně aktualizován",
-                     content = @Content(schema = @Schema(implementation = PlayerResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Validační chyba - neplatná data",
-                     content = @Content(schema = @Schema(implementation = Error400Response.class))),
-        @ApiResponse(responseCode = "404", description = "Nenalezeno - hráč s tímto ID neexistuje",
-                     content = @Content(schema = @Schema(implementation = Error404Response.class))),
-        @ApiResponse(responseCode = "409", description = "Konflikt - nová přezdívka již existuje",
-                     content = @Content(schema = @Schema(implementation = Error409Response.class)))
-    })
-    @PatchMapping("/{playerId}")
-    public ResponseEntity<PlayerResponse> updatePlayer(@PathVariable Long playerId, @RequestBody @Valid PlayerUpdateRequest request) {
-        PlayerResponse response = playerService.updatePlayer(playerId, request);
-        return ResponseEntity.ok(response);
     }
 
 }

@@ -32,7 +32,4 @@ public class Player {
 
     @Column(name = "nickname", nullable = false, unique = true, length = 50)
     private String nickname;
-
-    @Column(name = "score", nullable = false)
-    private Integer score;
 }

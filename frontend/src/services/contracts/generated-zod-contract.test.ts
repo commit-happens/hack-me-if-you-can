@@ -3,7 +3,6 @@ import { submitAnswerBody } from "../generated-zod/answer-controller/answer-cont
 import {
   addPlayerBody,
   getPlayerSummaryQueryParams,
-  updatePlayerBody,
 } from "../generated-zod/player-controller/player-controller";
 import { getRandomQuestionsByDifficultyQueryParams } from "../generated-zod/question-controller/question-controller";
 
@@ -11,11 +10,6 @@ describe("generated Zod contract", () => {
   it("validuje addPlayerBody", () => {
     expect(() => addPlayerBody.parse({ nickname: "abc" })).not.toThrow();
     expect(() => addPlayerBody.parse({ nickname: "ab" })).toThrow();
-  });
-
-  it("validuje updatePlayerBody", () => {
-    expect(() => updatePlayerBody.parse({ nickname: "abcd", score: 0 })).not.toThrow();
-    expect(() => updatePlayerBody.parse({ score: -1 })).toThrow();
   });
 
   it("validuje submitAnswerBody", () => {

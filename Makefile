@@ -4,6 +4,10 @@ ifneq (,$(wildcard .env))
     export
 endif
 
+define PSQL_CMD
+PGPASSWORD="$${PGPASSWORD:-$${DB_PASSWORD:-postgres@123}}" psql -h "$${PGHOST:-localhost}" -p "$${PGPORT:-5432}" -U "$${PGUSER:-$${DB_USER:-postgres}}" -d "$${PGDATABASE:-$${DB_NAME:-hmiyc}}"
+endef
+
 
 ## Frontend pomocné příkazy
 fe-dev:
@@ -52,46 +56,35 @@ be-run:
 	@echo "Spuštění backendu..."
 	cd backend && mvn spring-boot:run
 
-be-flyway-repair:
-	@echo "Oprava Flyway migrací backendu..."
-	cd backend && mvn flyway:repair -Dflyway.url=jdbc:postgresql://localhost:5432/$(DB_NAME) -Dflyway.user=$(DB_USER) -Dflyway.password=$(DB_PASSWORD)
+## Databázové pomocné příkazy
+db-connect:
+	@echo "Připojení k PostgreSQL databázi..."
+	@$(PSQL_CMD)
 
-be-flyway-clean:
-	@echo -n "⚠️ VAROVÁNÍ: Opravdu chcete smazat VŠECHNY lokální tabulky a data z databáze? [y/N]: " && \
+db-tables:
+	@echo "Seznam tabulek v databázi..."
+	@$(PSQL_CMD) -c "\dt"
+
+db-flyway-status:
+	@echo "Stav Flyway migrací..."
+	@$(PSQL_CMD) -c "SELECT version, description, success, installed_on FROM flyway_schema_history ORDER BY installed_rank;"
+
+db-flyway-repair:
+	@echo "Oprava Flyway migrací backendu..."
+	cd backend && mvn flyway:repair \
+		-Dflyway.url=jdbc:postgresql://$${PGHOST:-localhost}:$${PGPORT:-5432}/$${PGDATABASE:-$${DB_NAME:-hmiyc}} \
+		-Dflyway.user=$${PGUSER:-$${DB_USER:-postgres}} \
+		-Dflyway.password=$${PGPASSWORD:-$${DB_PASSWORD:-postgres@123}}
+
+db-flyway-clean:
+	@echo -n "⚠️ VAROVÁNÍ: Opravdu chcete smazat VŠECHNY tabulky a data z databáze? [y/N]: " && \
 	read ans && [ "$$ans" = "y" ] || [ "$$ans" = "Y" ] || (echo "Operace zrušena."; exit 1)
 	@echo "Probíhá čištění databáze..."
 	cd backend && mvn flyway:clean \
 		-Dflyway.cleanDisabled=false \
-		-Dflyway.url=jdbc:postgresql://localhost:5432/$(DB_NAME) \
-		-Dflyway.user=$(DB_USER) \
-		-Dflyway.password=$(DB_PASSWORD)
-
-
-## Databázové pomocné příkazy
-db-connect:
-	@echo "Připojení k PostgreSQL databázi $(DB_NAME)..."
-	PGPASSWORD=$(DB_PASSWORD) psql -U $(DB_USER) -d $(DB_NAME) -h localhost
-
-db-tables:
-	@echo "Seznam tabulek v databázi $(DB_NAME):"
-	@PGPASSWORD=$(DB_PASSWORD) psql -U $(DB_USER) -d $(DB_NAME) -h localhost -c "\dt"
-
-db-players:
-	@echo "Obsah tabulky players:"
-	@PGPASSWORD=$(DB_PASSWORD) psql -U $(DB_USER) -d $(DB_NAME) -h localhost -c "SELECT * FROM players ORDER BY id;"
-
-db-players-count:
-	@echo "Počet hráčů v databázi:"
-	@PGPASSWORD=$(DB_PASSWORD) psql -U $(DB_USER) -d $(DB_NAME) -h localhost -c "SELECT COUNT(*) FROM players;"
-
-db-flyway-status:
-	@echo "Stav Flyway migrací:"
-	@PGPASSWORD=$(DB_PASSWORD) psql -U $(DB_USER) -d $(DB_NAME) -h localhost -c "SELECT version, description, success, installed_on FROM flyway_schema_history ORDER BY installed_rank;"
-
-db-reset:
-	@echo "Reset databáze (smazání tabulek a Flyway historie)..."
-	PGPASSWORD=$(DB_PASSWORD) psql -U $(DB_USER) -d $(DB_NAME) -h localhost -c "DROP TABLE IF EXISTS flyway_schema_history, players CASCADE;"
-	@echo "Databáze resetována. Spusť 'make be-run' pro novou migraci."
+		-Dflyway.url=jdbc:postgresql://$${PGHOST:-localhost}:$${PGPORT:-5432}/$${PGDATABASE:-$${DB_NAME:-hmiyc}} \
+		-Dflyway.user=$${PGUSER:-$${DB_USER:-postgres}} \
+		-Dflyway.password=$${PGPASSWORD:-$${DB_PASSWORD:-postgres@123}}
 
 
 ## Další pomocné příkazy
@@ -124,15 +117,3 @@ docker-down-volumes:
 docker-restart:
 	@echo "Restart všech služeb..."
 	docker compose restart
-
-docker-db-connect:
-	@echo "Připojení k PostgreSQL v Dockeru..."
-	docker exec -it hmiyc-postgres psql -U $(DB_USER) -d $(DB_NAME)
-
-docker-db-tables:
-	@echo "Seznam tabulek v Docker databázi:"
-	@docker exec -it hmiyc-postgres psql -U $(DB_USER) -d $(DB_NAME) -c "\dt"
-
-docker-db-players:
-	@echo "Obsah tabulky players v Docker databázi:"
-	@docker exec -it hmiyc-postgres psql -U $(DB_USER) -d $(DB_NAME) -c "SELECT * FROM players ORDER BY id;"

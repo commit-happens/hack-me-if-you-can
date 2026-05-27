@@ -2,7 +2,6 @@ package cz.hackmeifyoucan.backend.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
-import java.util.Map;
 
 @Schema(
         name = "QuestionResponse",
@@ -24,9 +23,9 @@ public record QuestionResponse (
 
         @Schema(
                 description = "Metadata otázky obsahující dodatečné informace (odesílatel, předmět, atd.)",
-                example = "{\"sender\": \"security@acme.com\", \"subject\": \"Urgent account verification\"}"
+                implementation = QuestionMetadataResponse.class
         )
-        Map<String, String> metadata,
+        QuestionMetadataResponse metadata,
 
         @Schema(
                 description = "Obsah otázky - text nebo popis podezřelé zprávy",
@@ -38,6 +37,9 @@ public record QuestionResponse (
                 description = "Vysvětlení, proč se jedná o phishing a jaké jsou varovné znaky",
                 example = "Podvodný email tlačí na rychlou akci"
         )
-        String explanation
+        String explanation,
+
+        @Schema(description = "Seznam chytáků identifikovaných v obsahu zprávy")
+        List<ProblemResponse> problems
 ) {
 }
