@@ -138,6 +138,7 @@ function Game() {
           sender={sender}
           subject={subject}
           content={content}
+          popOverHeader={texts.problems.popOverHeader}
           problems={answerCorrect !== undefined ? problems : undefined}
         />
       </div>

@@ -14,6 +14,7 @@ export interface EmailTemplateProps {
   subject: string;
   content: string;
   problems?: ProblemResponse[];
+  popOverHeader?: string;
 }
 
 /**
@@ -29,6 +30,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
   subject,
   content,
   problems = [],
+  popOverHeader = "",
 }) => {
   const texts = useTranslation("template");
 
@@ -42,7 +44,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
       </Card.Header>
       <Card.Body>
         <Card.Text className="p-sm-0 p-md-3 p-lg-4 p-xl-5">
-          {combineParsers(content, problems)}
+          {combineParsers(content, problems, popOverHeader)}
         </Card.Text>
       </Card.Body>
     </Card>
@@ -53,7 +55,11 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
  * Kombinuje parsování problém markerů a markdown odkazů.
  * Pořadí: nejdřív problém markery, pak PseudoLinky v zbývajícím textu.
  */
-function combineParsers(content: string, problems: ProblemResponse[]): React.ReactNode[] {
+function combineParsers(
+  content: string,
+  problems: ProblemResponse[],
+  header?: string,
+): React.ReactNode[] {
   // Krok 1: Parsuj problem markery
   const withProblems = parseEmailContent(content, problems);
 
@@ -62,7 +68,7 @@ function combineParsers(content: string, problems: ProblemResponse[]): React.Rea
   // Fallback: pokud obsah neobsahuje explicitní markery, ale máme problems,
   // označ problematické části automaticky podle markdown odkazů.
   if (!hasExplicitMarkers && problems.length > 0) {
-    return replaceMarkdownLinksWithProblemMarkers(content, problems);
+    return replaceMarkdownLinksWithProblemMarkers(content, problems, header);
   }
 
   // Krok 2: Parsuj markdown linky v jednotlivých fragmentech
@@ -80,6 +86,7 @@ function combineParsers(content: string, problems: ProblemResponse[]): React.Rea
           text={marker.text}
           id={marker.id}
           description={marker.description}
+          header={header}
         />,
       );
     }
@@ -95,6 +102,7 @@ function combineParsers(content: string, problems: ProblemResponse[]): React.Rea
 function replaceMarkdownLinksWithProblemMarkers(
   text: string,
   problems: ProblemResponse[],
+  header?: string,
 ): React.ReactNode[] {
   const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g;
   const result: React.ReactNode[] = [];
@@ -126,6 +134,7 @@ function replaceMarkdownLinksWithProblemMarkers(
         text={linkText}
         id={problem.id}
         description={problem.description}
+        header={header}
       />,
     );
 
@@ -145,6 +154,7 @@ function replaceMarkdownLinksWithProblemMarkers(
         text={markerText}
         id={firstProblem.id}
         description={firstProblem.description}
+        header={header}
       />,
       <React.Fragment key="auto-fallback-tail">{tail}</React.Fragment>,
     ];
