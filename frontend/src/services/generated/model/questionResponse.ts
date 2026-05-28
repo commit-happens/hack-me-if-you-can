@@ -5,6 +5,7 @@
  * OpenAPI spec version: v0
  */
 import type { QuestionMetadataResponse } from './questionMetadataResponse';
+import type { ProblemResponse } from './problemResponse';
 
 /**
  * Reprezentuje jednu phishingovou otázku vracenou API
@@ -19,4 +20,6 @@ export interface QuestionResponse {
   metadata?: QuestionMetadataResponse;
   /** Platforma, na kterou se otázka vztahuje (např. email, sms, web) */
   platform?: string;
+  /** Seznam chytáků identifikovaných v obsahu zprávy */
+  problems?: ProblemResponse[];
 }

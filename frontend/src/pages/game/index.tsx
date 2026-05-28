@@ -39,7 +39,8 @@ function Game() {
     onFinish: () => navigate(getPagePath(Page.Results)),
   });
 
-  const { id, content, explanation, metadata = {} } = currentEmail || {};
+  const { id, content, explanation, metadata = {}, problems } = currentEmail || {};
+  console.log(problems);
 
   const { subject, sender } = metadata;
 
@@ -132,7 +133,13 @@ function Game() {
         totalQuestions={allEmails.length}
       />
       <div className="mx-auto mb-4">
-        <EmailTemplate key={id} sender={sender} subject={subject} content={content} />
+        <EmailTemplate
+          key={id}
+          sender={sender}
+          subject={subject}
+          content={content}
+          problems={answerCorrect !== undefined ? problems : undefined}
+        />
       </div>
       {renderContent()}
     </Container>

@@ -1,4 +1,4 @@
-import type { Problem } from "../../useGame";
+import type { ProblemResponse } from "../../../../services/generated/model";
 
 export interface ParsedProblemMarker {
   type: "problem-marker";
@@ -19,7 +19,7 @@ export interface ParsedProblemMarker {
  */
 export function parseEmailContent(
   content: string,
-  problems: Problem[] = [],
+  problems: ProblemResponse[] = [],
 ): (string | ParsedProblemMarker)[] {
   // Podporované syntaxe:
   // 1) Jednoduchá: {{text|id}}

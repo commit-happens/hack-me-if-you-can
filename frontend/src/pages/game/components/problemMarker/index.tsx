@@ -5,8 +5,8 @@ import "./styles.css";
 
 export interface ProblemMarkerProps {
   text: string;
-  id: string;
-  description: string;
+  id?: string;
+  description?: string;
 }
 
 /**

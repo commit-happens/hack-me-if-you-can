@@ -1,19 +1,19 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import useTranslation from "../../../hooks/useTranslation";
-import PseudoLink from "../components/pseudoLink";
-import type { Problem } from "../useGame";
+import type { ProblemResponse } from "../../../services/generated/model/problemResponse";
+import ProblemMarker from "../components/problemMarker";
 import {
   parseEmailContent,
   type ParsedProblemMarker,
 } from "../components/problemMarker/parseContent";
-import ProblemMarker from "../components/problemMarker";
+import PseudoLink from "../components/pseudoLink";
 
 export interface EmailTemplateProps {
   sender: string;
   subject: string;
   content: string;
-  problems?: Problem[];
+  problems?: ProblemResponse[];
 }
 
 /**
@@ -53,7 +53,7 @@ const EmailTemplate: React.FC<EmailTemplateProps> = ({
  * Kombinuje parsování problém markerů a markdown odkazů.
  * Pořadí: nejdřív problém markery, pak PseudoLinky v zbývajícím textu.
  */
-function combineParsers(content: string, problems: Problem[]): React.ReactNode[] {
+function combineParsers(content: string, problems: ProblemResponse[]): React.ReactNode[] {
   // Krok 1: Parsuj problem markery
   const withProblems = parseEmailContent(content, problems);
 
@@ -94,7 +94,7 @@ function combineParsers(content: string, problems: Problem[]): React.ReactNode[]
  */
 function replaceMarkdownLinksWithProblemMarkers(
   text: string,
-  problems: Problem[],
+  problems: ProblemResponse[],
 ): React.ReactNode[] {
   const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g;
   const result: React.ReactNode[] = [];
@@ -151,16 +151,17 @@ function replaceMarkdownLinksWithProblemMarkers(
   }
 
   if (lastIndex < text.length) {
-    result.push(
-      <React.Fragment key="auto-tail">{text.slice(lastIndex)}</React.Fragment>,
-    );
+    result.push(<React.Fragment key="auto-tail">{text.slice(lastIndex)}</React.Fragment>);
   }
 
   return result.length > 0 ? result : [text];
 }
 
 /** Nahrazuje Markdown odkazy komponentou PseudoLink. */
-function replaceMarkdownLinksWithPseudoLinks(text: string, parentKey: number): React.ReactNode[] {
+function replaceMarkdownLinksWithPseudoLinks(
+  text: string,
+  parentKey: number,
+): React.ReactNode[] {
   const markdownLinkRegex = /\[([^[]+)\](\(.*\))/g;
   const parts = text.split(markdownLinkRegex);
 
@@ -182,7 +183,9 @@ function replaceMarkdownLinksWithPseudoLinks(text: string, parentKey: number): R
         </PseudoLink>,
       );
     } else {
-      result.push(<React.Fragment key={`text-${parentKey}-${index}`}>{text1}</React.Fragment>);
+      result.push(
+        <React.Fragment key={`text-${parentKey}-${index}`}>{text1}</React.Fragment>,
+      );
     }
     index += 1;
   }

@@ -25,7 +25,11 @@ export const getRandomQuestionsByDifficultyResponseItem = zod.object({
   "subject": zod.string().optional()
 }).optional(),
   "content": zod.string().optional(),
-  "explanation": zod.string().optional()
+  "explanation": zod.string().optional(),
+  "problems": zod.array(zod.object({
+  "id": zod.string().optional(),
+  "description": zod.string().optional()
+})).optional()
 })
 export const getRandomQuestionsByDifficultyResponse = zod.array(getRandomQuestionsByDifficultyResponseItem)
 
