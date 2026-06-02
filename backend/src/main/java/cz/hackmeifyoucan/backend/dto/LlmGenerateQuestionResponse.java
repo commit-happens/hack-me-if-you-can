@@ -7,7 +7,7 @@ import java.util.List;
 @Schema(
         name = "QuestionResponse",
         description = "Reprezentuje jednu phishingovou otázku vracenou API",
-        example = "{\"id\": 35, \"platform\": \"email\", \"metadata\": {\"sender\": \"security@acme.com\", \"subject\": \"Urgent account verification\"}, \"content\": \"Please verify your account immediately\", \"explanation\": \"Podvodný email tlací na rychlou akci\"}"
+        example = "{\"id\": 35, \"platform\": \"email\", \"metadata\": {\"sender\": \"security@acme.com\", \"subject\": \"Urgent account verification\"}, \"content\": \"Please verify your account immediately\", \"explanation\": \"Podvodný email tlací na rychlou akci\", \"category\": \"credential-harvesting\", \"difficulty\": \"medium\", \"is_phishing\": true}"
 )
 public record LlmGenerateQuestionResponse(
         @Schema(
@@ -38,6 +38,24 @@ public record LlmGenerateQuestionResponse(
                 description = "Vysvětlení, proč se jedná o phishing a jaké jsou varovné znaky",
                 example = "Podvodný email tlačí na rychlou akci"
         )
-        String explanation
+        String explanation,
+
+        @Schema(
+                description = "Kategorie otázky (např. credential-harvesting, malware, etc.)",
+                example = "credential-harvesting"
+        )
+        String category,
+
+        @Schema(
+                description = "Obtížnost otázky (easy, medium, hard)",
+                example = "medium"
+        )
+        String difficulty,
+
+        @Schema(
+                description = "Zda se jedná o phishingový obsah",
+                example = "true"
+        )
+        Boolean is_phishing
 ) {
 }
