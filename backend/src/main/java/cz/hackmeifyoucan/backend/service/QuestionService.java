@@ -1,7 +1,7 @@
 package cz.hackmeifyoucan.backend.service;
 
-import cz.hackmeifyoucan.backend.dto.QuestionResponse;
 import cz.hackmeifyoucan.backend.dto.QuestionRequest;
+import cz.hackmeifyoucan.backend.dto.QuestionResponse;
 import cz.hackmeifyoucan.backend.enums.Difficulty;
 
 import java.util.List;

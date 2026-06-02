@@ -45,26 +45,18 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public QuestionResponse saveQuestion(QuestionRequest req) {
-        return saveQuestionInternal(req);
-    }
+        QuestionMetadataResponse meta = req.metadata();
+        String sender = meta != null && meta.sender() != null ? meta.sender().trim() : "";
+        String subject = meta != null && meta.subject() != null ? meta.subject().trim() : "";
 
-    @Override
-    @Transactional
-    public List<QuestionResponse> saveQuestions(List<QuestionRequest> requests) {
-        return requests.stream()
-                .map(this::saveQuestionInternal)
-                .toList();
-    }
-
-    private QuestionResponse saveQuestionInternal(QuestionRequest req) {
         Question q = questionRepository.saveAndFlush(Question.builder()
                 .platformType(req.getPlatformType())
-                .phishingCategory(phishingCategoryRepository.findByTagIgnoreCase(req.categoryTag())
-                        .orElseThrow(() -> new PhishingCategoryNotFoundException(req.categoryTag())))
-                .phishing(req.phishing())
+                .phishingCategory(phishingCategoryRepository.findByTagIgnoreCase(req.category())
+                        .orElseThrow(() -> new PhishingCategoryNotFoundException(req.category())))
+                .phishing(req.is_phishing())
                 .difficulty(Difficulty.valueOf(req.difficulty().toUpperCase()))
                 .content(req.content().trim())
-                .metadata(Map.of("sender", req.sender().trim(), "subject", req.subject().trim()))
+                .metadata(Map.of("sender", sender, "subject", subject))
                 .explanation(req.explanation().trim())
                 .problems(new ArrayList<>())
                 .build());
@@ -72,6 +64,14 @@ public class QuestionServiceImpl implements QuestionService {
         extractTags(req.content()).forEach(tag -> problemService.assignProblemToQuestion(q.getId(), tag));
 
         return toResponse(questionRepository.findById(q.getId()).orElseThrow());
+    }
+
+    @Override
+    @Transactional
+    public List<QuestionResponse> saveQuestions(List<QuestionRequest> requests) {
+        return requests.stream()
+                .map(this::saveQuestion)
+                .toList();
     }
 
     private Set<String> extractTags(String content) {
