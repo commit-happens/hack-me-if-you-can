@@ -93,7 +93,6 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.getRandomQuestionsByDifficulty(difficulty, limit));
     }
 
-
     private void validateLimit(int limit) {
         if (limit <= 0) {
             throw new InvalidQuestionParameterException("Limit musí být kladné číslo");
@@ -122,5 +121,24 @@ public class QuestionController {
             @RequestBody @Valid QuestionRequest request
     ) {
         return ResponseEntity.ok(questionService.saveQuestion(request));
+    }
+
+    @PostMapping("/batch")
+    @Operation(
+            summary = "Uložení více otázek najednou",
+            description = "Uloží pole otázek do databáze a vrátí uložené záznamy"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Otázky byly úspěšně uloženy",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = QuestionResponse.class)))),
+            @ApiResponse(responseCode = "400", description = "Neplatný request",
+                    content = @Content(schema = @Schema(implementation = Error400Response.class))),
+            @ApiResponse(responseCode = "500", description = "Neočekávaná chyba serveru",
+                    content = @Content(schema = @Schema(implementation = Error500Response.class)))
+    })
+    public ResponseEntity<List<QuestionResponse>> saveQuestions(
+            @RequestBody List<@Valid QuestionRequest> requests
+    ) {
+        return ResponseEntity.ok(questionService.saveQuestions(requests));
     }
 }
