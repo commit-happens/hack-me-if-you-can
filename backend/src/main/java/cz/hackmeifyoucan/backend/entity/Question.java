@@ -16,16 +16,16 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 @Entity
 @Getter
 @Setter
-@ToString(exclude = "categories")
+@ToString(exclude = "phishingCategory")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder
 @NoArgsConstructor
@@ -41,14 +41,9 @@ public class Question {
     @Convert(converter = PlatformTypeConverter.class)
     private PlatformType platformType;
 
-    @Builder.Default
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-        name = "question_to_categories",
-        joinColumns = @JoinColumn(name = "question_id"),
-        inverseJoinColumns = @JoinColumn(name = "category_id")
-    )
-    private Set<PhishingCategory> categories = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "phishing_category_id", nullable = false)
+    private PhishingCategory phishingCategory;
 
     @Column(name = "is_phishing", nullable = false)
     private boolean phishing;
@@ -70,6 +65,15 @@ public class Question {
 
     @Column(name = "explanation", nullable = false, length = 2000)
     private String explanation;
+
+    @Builder.Default
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "question_problems",
+            joinColumns = @JoinColumn(name = "question_id"),
+            inverseJoinColumns = @JoinColumn(name = "problem_id")
+    )
+    private List<Problem> problems = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;

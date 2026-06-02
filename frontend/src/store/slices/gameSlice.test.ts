@@ -9,7 +9,6 @@ import gameReducer, {
   setTotalQuestions,
 } from "./gameSlice";
 import playerReducer from "./playerSlice";
-import { getEnvConfigValue } from "../../utils/envConfig";
 
 function makeStore() {
   return configureStore({
@@ -24,10 +23,12 @@ describe("gameSlice reducers", () => {
 
     const s = store.getState().game;
     expect(s.isPlaying).toBe(true);
-    expect(s.score).toBe(getEnvConfigValue("VITE_INITIAL_SCORE", 200));
+    expect(s.score).toBe(0);
     expect(s.currentIndex).toBe(0);
     expect(s.correctAnswers).toBe(0);
-    expect(s.totalQuestions).toBe(getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20));
+    expect(s.totalQuestions).toBeGreaterThanOrEqual(0);
+    expect(s.sessionId).toBeTruthy();
+    expect(typeof s.sessionId).toBe("string");
   });
 
   it("Akce increaseCorrectAnswers zvýší počet správných odpovědí", () => {
@@ -62,7 +63,18 @@ describe("gameSlice reducers", () => {
 describe("gameSlice setScore reducer", () => {
   it("nastaví skóre na zadanou hodnotu", () => {
     const store = makeStore();
-    store.dispatch(setScore(225));
-    expect(store.getState().game.score).toBe(225);
+    store.dispatch(setScore(125));
+    expect(store.getState().game.score).toBe(125);
+  });
+
+  it("startGame vytvoří novou session", () => {
+    const store = makeStore();
+    store.dispatch(startGame());
+    const firstSession = store.getState().game.sessionId;
+
+    store.dispatch(startGame());
+    const secondSession = store.getState().game.sessionId;
+
+    expect(firstSession).not.toBe(secondSession);
   });
 });

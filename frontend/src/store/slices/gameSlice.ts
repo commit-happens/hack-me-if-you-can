@@ -4,7 +4,14 @@ import type { RootState } from "../../store";
 import { getEnvConfigValue } from "../../utils/envConfig";
 
 const gameQuestionsLimitDefault = getEnvConfigValue("VITE_GAME_QUESTIONS_LIMIT", 20);
-const gameInitialScoreDefault = getEnvConfigValue("VITE_INITIAL_SCORE", 200);
+
+function createGameSessionId() {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+
+  return `session-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
 
 interface GameState {
   score: number;
@@ -12,14 +19,16 @@ interface GameState {
   currentIndex: number;
   isPlaying: boolean;
   totalQuestions: number;
+  sessionId: string;
 }
 
 const initialState: GameState = {
-  score: gameInitialScoreDefault,
+  score: 0,
   correctAnswers: 0,
   currentIndex: 0,
   isPlaying: false,
   totalQuestions: gameQuestionsLimitDefault,
+  sessionId: "",
 };
 
 const gameSlice = createSlice({
@@ -28,10 +37,11 @@ const gameSlice = createSlice({
   reducers: {
     startGame: (state) => {
       state.isPlaying = true;
-      state.score = gameInitialScoreDefault;
       state.currentIndex = 0;
       state.correctAnswers = 0;
       state.totalQuestions = gameQuestionsLimitDefault;
+      state.sessionId = createGameSessionId();
+      state.score = 0;
     },
     endGame: (state) => {
       state.isPlaying = false;
@@ -65,6 +75,7 @@ export const {
 export const selectScore = (state: RootState) => state.game.score;
 export const selectCurrentIndex = (state: RootState) => state.game.currentIndex;
 export const selectIsPlaying = (state: RootState) => state.game.isPlaying;
+export const selectSessionId = (state: RootState) => state.game.sessionId;
 export const selectGameState = (state: RootState) => state.game;
 
 export default gameSlice.reducer;

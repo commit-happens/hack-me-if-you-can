@@ -10,6 +10,10 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${PGUSER:${DB_USER:postgres}}
     password: ${PGPASSWORD:${DB_PASSWORD:postgres@123}}
+    hikari:
+      max-lifetime: 180000
+      keepalive-time: 60000
+      connection-timeout: 20000
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: ${SHOW_SQL:false}

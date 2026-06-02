@@ -14,3 +14,7 @@ build:
 preview:
 	echo "Running frontend preview server..."
 	npm run preview
+
+api-generate:
+	echo "Generating api..."
+	npm run api:generate

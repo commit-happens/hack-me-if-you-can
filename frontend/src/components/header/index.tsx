@@ -58,31 +58,43 @@ function Header({
         <span className="nav-item--label hide-on-mobile">{textsApp.title}</span>
       </Link>
 
-      <div className="nav-items" style={{ display: "flex", alignItems: "center", gap: "0.8em", flexWrap: "wrap", justifyContent: "flex-start" }}>
-
-        <div className="nav-item" style={{ display: "flex", alignItems: "center", gap: "0.3em" }}>
-          <img
-            src={coin}
-            alt="Coin"
-            className="mobile-icon"
-            style={{ height: "60px" }}
-          />
+      <div
+        className="nav-items"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "0.8em",
+          flexWrap: "wrap",
+          justifyContent: "flex-start",
+        }}
+      >
+        <div
+          className="nav-item"
+          style={{ display: "flex", alignItems: "center", gap: "0.3em" }}
+        >
+          <img src={coin} alt="Coin" className="mobile-icon" style={{ height: "60px" }} />
           <span>{score ?? 0}</span>
         </div>
-        {isGamePage &&
-          currentQuestion !== undefined &&
-          totalQuestions !== undefined && (
-            <div className="nav-item" style={{ display: "flex", alignItems: "center", gap: "0.35em" }}>
-              <img
-                src={mailIcon}
-                alt="Mail progress"
-                className="mobile-icon"
-                style={{ height: "60px"}}
-              />
-              <span>{currentQuestion}/{totalQuestions}</span>
-            </div>
-          )}
-                <div className="nav-item" style={{ display: "flex", alignItems: "center", gap: "0.4em" }}>
+        {isGamePage && currentQuestion !== undefined && totalQuestions !== undefined && (
+          <div
+            className="nav-item"
+            style={{ display: "flex", alignItems: "center", gap: "0.35em" }}
+          >
+            <img
+              src={mailIcon}
+              alt="Mail progress"
+              className="mobile-icon"
+              style={{ height: "60px" }}
+            />
+            <span>
+              {currentQuestion}/{totalQuestions}
+            </span>
+          </div>
+        )}
+        <div
+          className="nav-item"
+          style={{ display: "flex", alignItems: "center", gap: "0.4em" }}
+        >
           <img
             src={idCard}
             alt="Player ID"
@@ -90,18 +102,18 @@ function Header({
             style={{ height: "60px" }}
           />
           <span
-          title={nickname}
-          className="nickname-text"
-          style={{
-            maxWidth: "150px",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            display: "inline-block",
-          }}
+            title={nickname}
+            className="nickname-text"
+            style={{
+              maxWidth: "150px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              display: "inline-block",
+            }}
           >
-          {nickname}
-        </span>
+            {nickname}
+          </span>
         </div>
       </div>
 
