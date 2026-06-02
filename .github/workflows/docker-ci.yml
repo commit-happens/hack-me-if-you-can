@@ -17,6 +17,7 @@ env:
   DB_NAME: hmiyc_test
   DB_USER: postgres
   DB_PASSWORD: postgres123
+  GOOGLE_GENAI_API_KEY: gha
 
 jobs:
   docker-build-and-health-check:
@@ -31,6 +32,7 @@ jobs:
           echo "DB_NAME=${{ env.DB_NAME }}" >> .env
           echo "DB_USER=${{ env.DB_USER }}" >> .env
           echo "DB_PASSWORD=${{ env.DB_PASSWORD }}" >> .env
+          echo "GOOGLE_GENAI_API_KEY=${{ env.GOOGLE_GENAI_API_KEY }}" >> .env
 
       - name: Build Docker images
         env:
