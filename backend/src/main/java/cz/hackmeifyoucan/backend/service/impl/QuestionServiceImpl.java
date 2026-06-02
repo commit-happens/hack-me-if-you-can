@@ -45,7 +45,18 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public QuestionResponse saveQuestion(QuestionRequest req) {
-        // Uložit otázku
+        return saveQuestionInternal(req);
+    }
+
+    @Override
+    @Transactional
+    public List<QuestionResponse> saveQuestions(List<QuestionRequest> requests) {
+        return requests.stream()
+                .map(this::saveQuestionInternal)
+                .toList();
+    }
+
+    private QuestionResponse saveQuestionInternal(QuestionRequest req) {
         Question q = questionRepository.saveAndFlush(Question.builder()
                 .platformType(req.getPlatformType())
                 .phishingCategory(phishingCategoryRepository.findByTagIgnoreCase(req.categoryTag())
@@ -58,10 +69,7 @@ public class QuestionServiceImpl implements QuestionService {
                 .problems(new ArrayList<>())
                 .build());
 
-        // Extrahovat a mapovat tagy
-        extractTags(req.content()).forEach(tag ->
-            problemService.assignProblemToQuestion(q.getId(), tag)
-        );
+        extractTags(req.content()).forEach(tag -> problemService.assignProblemToQuestion(q.getId(), tag));
 
         return toResponse(questionRepository.findById(q.getId()).orElseThrow());
     }
