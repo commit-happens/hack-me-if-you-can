@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Alert, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header";
-import emailsData from "../../data/emails.json";
 import useTranslation from "../../hooks/useTranslation";
 import Page from "../../models/Page";
 import { useAppSelector } from "../../store/hooks";
@@ -18,15 +17,13 @@ function Game() {
   const nickname = useAppSelector((state) => state.player.nickname);
   const texts = useTranslation("game");
 
-  const { emails } = emailsData;
-
   const {
     currentEmail,
     currentIndex,
-    answer,
+    answerCorrect,
     isLastEmail,
     difficulty,
-    emailsOfDifficulty,
+    allEmails,
     handleAnswer,
     handleContinue,
     remainingTime,
@@ -34,13 +31,17 @@ function Game() {
     timePerQuestion,
     timeoutProgressBarVariant,
     feedbackData,
+    isLoading,
+    isError,
+    refetch,
   } = useGame({
-    allEmails: emails,
     texts,
     onFinish: () => navigate(getPagePath(Page.Results)),
   });
 
-  const { id, sender, subject, content, explanation } = currentEmail || {};
+  const { id, content, explanation, metadata = {} } = currentEmail || {};
+
+  const { subject, sender } = metadata;
 
   /** Zobrazí zpětnou vazbu na odpověď uživatele. */
   const renderFeedback = () => {
@@ -56,13 +57,13 @@ function Game() {
    * Zobrazení obsahu podle toho, zda uživatel odpověděl.
    */
   const renderContent = () => {
-    if (answer) {
+    if (answerCorrect !== undefined) {
       return (
         <div className="w-100">
           {renderFeedback()}
           {explanation}
           <div style={{ textAlign: "center" }} className="mt-4">
-            <Button onClick={() => handleContinue()}>
+            <Button onClick={() => handleContinue()} autoFocus>
               {isLastEmail ? texts.buttons.showResults : texts.buttons.continue}{" "}
               <FontAwesomeIcon icon={faArrowRight} aria-hidden="true" />
             </Button>
@@ -83,7 +84,32 @@ function Game() {
     );
   };
 
-  if (emailsOfDifficulty.length === 0) {
+  if (isLoading) {
+    return (
+      <>
+        <Header nickname={nickname} score={score} />
+        <Container className="text-center mt-5">
+          <h1>Načítám hru...</h1>
+        </Container>
+      </>
+    );
+  }
+
+  if (isError) {
+    return (
+      <>
+        <Header nickname={nickname} score={score} />
+        <Container className="text-center mt-5">
+          <h1>Nepodařilo se načíst hru.</h1>
+          <Button onClick={() => refetch()} className="mt-3">
+            Zkusit znovu
+          </Button>
+        </Container>
+      </>
+    );
+  }
+
+  if (allEmails.length === 0) {
     return (
       <>
         <Header nickname={nickname} score={score} />
@@ -95,13 +121,15 @@ function Game() {
     );
   }
 
+  if (!content || !sender || !subject) return null;
+
   return (
     <Container fluid="sm" className="game-container">
       <Header
         nickname={nickname}
         score={score}
         currentQuestion={currentIndex + 1}
-        totalQuestions={emailsOfDifficulty.length}
+        totalQuestions={allEmails.length}
       />
       <div className="mx-auto mb-4">
         <EmailTemplate key={id} sender={sender} subject={subject} content={content} />
