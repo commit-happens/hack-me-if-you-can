@@ -1,2 +1,0 @@
--- Checkpoint migration: aligns schema version after V8-V10 were removed from version control.
--- A clean-on-validation-error redeploy was used to reset the schema to a consistent state.
