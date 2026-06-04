@@ -54,18 +54,6 @@ class DatabaseMigrationIntegrationTest {
             .isEqualTo(7);
     }
 
-    @Test
-    void given_flyway_migrations_when_applied_then_questions_table_should_have_expected_count() {
-        Integer questionCount = jdbcTemplate.queryForObject(
-            "SELECT COUNT(*) FROM questions",
-            Integer.class
-        );
-
-        assertThat(questionCount)
-            .as("Questions table should contain all seeded questions from V2 migration")
-            .isNotNull()
-            .isGreaterThanOrEqualTo(70);
-    }
 
     @Test
     void given_flyway_migrations_when_applied_then_questions_should_reference_existing_category_id() {

@@ -60,7 +60,7 @@ public class Question {
     @Column(name = "metadata", columnDefinition = "jsonb")
     private Map<String, String> metadata = new HashMap<>();
 
-    @Column(name = "explanation", nullable = false, length = 1000)
+    @Column(name = "explanation", nullable = false, length = 2000)
     private String explanation;
 
     @Builder.Default

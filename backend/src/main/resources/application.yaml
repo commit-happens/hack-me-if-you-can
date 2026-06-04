@@ -23,6 +23,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  ai:
+    google:
+      genai:
+        api-key: ${GOOGLE_GENAI_API_KEY}
   flyway:
     enabled: true
     baseline-on-migrate: true
