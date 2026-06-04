@@ -783,14 +783,14 @@ ON CONFLICT (platform_type_id, md5(content)) DO NOTHING;
 
 -- Init Problems table
 INSERT INTO problems (tag, description) VALUES
-    ('fake-sender',           'Falešný odesílatel – adresa neshoduje s doménou tvrzené organizace'),
+    ('fake-sender',           'Falešný odesílatel – adresa se neshoduje s doménou tvrzené organizace'),
     ('suspicious-url',        'Podezřelá URL – odkaz nevede na oficiální doménu organizace'),
     ('time-pressure',         'Umělý časový tlak – e-mail nutí k okamžité akci pod hrozbou'),
     ('sensitive-info-request','Žádost o citlivé údaje – e-mail žádá o heslo, číslo karty nebo osobní data'),
     ('typosquatting',         'Typosquatting – doména je záměrně podobná důvěryhodné stránce'),
     ('impersonation',         'Vydávání se za jinou osobu nebo organizaci'),
-    ('fake-prize',            'Falešná výhra – sděluje výhru v loterii nebo soutěži, o které uživatel nevěděl'),
-    ('attachment-risk',       'Riziková příloha nebo ke stažení nabízený škodlivý soubor')
+    ('fake-prize',            'Falešná výhra – tvrdí, že uživatel vyhrál v loterii nebo soutěži, o které nevěděl'),
+    ('attachment-risk',       'Riziková příloha nebo škodlivý soubor nabízený ke stažení')
 ON CONFLICT (tag) DO NOTHING;
 
 -- Init Question-Problems
