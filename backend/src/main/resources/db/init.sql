@@ -780,3 +780,275 @@ VALUES (1,
                            'Potvrzení registrace do kurzu Business English'),
         'Legitimní potvrzení registrace do jazykového kurzu. Konkrétní informace o kurzu, standardní komunikace bez podezřelých prvků.')
 ON CONFLICT (platform_type_id, md5(content)) DO NOTHING;
+
+-- Init Problems table
+INSERT INTO problems (tag, description) VALUES
+    ('fake-sender',           'Falešný odesílatel – adresa se neshoduje s doménou tvrzené organizace'),
+    ('suspicious-url',        'Podezřelá URL – odkaz nevede na oficiální doménu organizace'),
+    ('time-pressure',         'Umělý časový tlak – e-mail nutí k okamžité akci pod hrozbou'),
+    ('sensitive-info-request','Žádost o citlivé údaje – e-mail žádá o heslo, číslo karty nebo osobní data'),
+    ('typosquatting',         'Typosquatting – doména je záměrně podobná důvěryhodné stránce'),
+    ('impersonation',         'Vydávání se za jinou osobu nebo organizaci'),
+    ('fake-prize',            'Falešná výhra – tvrdí, že uživatel vyhrál v loterii nebo soutěži, o které nevěděl'),
+    ('attachment-risk',       'Riziková příloha nebo škodlivý soubor nabízený ke stažení')
+ON CONFLICT (tag) DO NOTHING;
+
+-- Init Question-Problems
+-- Q1: CRED_THEFT – mybank-support phishing
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%mybank-support.verify-login.example%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure', 'sensitive-info-request')
+ON CONFLICT DO NOTHING;
+
+-- Q3: URGENT – fake invoice pay-now
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%pay-now.example/payment?id=78945%'
+  AND p.tag IN ('time-pressure', 'suspicious-url', 'fake-sender')
+ON CONFLICT DO NOTHING;
+
+-- Q4: FAKE_URL – service terms update
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%notifications@sluzby.example.org%'
+  AND p.tag IN ('suspicious-url', 'fake-sender')
+ON CONFLICT DO NOTHING;
+
+-- Q5: URGENT – password reset firma-corp
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%firma-corp.reset-password.example%'
+  AND p.tag IN ('suspicious-url', 'typosquatting')
+ON CONFLICT DO NOTHING;
+
+-- Q7: SPEAR_PHISH – billing.dodavatel payment verification
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%billing.dodavatel.example/verify?token=XYZ%'
+  AND p.tag IN ('suspicious-url', 'sensitive-info-request', 'fake-sender')
+ON CONFLICT DO NOTHING;
+
+-- Q9: FAKE_URL – letenky-super flight deal
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%letenky-super.example/deal%'
+  AND p.tag IN ('suspicious-url', 'time-pressure', 'fake-sender')
+ON CONFLICT DO NOTHING;
+
+-- Q10: URGENT – fake PayPal security alert
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%paypal-secure.verify-example.com/login%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'typosquatting', 'time-pressure', 'sensitive-info-request')
+ON CONFLICT DO NOTHING;
+
+-- Q11: LOTTERY – fake Steam bonus credits
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%steam-rewards-confirmation.com/bonus%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'fake-prize', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q13: FAKE_DOC – eshop payment confirmation
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%eshop-verify-payment.info/confirm%'
+  AND p.tag IN ('suspicious-url', 'fake-sender', 'sensitive-info-request')
+ON CONFLICT DO NOTHING;
+
+-- Q15: CRED_THEFT – RC Model Club account verification
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%rcmodel-verification.net/secure%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q17: SPEAR_PHISH – garden-fix account login
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%garden-fix-account.org/login%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'sensitive-info-request')
+ON CONFLICT DO NOTHING;
+
+-- Q19: CRED_THEFT – fitness membership suspension
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%fitness-members-update.info/login%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure', 'sensitive-info-request')
+ON CONFLICT DO NOTHING;
+
+-- Q22: URGENT – fake DHL customs fee
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%dhl-payment-gateway.xyz/pay%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure', 'sensitive-info-request', 'typosquatting')
+ON CONFLICT DO NOTHING;
+
+-- Q24: SPEAR_PHISH – CEO fraud (gmail)
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%reditel.jan.novak@gmail.com%'
+  AND p.tag IN ('fake-sender', 'impersonation', 'time-pressure', 'sensitive-info-request')
+ON CONFLICT DO NOTHING;
+
+-- Q26: FAKE_DOC – fake SharePoint login
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%sharepoint-login.auth-secure.net/login%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'typosquatting', 'sensitive-info-request')
+ON CONFLICT DO NOTHING;
+
+-- Q28: CRED_THEFT – fake bank app update (malware .exe)
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%activator.exe%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'attachment-risk', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q30: CRED_THEFT – password expiry with subdomain trick
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%it-support-portal.com.shady-link.net%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'typosquatting', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q31: CRED_THEFT – fake eRecept expiry
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%erecept-prodlouzeni.example/verify%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q32: URGENT – fake data mailbox (datovka)
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%datovka-login.example/auth%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure', 'sensitive-info-request')
+ON CONFLICT DO NOTHING;
+
+-- Q33: FAKE_URL – fake insurance surcharge
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%pojistovna-doplatek.example/payment%'
+  AND p.tag IN ('fake-sender', 'suspicious-url')
+ON CONFLICT DO NOTHING;
+
+-- Q34: URGENT – fake courier small fee
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%moje-zasilka.example/pay%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q35: FAKE_URL – fake satellite card deactivation
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%tv-karta.example/activate%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'sensitive-info-request')
+ON CONFLICT DO NOTHING;
+
+-- Q36: URGENT – fake "grandson" money request
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%rychla-pomoc.example/send%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure', 'impersonation')
+ON CONFLICT DO NOTHING;
+
+-- Q37: FAKE_URL – fake municipal waste fee
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%obec-poplatek.example/pay%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q39: URGENT – fake bank card verification
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%bezpecna-karta.example/verify%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure', 'sensitive-info-request')
+ON CONFLICT DO NOTHING;
+
+-- Q40: FAKE_URL – fake electricity overload warning
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%elektricka-kontrola.example/check%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q41: CRED_THEFT – fake bank account locked
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%moje-banka-verify.com/login%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q42: URGENT – fake invoice end-of-day
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%secure-faktura-pay.com/doc%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q43: URGENT – typosquatted Microsoft (m1crosoft)
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%m1crosoft-security.com%'
+  AND p.tag IN ('fake-sender', 'typosquatting', 'suspicious-url', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q44: SPEAR_PHISH – fake Czech Post delivery fee
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%posta-doruceni-cz.net/pay%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure', 'impersonation')
+ON CONFLICT DO NOTHING;
+
+-- Q45: URGENT – fake voucher prize activation
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%reward-claim-win.com/activate%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'fake-prize', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q51: FAKE_URL – fake office supplies invoice
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%faktura-platba-rychle.example/pay%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q52: FAKE_URL – fake lottery win 50 000 Kč
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%loterie-vyzvedni.example/claim%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'fake-prize', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q53: URGENT – colleague impersonation money request
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%pomoc-kolegovi.example/send%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'impersonation', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q54: FAKE_URL – fake unpaid invoice with penalty
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%faktury-splatnost.example/doc%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q55: FAKE_DOC – fake iPhone prize with advance fee
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%iphone-vyhra-claim.example/pay%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'fake-prize', 'time-pressure')
+ON CONFLICT DO NOTHING;
+
+-- Q61: URGENT – fake O2 contest prize
+INSERT INTO question_problems (question_id, problem_id)
+SELECT q.id, p.id FROM questions q, problems p
+WHERE q.content LIKE '%o2-soutez-vyhra.example/claim%'
+  AND p.tag IN ('fake-sender', 'suspicious-url', 'impersonation', 'fake-prize', 'time-pressure')
+ON CONFLICT DO NOTHING;
