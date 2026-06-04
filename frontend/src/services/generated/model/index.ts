@@ -19,5 +19,6 @@ export * from './phishingCategoryResponse';
 export * from './playerRequest';
 export * from './playerResponse';
 export * from './playerSummaryResponse';
+export * from './problemResponse';
 export * from './questionMetadataResponse';
 export * from './questionResponse';

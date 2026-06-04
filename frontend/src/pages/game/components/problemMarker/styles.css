@@ -1,0 +1,75 @@
+/* Problem Marker styling */
+.problem-marker {
+  background-color: #fff3cd; /* Bootstrap warning color (light yellow/orange) */
+  border: 2px solid #ff9800; /* Orange border */
+  border-radius: 3px;
+  padding: 2px 4px;
+  cursor: pointer;
+  font-weight: 500;
+  text-decoration: underline wavy #ff9800;
+  transition: all 0.2s ease-in-out;
+  display: inline-block;
+}
+
+.problem-marker:hover,
+.problem-marker:focus {
+  background-color: #ffe082; /* Slightly darker yellow on hover */
+  border-color: #f57c00; /* Darker orange */
+  box-shadow: 0 0 8px rgba(255, 152, 0, 0.4);
+}
+
+.problem-marker:focus {
+  outline: none;
+  box-shadow: 0 0 8px rgba(255, 152, 0, 0.6);
+}
+
+/* Popover styling for problem descriptions */
+.problem-popover {
+  max-width: 300px;
+}
+
+.problem-popover-header {
+  background-color: #ff9800; /* Orange header */
+  color: white;
+  font-weight: 600;
+  border-bottom: 2px solid #f57c00;
+  padding: 0.75rem 1rem;
+}
+
+.problem-popover-body {
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #333;
+}
+
+/* Ensure readability on dark backgrounds */
+@media (prefers-color-scheme: dark) {
+  .problem-marker {
+    background-color: #664d00;
+    border-color: #ffb74d;
+    color: #fff;
+  }
+
+  .problem-marker:hover,
+  .problem-marker:focus {
+    background-color: #7a5e00;
+    border-color: #ffc266;
+    box-shadow: 0 0 8px rgba(255, 184, 77, 0.4);
+  }
+
+  .problem-popover {
+    background-color: #2d2d2d;
+    border: 1px solid #ff9800;
+  }
+
+  .problem-popover-header {
+    background-color: #ff9800;
+    color: white;
+  }
+
+  .problem-popover-body {
+    background-color: #2d2d2d;
+    color: #e0e0e0;
+  }
+}

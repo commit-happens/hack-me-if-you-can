@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem \"c:\\\\PROJECTS\\\\commit-happens\\\\hack-me-if-you-can\\\\frontend\\\\src\\\\services\\\\generated\\\\\" -File -ErrorAction SilentlyContinue | Select-Object Name)",
+      "Bash(Get-ChildItem \"c:\\\\PROJECTS\\\\commit-happens\\\\hack-me-if-you-can\\\\frontend\\\\src\\\\services\\\\generated-zod\\\\\" -ErrorAction SilentlyContinue | Select-Object Name, FullName)"
+    ]
+  }
+}

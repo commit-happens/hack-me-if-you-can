@@ -28,6 +28,11 @@ export enum Answer {
   Safe = "safe",
 }
 
+export type Problem = {
+  id: string;
+  description: string;
+};
+
 export type EmailModel = {
   id: number;
   /* Odesílatel e-mailu */
@@ -53,6 +58,7 @@ export type EmailModel = {
 
   /* Obtížnost */
   difficulty: number;
+  problems?: Problem[];
 };
 
 type UseGameOptions = {
